@@ -1,6 +1,8 @@
 streamlit
 pandas
 numpy
-autoviz
 scipy
+scikit-learn
 pycaret
+matplotlib
+autoviz
