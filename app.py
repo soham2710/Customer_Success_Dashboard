@@ -1,52 +1,68 @@
+# app.py
+
 import streamlit as st
+import numpy as np
+import pandas as pd
 from model import load_and_preprocess_data, preprocess_data, train_and_evaluate_models, perform_statistical_tests
-import matplotlib.pyplot as plt
 
-# Load and preprocess data
-df = load_and_preprocess_data()
-X_train, X_test, y_train, y_test = preprocess_data(df)
+# Load and preprocess the data
+X, y = load_and_preprocess_data()
+X_train, X_test, y_train, y_test = preprocess_data(X, y)
 
-# Streamlit app
-st.set_page_config(page_title="AI Model Evaluation Dashboard", layout="wide")
+# Sidebar options
+st.sidebar.title('Model Options')
+model_type = st.sidebar.selectbox('Choose a model', ['Logistic Regression', 'Naive Bayes', 'Support Vector Machine', 'K-Nearest Neighbors', 'Artificial Neural Network', 'Convolutional Neural Network', 'Recurrent Neural Network'])
 
-# Sidebar for user input
-st.sidebar.title("Model Selection")
-model_choice = st.sidebar.selectbox("Choose a model", ["Logistic Regression", "Naive Bayes", "SVM", "KNN", "PCA", "KMeans", "ANN", "CNN", "RNN"])
+# Main content
+st.title('AI Model Comparison')
+st.write('This app compares various machine learning and neural network models on the Iris dataset.')
 
-# Sidebar for Statistical Tests
-st.sidebar.title("Statistical Tests")
-show_stats = st.sidebar.checkbox("Show Statistical Tests")
+# Train and evaluate the selected model
+accuracy, report, confusion = train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test)
 
-# Train and evaluate models
-models_results = train_and_evaluate_models(X_train, X_test, y_train, y_test)
+# Display results
+st.write(f'## {model_type} Results')
+st.write(f'### Accuracy: {accuracy:.4f}')
+st.write('### Classification Report')
+st.text(report)
+st.write('### Confusion Matrix')
+st.write(confusion)
 
 # Perform statistical tests
-if show_stats:
-    stats_results = perform_statistical_tests(X_train, y_train, X_test, y_test)
-    st.write("### Statistical Test Results")
-    for test, result in stats_results.items():
-        st.write(f"**{test}:** {result}")
+st.write('## Statistical Tests')
+stat_results = perform_statistical_tests((X, y))
+for test_name, result in stat_results.items():
+    st.write(f'### {test_name}')
+    st.write(result)
 
-# Display model results
-st.title("AI Model Evaluation Results")
-st.write(f"**Selected Model:** {model_choice}")
-if model_choice in models_results:
-    st.write(f"**Accuracy/Score:** {models_results[model_choice]}")
+# User input for prediction
+st.sidebar.header('Predict a new sample')
+sepal_length = st.sidebar.slider('Sepal Length', min_value=4.0, max_value=8.0, step=0.1)
+sepal_width = st.sidebar.slider('Sepal Width', min_value=2.0, max_value=4.5, step=0.1)
+petal_length = st.sidebar.slider('Petal Length', min_value=1.0, max_value=7.0, step=0.1)
+petal_width = st.sidebar.slider('Petal Width', min_value=0.1, max_value=2.5, step=0.1)
+
+# Make prediction
+new_sample = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+new_sample_scaled = StandardScaler().fit_transform(new_sample)
+model = train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test)
+if model_type == 'Artificial Neural Network':
+    prediction = model.predict(new_sample_scaled)
+elif model_type == 'Convolutional Neural Network':
+    new_sample_scaled = new_sample_scaled.reshape(-1, 2, 2, 1)
+    prediction = model.predict(new_sample_scaled)
+elif model_type == 'Recurrent Neural Network':
+    new_sample_scaled = new_sample_scaled.reshape(-1, 4, 1)
+    prediction = model.predict(new_sample_scaled)
 else:
-    st.write("Model not found. Please select a valid model.")
+    prediction = model.predict(new_sample_scaled)
 
-# Display data visualization
-st.sidebar.title("Data Visualization")
-if st.sidebar.checkbox("Show Data Visualization"):
-    auto_viz = AutoViz_Class()
-    av = auto_viz.AutoViz("")
-    av.AutoViz("", df, sep=",")
-    st.pyplot(plt)
+predicted_class = np.argmax(prediction) if model_type in ['Artificial Neural Network', 'Convolutional Neural Network', 'Recurrent Neural Network'] else prediction[0]
+class_names = iris.target_names
 
-# Display the dataset
-st.sidebar.title("Dataset")
-if st.sidebar.checkbox("Show Dataset"):
-    st.write(df)
+st.sidebar.write(f'## Prediction: {class_names[predicted_class]}')
 
-# Additional functionalities
-# You can add more interactive elements here for deeper insights
+# Visualize model comparison
+results = train_and_evaluate_models()
+st.write('## Model Comparison')
+st.bar_chart(results)
