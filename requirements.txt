@@ -7,3 +7,4 @@ pycaret
 matplotlib
 autoviz
 tensorflow
+keras
