@@ -6,3 +6,4 @@ scikit-learn
 pycaret
 matplotlib
 autoviz
+tensorflow
