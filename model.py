@@ -5,10 +5,16 @@ from scipy import stats
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv1D, Flatten, SimpleRNN, LSTM
-from tensorflow.keras.utils import to_categorical
-from sklearn.metrics import accuracy_score
+import random
 
 # Load and preprocess the Iris dataset
 def load_and_preprocess_data():
@@ -30,56 +36,61 @@ def preprocess_data(df):
     X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
     return X_train, X_test, y_train, y_test
 
-# Auto visualization
-def auto_visualize(df):
-    AV = AutoViz_Class()
-    AV.AutoViz(df)
-
-# Statistical tests
-def run_statistical_tests(df):
+# Statistical Tests
+def perform_statistical_tests(X_train, y_train, X_test, y_test):
     results = {}
-    control = df[df['target'] == 0]['sepal length (cm)']
-    test = df[df['target'] != 0]['sepal length (cm)']
-
-    # t-test
-    t_stat, t_p = stats.ttest_ind(control, test)
-    results['t-test'] = (t_stat, t_p)
-
-    # z-score
-    z_score = (np.mean(test) - np.mean(control)) / np.std(df['sepal length (cm)'])
-    results['z-score'] = z_score
 
     # F-test
-    f_stat, f_p = stats.f_oneway(control, test)
-    results['f-test'] = (f_stat, f_p)
+    f_stat, p_val = stats.f_oneway(X_train[:, 0], X_train[:, 1], X_train[:, 2], X_train[:, 3])
+    results['F-test'] = (f_stat, p_val)
+
+    # Z-score
+    z_scores = np.abs(stats.zscore(X_train, axis=0))
+    results['Z-score'] = np.mean(z_scores)
+
+    # T-test
+    t_stat, p_val = stats.ttest_ind(X_train[:, 0], X_train[:, 1])
+    results['T-test'] = (t_stat, p_val)
+
+    # Chi-squared test
+    chi2_stat, p_val = stats.chisquare(np.sum(X_train, axis=0))
+    results['Chi-squared'] = (chi2_stat, p_val)
 
     # Mann-Whitney U test
-    u_stat, u_p = stats.mannwhitneyu(control, test)
-    results['mann-whitney'] = (u_stat, u_p)
+    u_stat, p_val = stats.mannwhitneyu(X_train[:, 0], X_train[:, 1])
+    results['Mann-Whitney U'] = (u_stat, p_val)
 
-    # Chi-square test
-    chi2_stat, chi2_p = stats.chisquare(df['target'])
-    results['chi-square'] = (chi2_stat, chi2_p)
+    # Kruskal-Wallis H test
+    h_stat, p_val = stats.kruskal(X_train[:, 0], X_train[:, 1], X_train[:, 2], X_train[:, 3])
+    results['Kruskal-Wallis H'] = (h_stat, p_val)
 
-    # Pearson correlation
-    pearson_corr, pearson_p = stats.pearsonr(df['sepal length (cm)'], df['sepal width (cm)'])
-    results['pearson'] = (pearson_corr, pearson_p)
+    # Shapiro-Wilk test
+    w_stat, p_val = stats.shapiro(X_train[:, 0])
+    results['Shapiro-Wilk'] = (w_stat, p_val)
 
-    # Spearman correlation
-    spearman_corr, spearman_p = stats.spearmanr(df['sepal length (cm)'], df['sepal width (cm)'])
-    results['spearman'] = (spearman_corr, spearman_p)
+    # Anderson-Darling test
+    ad_stat, critical_values, sig_level = stats.anderson(X_train[:, 0])
+    results['Anderson-Darling'] = (ad_stat, critical_values, sig_level)
 
-    # ANOVA
-    anova_stat, anova_p = stats.f_oneway(control, test)
-    results['anova'] = (anova_stat, anova_p)
+    # Kolmogorov-Smirnov test
+    ks_stat, p_val = stats.ks_2samp(X_train[:, 0], X_train[:, 1])
+    results['Kolmogorov-Smirnov'] = (ks_stat, p_val)
 
-    # Monte Carlo simulation (example)
-    monte_carlo = np.mean([np.mean(np.random.choice(df['sepal length (cm)'], size=len(control))) for _ in range(1000)])
-    results['monte-carlo'] = monte_carlo
+    # Monte Carlo simulation
+    def monte_carlo_simulation(n_simulations=1000):
+        results = []
+        for _ in range(n_simulations):
+            sample = np.random.choice(X_train[:, 0], size=10, replace=False)
+            mean = np.mean(sample)
+            results.append(mean)
+        return np.mean(results), np.std(results)
+
+    mc_mean, mc_std = monte_carlo_simulation()
+    results['Monte Carlo Simulation'] = (mc_mean, mc_std)
 
     return results
 
-# Build and train an ANN model
+# Model Definitions
 def build_ann_model(input_shape):
     model = Sequential([
         Dense(64, activation='relu', input_shape=(input_shape,)),
@@ -89,59 +100,80 @@ def build_ann_model(input_shape):
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
-# Build and train a CNN model
 def build_cnn_model(input_shape):
     model = Sequential([
-        Conv1D(32, kernel_size=2, activation='relu', input_shape=(input_shape, 1)),
+        Conv1D(filters=64, kernel_size=2, activation='relu', input_shape=(input_shape[0], 1)),
         Flatten(),
-        Dense(64, activation='relu'),
+        Dense(32, activation='relu'),
         Dense(3, activation='softmax')
     ])
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
-# Build and train an RNN model
 def build_rnn_model(input_shape):
     model = Sequential([
-        SimpleRNN(50, activation='relu', input_shape=(input_shape, 1)),
+        SimpleRNN(64, input_shape=(input_shape[0], 1), return_sequences=True),
+        LSTM(32),
         Dense(3, activation='softmax')
     ])
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
-def run_models(X_train, X_test, y_train, y_test):
-    results = {}
+# Train and evaluate models
+def train_and_evaluate_models(X_train, X_test, y_train, y_test):
+    models = {}
+    
+    # Logistic Regression
+    log_reg = LogisticRegression(max_iter=1000)
+    log_reg.fit(X_train, y_train.argmax(axis=1))
+    log_reg_pred = log_reg.predict(X_test)
+    models['Logistic Regression'] = accuracy_score(y_test.argmax(axis=1), log_reg_pred)
+
+    # Naive Bayes
+    nb = GaussianNB()
+    nb.fit(X_train, y_train.argmax(axis=1))
+    nb_pred = nb.predict(X_test)
+    models['Naive Bayes'] = accuracy_score(y_test.argmax(axis=1), nb_pred)
+
+    # SVM
+    svm = SVC()
+    svm.fit(X_train, y_train.argmax(axis=1))
+    svm_pred = svm.predict(X_test)
+    models['SVM'] = accuracy_score(y_test.argmax(axis=1), svm_pred)
+
+    # KNN
+    knn = KNeighborsClassifier()
+    knn.fit(X_train, y_train.argmax(axis=1))
+    knn_pred = knn.predict(X_test)
+    models['KNN'] = accuracy_score(y_test.argmax(axis=1), knn_pred)
+
+    # PCA
+    pca = PCA(n_components=2)
+    X_pca = pca.fit_transform(X_train)
+    models['PCA'] = pca.explained_variance_ratio_.sum()
+
+    # KMeans
+    kmeans = KMeans(n_clusters=3)
+    kmeans.fit(X_train)
+    kmeans_pred = kmeans.predict(X_test)
+    models['KMeans'] = accuracy_score(y_test.argmax(axis=1), kmeans_pred)
 
     # ANN
     ann_model = build_ann_model(X_train.shape[1])
-    ann_model.fit(X_train, y_train, epochs=50, batch_size=10, verbose=0)
+    ann_model.fit(X_train, y_train, epochs=10, verbose=0)
     ann_pred = np.argmax(ann_model.predict(X_test), axis=1)
-    ann_acc = accuracy_score(np.argmax(y_test, axis=1), ann_pred)
-    results['ANN'] = ann_acc
+    models['ANN'] = accuracy_score(np.argmax(y_test, axis=1), ann_pred)
 
     # CNN
-    X_train_cnn = X_train.reshape(-1, X_train.shape[1], 1)
-    X_test_cnn = X_test.reshape(-1, X_test.shape[1], 1)
-    cnn_model = build_cnn_model(X_train_cnn.shape[1])
-    cnn_model.fit(X_train_cnn, y_train, epochs=50, batch_size=10, verbose=0)
-    cnn_pred = np.argmax(cnn_model.predict(X_test_cnn), axis=1)
-    cnn_acc = accuracy_score(np.argmax(y_test, axis=1), cnn_pred)
-    results['CNN'] = cnn_acc
+    cnn_model = build_cnn_model((X_train.shape[1], 1))
+    cnn_model.fit(np.expand_dims(X_train, axis=-1), y_train, epochs=10, verbose=0)
+    cnn_pred = np.argmax(cnn_model.predict(np.expand_dims(X_test, axis=-1)), axis=1)
+    models['CNN'] = accuracy_score(np.argmax(y_test, axis=1), cnn_pred)
 
     # RNN
-    rnn_model = build_rnn_model(X_train_cnn.shape[1])
-    rnn_model.fit(X_train_cnn, y_train, epochs=50, batch_size=10, verbose=0)
-    rnn_pred = np.argmax(rnn_model.predict(X_test_cnn), axis=1)
-    rnn_acc = accuracy_score(np.argmax(y_test, axis=1), rnn_pred)
-    results['RNN'] = rnn_acc
+    rnn_model = build_rnn_model((X_train.shape[1], 1))
+    rnn_model.fit(np.expand_dims(X_train, axis=-1), y_train, epochs=10, verbose=0)
+    rnn_pred = np.argmax(rnn_model.predict(np.expand_dims(X_test, axis=-1)), axis=1)
+    models['RNN'] = accuracy_score(np.argmax(y_test, axis=1), rnn_pred)
 
-    return results
-
-if __name__ == "__main__":
-    df = load_and_preprocess_data()
-    auto_visualize(df)
-    X_train, X_test, y_train, y_test = preprocess_data(df)
-    stats_results = run_statistical_tests(df)
-    model_results = run_models(X_train, X_test, y_train, y_test)
-    print(stats_results)
-    print(model_results)
+    return models
