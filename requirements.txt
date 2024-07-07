@@ -7,4 +7,3 @@ matplotlib
 autoviz
 tensorflow
 keras
-model
