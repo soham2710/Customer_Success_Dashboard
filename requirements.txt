@@ -5,5 +5,5 @@ scipy
 scikit-learn
 matplotlib
 autoviz
-tensorflow
+tensorflow==2.13.0
 keras
