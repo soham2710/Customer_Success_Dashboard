@@ -1,6 +1,6 @@
-streamlit==1.36.0
-pandas==2.2.2
-numpy==1.24.0
-autoviz==0.1.44
-scipy==1.11.0
-pycaret==3.0.0rc5
+streamlit
+pandas
+numpy
+autoviz
+scipy
+pycaret
