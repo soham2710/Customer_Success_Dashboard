@@ -1,7 +1,10 @@
-Iris Dataset Classification and Statistical Analysis
-Welcome to the Iris Dataset Classification and Statistical Analysis Streamlit app! This application allows you to train various machine learning models on the Iris dataset, evaluate their performance, and perform a range of statistical tests.
+# Iris Dataset Classification and Statistical Analysis
 
-Table of Contents
+Welcome to the Iris Dataset Classification and Statistical Analysis Streamlit app! 
+
+This application allows you to train various machine learning models on the Iris dataset, evaluate their performance, and perform a range of statistical tests.
+
+#Table of Contents
 Introduction
 Features
 Models
