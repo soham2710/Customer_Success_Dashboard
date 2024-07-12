@@ -1,4 +1,3 @@
-import streamlit as st
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_iris
@@ -11,6 +10,13 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, SimpleRNN
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.applications import VGG16
+from tensorflow.keras.applications.vgg16 import preprocess_input
+from tensorflow.keras.layers import Input, GlobalAveragePooling2D
+from tensorflow.keras.models import Model
+import openai
+import os
 
 # Load and preprocess data
 def load_and_preprocess_data():
@@ -42,20 +48,23 @@ def build_ann():
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     return model
 
-def build_cnn():
-    model = Sequential()
-    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(2, 2, 1)))
-    model.add(Flatten())
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(3, activation='softmax'))
-    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    return model
-
 def build_rnn():
     model = Sequential()
     model.add(SimpleRNN(64, input_shape=(4, 1), activation='relu'))
     model.add(Dense(32, activation='relu'))
     model.add(Dense(3, activation='softmax'))
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+def build_vgg16():
+    base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+    x = base_model.output
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(1024, activation='relu')(x)
+    predictions = Dense(3, activation='softmax')(x)
+    model = Model(inputs=base_model.input, outputs=predictions)
+    for layer in base_model.layers:
+        layer.trainable = False
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     return model
 
@@ -78,17 +87,6 @@ def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
         report = classification_report(y_test, y_pred_classes)
         confusion = confusion_matrix(y_test, y_pred_classes)
         return accuracy, report, confusion
-    elif model_type == 'Convolutional Neural Network':
-        X_train_cnn = X_train.reshape(-1, 2, 2, 1)
-        X_test_cnn = X_test.reshape(-1, 2, 2, 1)
-        model = build_cnn()
-        model.fit(X_train_cnn, y_train, epochs=10, verbose=0)
-        loss, accuracy = model.evaluate(X_test_cnn, y_test, verbose=0)
-        y_pred = model.predict(X_test_cnn)
-        y_pred_classes = np.argmax(y_pred, axis=1)
-        report = classification_report(y_test, y_pred_classes)
-        confusion = confusion_matrix(y_test, y_pred_classes)
-        return accuracy, report, confusion
     elif model_type == 'Recurrent Neural Network':
         X_train_rnn = X_train.reshape(-1, 4, 1)
         X_test_rnn = X_test.reshape(-1, 4, 1)
@@ -100,8 +98,16 @@ def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
         report = classification_report(y_test, y_pred_classes)
         confusion = confusion_matrix(y_test, y_pred_classes)
         return accuracy, report, confusion
+    elif model_type == 'VGG16':
+        model = build_vgg16()
+        model.fit(X_train, y_train, epochs=10, verbose=0)
+        loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
+        y_pred = model.predict(X_test)
+        y_pred_classes = np.argmax(y_pred, axis=1)
+        report = classification_report(y_test, y_pred_classes)
+        confusion = confusion_matrix(y_test, y_pred_classes)
+        return accuracy, report, confusion
 
-# Perform statistical tests
 def perform_statistical_tests(data):
     from scipy.stats import ttest_ind, chi2_contingency, f_oneway, wilcoxon, mannwhitneyu, kruskal, friedmanchisquare, zscore
     results = {}
@@ -141,31 +147,64 @@ def perform_statistical_tests(data):
 
     return results
 
-# Streamlit App
-def main():
-    st.title("Iris Dataset - Model Training and Evaluation")
+import openai
 
+# Set your OpenAI API key
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+def get_llm_summary(statistical_tests):
+    prompt = f"""
+    Here are the results of various statistical tests performed on a dataset:
+    {statistical_tests}
+
+    Provide a summary and interpretation of these results.
+    """
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=200,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
+
+    summary = response.choices[0].text.strip()
+    return summary
+
+def main():
     X, y = load_and_preprocess_data()
     X_train, X_test, y_train, y_test = preprocess_data(X, y)
 
-    st.sidebar.title("Select Model")
-    model_type = st.sidebar.selectbox("Model", ["Logistic Regression", "Naive Bayes", "Support Vector Machine", "K-Nearest Neighbors", "Artificial Neural Network", "Convolutional Neural Network", "Recurrent Neural Network"])
+    results = {}
+    for model_name in models.keys():
+        accuracy, report, confusion = train_and_evaluate_models(model_name, X_train, y_train, X_test, y_test)
+        results[model_name] = {
+            'accuracy': accuracy,
+            'report': report,
+            'confusion_matrix': confusion
+        }
 
-    if st.sidebar.button("Train and Evaluate"):
-        st.write(f"### {model_type}")
-        accuracy, report, confusion = train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test)
-        st.write(f"**Accuracy:** {accuracy:.2f}")
-        st.write("**Classification Report:**")
-        st.text(report)
-        st.write("**Confusion Matrix:**")
-        st.write(confusion)
+    # Train and evaluate neural network models
+    nn_models = ['Artificial Neural Network', 'Convolutional Neural Network', 'Recurrent Neural Network']
+    for nn_model in nn_models:
+        accuracy, report, confusion = train_and_evaluate_models(nn_model, X_train, y_train, X_test, y_test)
+        results[nn_model] = {
+            'accuracy': accuracy,
+            'report': report,
+            'confusion_matrix': confusion
+        }
 
-    if st.sidebar.button("Perform Statistical Tests"):
-        st.write("### Statistical Tests")
-        results = perform_statistical_tests((X, y))
-        for test, result in results.items():
-            st.write(f"**{test}:**")
-            st.write(result)
+    # Perform statistical tests
+    statistical_tests = perform_statistical_tests((X, y))
+
+    # Get summary and interpretation using LLM
+    summary = get_llm_summary(statistical_tests)
+
+    return results, statistical_tests, summary
 
 if __name__ == "__main__":
-    main()
+    results, statistical_tests, summary = main()
+    print("Model Results:", results)
+    print("Statistical Tests:", statistical_tests)
+    print("Summary:", summary)
