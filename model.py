@@ -150,7 +150,7 @@ def perform_statistical_tests(data):
 import openai
 
 # Set your OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("sk-proj-WfOriF5WpnahWX7MWHDqT3BlbkFJbSdhDwMslPvuKgHdsQDC")
 
 def get_llm_summary(statistical_tests):
     prompt = f"""
