@@ -147,10 +147,12 @@ def perform_statistical_tests(data):
 
     return results
 
-import openai
+from openai import OpenAI
 
-# Set your OpenAI API key
-openai.api_key = os.getenv("sk-proj-WfOriF5WpnahWX7MWHDqT3BlbkFJbSdhDwMslPvuKgHdsQDC")
+client = OpenAI(
+  organization='org-d8vPBbo9kYzuHePB4QUsrYTw',
+  project='$PROJECT_ID',
+)
 
 def get_llm_summary(statistical_tests):
     prompt = f"""
