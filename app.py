@@ -1,8 +1,9 @@
+import os
 import streamlit as st
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from model import load_and_preprocess_data, preprocess_data, train_and_evaluate_models, perform_statistical_tests
+from model import load_and_preprocess_data, preprocess_data, train_and_evaluate_models, perform_statistical_tests, get_llm_summary
 
 # Function to load user-uploaded data
 def load_user_data(uploaded_file):
@@ -48,6 +49,11 @@ stat_results = perform_statistical_tests((X, y))
 for test_name, result in stat_results.items():
     st.write(f'### {test_name}')
     st.write(result)
+
+# Get summary and interpretation using LLM
+summary = get_llm_summary(stat_results)
+st.write('## Summary and Interpretation')
+st.write(summary)
 
 # User input for prediction
 st.sidebar.header('Predict a new sample')
