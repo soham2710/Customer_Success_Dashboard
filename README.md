@@ -1,115 +1,72 @@
-# Iris Dataset Classification and Statistical Analysis
+# Streamlit Model Comparison App
 
-Welcome to the Iris Dataset Classification and Statistical Analysis Streamlit app! 
+## Overview
 
-This application allows you to train various machine learning models on the Iris dataset, evaluate their performance, and perform a range of statistical tests.
+This Streamlit app allows users to upload a CSV file containing their data and choose from various machine learning and neural network models. The app trains and evaluates the selected model, performs statistical tests, and provides a summary and interpretation of the results using a Large Language Model (LLM). Users can also input new data to make predictions with the trained model.
 
-#Table of Contents
-Introduction
-Features
-Models
-Statistical Tests
-Usage
-Installation
-Contributing
-License
-Introduction
-The Iris dataset is a classic dataset used in machine learning and statistics. It consists of 150 samples from three different species of Iris flowers (Iris setosa, Iris virginica, and Iris versicolor), with four features measured for each sample: sepal length, sepal width, petal length, and petal width.
+## Features
 
-This app allows you to:
+- **Data Upload:** Upload CSV files for analysis.
+- **Model Selection:** Choose from a variety of machine learning and neural network models.
+- **Model Evaluation:** View accuracy, classification reports, and confusion matrices.
+- **Statistical Tests:** Perform and display results of various statistical tests.
+- **LLM Integration:** Get summaries and interpretations of statistical tests.
+- **Prediction:** Input new data to make predictions with the trained model.
+- **Model Comparison:** Visualize performance of different models.
 
-Train and evaluate multiple machine learning models on the Iris dataset.
-Perform various statistical tests on the dataset.
-Visualize the results directly in the browser using Streamlit.
-Features
-Model Training and Evaluation: Train and evaluate multiple machine learning models, including logistic regression, Naive Bayes, SVM, KNN, and neural networks (ANN, CNN, RNN).
-Statistical Analysis: Perform a variety of statistical tests on the dataset, including t-tests, chi-squared tests, ANOVA, and more.
-Interactive Interface: Use an interactive Streamlit interface to select models, view results, and perform statistical tests.
-Models
-Logistic Regression
-A linear model for binary classification that estimates the probability that a given input belongs to a certain class.
+## Requirements
 
-Naive Bayes
-A probabilistic classifier based on Bayes' theorem, assuming independence between features.
+- Python 3.x
+- Streamlit
+- numpy
+- pandas
+- scikit-learn
+- OpenAI (for LLM integration)
 
-Support Vector Machine (SVM)
-A classifier that finds the hyperplane that best separates the data into different classes.
+## Setup
 
-K-Nearest Neighbors (KNN)
-A non-parametric classifier that predicts the class of a sample based on the majority class among its k-nearest neighbors.
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/yourusername/streamlit-model-comparison.git
+    ```
 
-Artificial Neural Network (ANN)
-A neural network model consisting of multiple layers of neurons, used to capture complex patterns in the data.
+2. Install the required packages:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-Convolutional Neural Network (CNN)
-A neural network model specialized for processing grid-like data, such as images, using convolutional layers.
+3. Set up your OpenAI API key:
+    ```bash
+    export OPENAI_API_KEY='your_openai_api_key'
+    ```
 
-Recurrent Neural Network (RNN)
-A neural network model designed for sequential data, where the output from previous steps is used as input for the current step.
+4. Run the Streamlit app:
+    ```bash
+    streamlit run app.py
+    ```
 
-Statistical Tests
-T-test
-Compares the means of two groups to determine if they are significantly different from each other.
+## Usage
 
-Chi-squared Test
-Tests the independence of two categorical variables.
+1. **Upload Data:** Use the sidebar to upload your CSV file.
+2. **Select Model:** Choose a model from the dropdown menu.
+3. **View Results:** See model evaluation metrics, statistical tests, and LLM summaries.
+4. **Predict New Data:** Enter feature values in the sidebar to make predictions.
+5. **Compare Models:** View a bar chart comparing the performance of different models.
 
-ANOVA (Analysis of Variance)
-Compares the means of three or more groups to determine if at least one of them is significantly different.
+## Code Explanation
 
-Wilcoxon Test
-A non-parametric test that compares two paired groups.
+- **app.py:** The main script that runs the Streamlit app.
+- **model.py:** Contains functions for data preprocessing, model training, evaluation, statistical tests, and LLM summaries.
 
-Mann-Whitney U Test
-A non-parametric test that compares two independent groups.
+## Contributing
 
-Kruskal-Wallis H Test
-A non-parametric test that compares three or more independent groups.
+Feel free to open issues or submit pull requests if you have suggestions or improvements.
 
-Friedman Test
-A non-parametric test for detecting differences in treatments across multiple test attempts.
+## License
 
-Z-score Test
-Measures the number of standard deviations a data point is from the mean.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-Usage
-Install Dependencies: Ensure you have Python and the required libraries installed. You can install the required libraries using:
+## Contact
 
-bash
-Copy code
-pip install streamlit tensorflow scikit-learn pandas numpy
-Run the App: Save the app.py file and run the Streamlit app:
+For questions or feedback, please contact [your_email@example.com](mailto:your_email@example.com).
 
-bash
-Copy code
-streamlit run app.py
-Interact with the App: Open the provided URL in your browser, select models and statistical tests from the sidebar, and view the results.
-
-Installation
-To set up and run this project locally, follow these steps:
-
-Clone the repository:
-
-bash
-Copy code
-git clone <repository_url>
-Navigate to the project directory:
-
-bash
-Copy code
-cd iris-classification-app
-Install the dependencies:
-
-bash
-Copy code
-pip install streamlit tensorflow scikit-learn pandas numpy
-Run the Streamlit app:
-
-bash
-Copy code
-streamlit run app.py
-Contributing
-Contributions are welcome! Please fork the repository and submit a pull request with your changes. Ensure your code adheres to the project's coding standards and includes appropriate tests.
-
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
