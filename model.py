@@ -1,4 +1,4 @@
-# model.py
+import streamlit as st
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_iris
@@ -7,8 +7,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
-from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from tensorflow.keras.models import Sequential
@@ -103,6 +101,7 @@ def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
         confusion = confusion_matrix(y_test, y_pred_classes)
         return accuracy, report, confusion
 
+# Perform statistical tests
 def perform_statistical_tests(data):
     from scipy.stats import ttest_ind, chi2_contingency, f_oneway, wilcoxon, mannwhitneyu, kruskal, friedmanchisquare, zscore
     results = {}
@@ -141,3 +140,32 @@ def perform_statistical_tests(data):
     results['z-score test'] = {'z_scores': z_scores}
 
     return results
+
+# Streamlit App
+def main():
+    st.title("Iris Dataset - Model Training and Evaluation")
+
+    X, y = load_and_preprocess_data()
+    X_train, X_test, y_train, y_test = preprocess_data(X, y)
+
+    st.sidebar.title("Select Model")
+    model_type = st.sidebar.selectbox("Model", ["Logistic Regression", "Naive Bayes", "Support Vector Machine", "K-Nearest Neighbors", "Artificial Neural Network", "Convolutional Neural Network", "Recurrent Neural Network"])
+
+    if st.sidebar.button("Train and Evaluate"):
+        st.write(f"### {model_type}")
+        accuracy, report, confusion = train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test)
+        st.write(f"**Accuracy:** {accuracy:.2f}")
+        st.write("**Classification Report:**")
+        st.text(report)
+        st.write("**Confusion Matrix:**")
+        st.write(confusion)
+
+    if st.sidebar.button("Perform Statistical Tests"):
+        st.write("### Statistical Tests")
+        results = perform_statistical_tests((X, y))
+        for test, result in results.items():
+            st.write(f"**{test}:**")
+            st.write(result)
+
+if __name__ == "__main__":
+    main()
