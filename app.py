@@ -18,7 +18,7 @@ uploaded_file = st.sidebar.file_uploader('Upload your CSV file', type=['csv'])
 model_type = st.sidebar.selectbox('Choose a model', [
     'Logistic Regression', 'Naive Bayes', 'Support Vector Machine', 
     'K-Nearest Neighbors', 'Artificial Neural Network', 
-    'Convolutional Neural Network', 'Recurrent Neural Network'
+    'Recurrent Neural Network'
 ])
 
 # Load and preprocess data
@@ -33,7 +33,7 @@ st.title('AI Model Comparison')
 st.write('This app compares various machine learning and neural network models.')
 
 # Train and evaluate the selected model
-accuracy, report, confusion = train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test)
+accuracy, report, confusion, model = train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test)
 
 # Display results
 st.write(f'## {model_type} Results')
@@ -67,26 +67,18 @@ new_sample = np.array([input_data])
 # Make prediction
 scaler = StandardScaler()
 new_sample_scaled = scaler.fit_transform(new_sample)
-model = train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test)
 if model_type == 'Artificial Neural Network':
     prediction = model.predict(new_sample_scaled)
-elif model_type == 'Convolutional Neural Network':
-    new_sample_scaled = new_sample_scaled.reshape(-1, 2, 2, 1)
-    prediction = model.predict(new_sample_scaled)
+    predicted_class = np.argmax(prediction)
 elif model_type == 'Recurrent Neural Network':
     new_sample_scaled = new_sample_scaled.reshape(-1, 4, 1)
     prediction = model.predict(new_sample_scaled)
+    predicted_class = np.argmax(prediction)
 else:
-    prediction = model.predict(new_sample_scaled)
+    predicted_class = model.predict(new_sample_scaled)[0]
 
-predicted_class = np.argmax(prediction) if model_type in [
-    'Artificial Neural Network', 'Convolutional Neural Network', 'Recurrent Neural Network'
-] else prediction[0]
+class_names = ['Class 0', 'Class 1', 'Class 2']
+predicted_class_name = class_names[predicted_class]
 
-class_names = ['Class 0', 'Class 1', 'Class 2']  # Customize based on your dataset
-st.sidebar.write(f'## Prediction: {class_names[int(predicted_class)]}')
-
-# Visualize model comparison
-results = train_and_evaluate_models()
-st.write('## Model Comparison')
-st.bar_chart(results)
+st.sidebar.write('### Prediction')
+st.sidebar.write(f'The predicted class is: {predicted_class_name}')
