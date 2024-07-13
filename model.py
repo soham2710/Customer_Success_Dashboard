@@ -1,11 +1,8 @@
 import numpy as np
 import pandas as pd
-import cv2
-import os
-import glob
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
@@ -17,13 +14,33 @@ from tensorflow.keras.applications import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
 from tensorflow.keras.layers import GlobalAveragePooling2D
 from tensorflow.keras.models import Model
-from scipy.stats import ttest_ind, chi2_contingency, f_oneway, wilcoxon, mannwhitneyu, kruskal, friedmanchisquare, zscore
+import cv2
+import os
+import gdown
 
-# Define image directory and classes
-IMAGE_DIR = 'images'
-CLASS_NAMES = ['setosa', 'versicolor', 'virginica']
+# Define Google Drive file link
+DRIVE_LINK = 'https://drive.google.com/drive/folders/1SOhtRf0EltGkHJPaip12cAElyV2Z0bsZ?usp=sharing'
+LOCAL_PATH = 'iris_images'  # Directory to store downloaded images
 
-# Load and preprocess numerical data
+# Function to download files from Google Drive
+def download_images():
+    if not os.path.exists(LOCAL_PATH):
+        os.makedirs(LOCAL_PATH)
+    
+    print("Downloading images...")
+    url = DRIVE_LINK
+    output = os.path.join(LOCAL_PATH, "images.zip")
+    gdown.download(url, output, quiet=False, fuzzy=True)
+
+    # Extract the ZIP file
+    import zipfile
+    with zipfile.ZipFile(output, 'r') as zip_ref:
+        zip_ref.extractall(LOCAL_PATH)
+
+# Download images
+download_images()
+
+# Load and preprocess data
 def load_and_preprocess_data():
     iris = load_iris()
     X = iris.data
@@ -37,33 +54,14 @@ def preprocess_data(X, y):
     X_test = scaler.transform(X_test)
     return X_train, X_test, y_train, y_test
 
-# Load and preprocess image data
-def load_and_preprocess_image_data(image_dir):
-    images = []
-    labels = []
-    
-    for label, class_name in enumerate(CLASS_NAMES):
-        class_dir = os.path.join(image_dir, class_name)
-        image_paths = glob.glob(os.path.join(class_dir, '*.png'))
-        
-        for image_path in image_paths:
-            image = cv2.imread(image_path)
-            if image is None:
-                continue
-            image_resized = cv2.resize(image, (224, 224))
-            image_preprocessed = preprocess_input(image_resized)
-            images.append(image_preprocessed)
-            labels.append(label)
-    
-    images = np.array(images)
-    labels = np.array(labels)
-    return images, labels
-
-def preprocess_image_data(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    return X_train, X_test, y_train, y_test
-
 # Define models
+models = {
+    'Logistic Regression': LogisticRegression(),
+    'Naive Bayes': GaussianNB(),
+    'Support Vector Machine': SVC(),
+    'K-Nearest Neighbors': KNeighborsClassifier()
+}
+
 def build_ann():
     model = Sequential()
     model.add(Dense(64, activation='relu', input_shape=(4,)))
@@ -92,15 +90,30 @@ def build_vgg16():
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     return model
 
+# Load images and labels
+def load_images_from_directory(directory):
+    images = []
+    labels = []
+    label_map = {'setosa': 0, 'versicolor': 1, 'virginica': 2}  # Update as needed based on your dataset
+
+    for label_name, label in label_map.items():
+        label_dir = os.path.join(directory, label_name)
+        for filename in os.listdir(label_dir):
+            file_path = os.path.join(label_dir, filename)
+            image = cv2.imread(file_path)
+            if image is not None:
+                image_resized = cv2.resize(image, (224, 224))
+                image_preprocessed = preprocess_input(image_resized)
+                images.append(image_preprocessed)
+                labels.append(label)
+
+    images = np.array(images)
+    labels = np.array(labels)
+    return images, labels
+
 # Train and evaluate models
 def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
-    if model_type in ['Logistic Regression', 'Naive Bayes', 'Support Vector Machine', 'K-Nearest Neighbors']:
-        models = {
-            'Logistic Regression': LogisticRegression(),
-            'Naive Bayes': GaussianNB(),
-            'Support Vector Machine': SVC(),
-            'K-Nearest Neighbors': KNeighborsClassifier()
-        }
+    if model_type in models:
         model = models[model_type]
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
@@ -129,16 +142,20 @@ def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
         confusion = confusion_matrix(y_test, y_pred_classes)
         return model, accuracy, report, confusion
     elif model_type == 'VGG16':
+        X_train_images, y_train_images = load_images_from_directory(LOCAL_PATH)  # Update path accordingly
+        X_test_images, y_test_images = load_images_from_directory(LOCAL_PATH)  # Ideally, use a separate test set
+        
         model = build_vgg16()
-        model.fit(X_train, y_train, epochs=10, verbose=0)
-        loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
-        y_pred = model.predict(X_test)
+        model.fit(X_train_images, y_train_images, epochs=10, verbose=0)
+        loss, accuracy = model.evaluate(X_test_images, y_test_images, verbose=0)
+        y_pred = model.predict(X_test_images)
         y_pred_classes = np.argmax(y_pred, axis=1)
-        report = classification_report(y_test, y_pred_classes, output_dict=True)
-        confusion = confusion_matrix(y_test, y_pred_classes)
+        report = classification_report(y_test_images, y_pred_classes, output_dict=True)
+        confusion = confusion_matrix(y_test_images, y_pred_classes)
         return model, accuracy, report, confusion
 
 def perform_statistical_tests(data):
+    from scipy.stats import ttest_ind, chi2_contingency, f_oneway, wilcoxon, mannwhitneyu, kruskal, friedmanchisquare, zscore
     results = {}
     X, y = data
 
@@ -178,33 +195,44 @@ def perform_statistical_tests(data):
 
 def process_image(image_path):
     image = cv2.imread(image_path)
-    if image is None:
-        raise ValueError("Image not found or unable to load")
     image_resized = cv2.resize(image, (224, 224))
     image_preprocessed = preprocess_input(image_resized)
-    return np.expand_dims(image_preprocessed, axis=0)
+    image_preprocessed = np.expand_dims(image_preprocessed, axis=0)
+    return image_preprocessed
 
-# Example usage
-if __name__ == '__main__':
-    # Numerical data example
-    X, y = load_and_preprocess_data()
-    X_train, X_test, y_train, y_test = preprocess_data(X, y)
-    
-    # Train and evaluate numerical models
-    for model_type in ['Logistic Regression', 'Naive Bayes', 'Support Vector Machine', 'K-Nearest Neighbors', 'Artificial Neural Network', 'Recurrent Neural Network']:
-        model, accuracy, report, confusion = train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test)
-        print(f"{model_type}:\n")
-        print(f"Accuracy: {accuracy:.2f}")
-        print(f"Classification Report:\n{report}")
-        print(f"Confusion Matrix:\n{confusion}\n")
-    
-    # Image data example
-    images, labels = load_and_preprocess_image_data(IMAGE_DIR)
-    X_train_img, X_test_img, y_train_img, y_test_img = preprocess_image_data(images, labels)
-    
-    # Train and evaluate VGG16 on image data
-    model, accuracy, report, confusion = train_and_evaluate_models('VGG16', X_train_img, y_train_img, X_test_img, y_test_img)
-    print("VGG16:\n")
-    print(f"Accuracy: {accuracy:.2f}")
-    print(f"Classification Report:\n{report}")
-    print(f"Confusion Matrix:\n{confusion}\n")
+# Main execution
+X, y = load_and_preprocess_data()
+X_train, X_test, y_train, y_test = preprocess_data(X, y)
+
+# Train and evaluate models
+results = {}
+for model_name in models.keys():
+    model, accuracy, report, confusion = train_and_evaluate_models(model_name, X_train, y_train, X_test, y_test)
+    results[model_name] = {
+        'accuracy': accuracy,
+        'classification_report': report,
+        'confusion_matrix': confusion
+    }
+
+ann_model, ann_accuracy, ann_report, ann_confusion = train_and_evaluate_models('Artificial Neural Network', X_train, y_train, X_test, y_test)
+rnn_model, rnn_accuracy, rnn_report, rnn_confusion = train_and_evaluate_models('Recurrent Neural Network', X_train, y_train, X_test, y_test)
+vgg_model, vgg_accuracy, vgg_report, vgg_confusion = train_and_evaluate_models('VGG16', X_train, y_train, X_test, y_test)
+
+results['Artificial Neural Network'] = {
+    'accuracy': ann_accuracy,
+    'classification_report': ann_report,
+    'confusion_matrix': ann_confusion
+}
+results['Recurrent Neural Network'] = {
+    'accuracy': rnn_accuracy,
+    'classification_report': rnn_report,
+    'confusion_matrix': rnn_confusion
+}
+results['VGG16'] = {
+    'accuracy': vgg_accuracy,
+    'classification_report': vgg_report,
+    'confusion_matrix': vgg_confusion
+}
+
+# Perform statistical tests
+statistical_results = perform_statistical_tests((X, y))
