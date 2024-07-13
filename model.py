@@ -10,6 +10,12 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, SimpleRNN
+from tensorflow.keras.applications import VGG16
+from tensorflow.keras.applications.vgg16 import preprocess_input
+from tensorflow.keras.layers import GlobalAveragePooling2D
+from tensorflow.keras.models import Model
+import cv2
+import os
 
 # Load and preprocess data
 def load_and_preprocess_data():
@@ -49,6 +55,18 @@ def build_rnn():
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     return model
 
+def build_vgg16():
+    base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+    x = base_model.output
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(1024, activation='relu')(x)
+    predictions = Dense(3, activation='softmax')(x)
+    model = Model(inputs=base_model.input, outputs=predictions)
+    for layer in base_model.layers:
+        layer.trainable = False
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    return model
+
 # Train and evaluate models
 def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
     if model_type in models:
@@ -56,18 +74,18 @@ def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
         accuracy = accuracy_score(y_test, y_pred)
-        report = classification_report(y_test, y_pred)
+        report = classification_report(y_test, y_pred, output_dict=True)
         confusion = confusion_matrix(y_test, y_pred)
-        return accuracy, report, confusion, model
+        return model, accuracy, report, confusion
     elif model_type == 'Artificial Neural Network':
         model = build_ann()
         model.fit(X_train, y_train, epochs=10, verbose=0)
         loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
         y_pred = model.predict(X_test)
         y_pred_classes = np.argmax(y_pred, axis=1)
-        report = classification_report(y_test, y_pred_classes)
+        report = classification_report(y_test, y_pred_classes, output_dict=True)
         confusion = confusion_matrix(y_test, y_pred_classes)
-        return accuracy, report, confusion, model
+        return model, accuracy, report, confusion
     elif model_type == 'Recurrent Neural Network':
         X_train_rnn = X_train.reshape(-1, 4, 1)
         X_test_rnn = X_test.reshape(-1, 4, 1)
@@ -76,9 +94,18 @@ def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
         loss, accuracy = model.evaluate(X_test_rnn, y_test, verbose=0)
         y_pred = model.predict(X_test_rnn)
         y_pred_classes = np.argmax(y_pred, axis=1)
-        report = classification_report(y_test, y_pred_classes)
+        report = classification_report(y_test, y_pred_classes, output_dict=True)
         confusion = confusion_matrix(y_test, y_pred_classes)
-        return accuracy, report, confusion, model
+        return model, accuracy, report, confusion
+    elif model_type == 'VGG16':
+        model = build_vgg16()
+        model.fit(X_train, y_train, epochs=10, verbose=0)
+        loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
+        y_pred = model.predict(X_test)
+        y_pred_classes = np.argmax(y_pred, axis=1)
+        report = classification_report(y_test, y_pred_classes, output_dict=True)
+        confusion = confusion_matrix(y_test, y_pred_classes)
+        return model, accuracy, report, confusion
 
 def perform_statistical_tests(data):
     from scipy.stats import ttest_ind, chi2_contingency, f_oneway, wilcoxon, mannwhitneyu, kruskal, friedmanchisquare, zscore
@@ -115,10 +142,13 @@ def perform_statistical_tests(data):
 
     # Perform z-score test
     z_scores = zscore(X)
-    results['z-score test'] = {'z_scores': z_scores}
+    results['z-score test'] = {'z_scores_summary': np.mean(z_scores, axis=0)}
 
     return results
 
-# Dummy function for get_llm_summary (since no LLM interaction provided)
-def get_llm_summary(stat_results):
-    return "LLM summary not implemented."
+def process_image(image_path):
+    image = cv2.imread(image_path)
+    image_resized = cv2.resize(image, (224, 224))
+    image_preprocessed = preprocess_input(image_resized)
+    image_preprocessed = np.expand_dims(image_preprocessed, axis=0)
+    return image_preprocessed
