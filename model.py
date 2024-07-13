@@ -9,14 +9,7 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, SimpleRNN
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.applications import VGG16
-from tensorflow.keras.applications.vgg16 import preprocess_input
-from tensorflow.keras.layers import Input, GlobalAveragePooling2D
-from tensorflow.keras.models import Model
-import openai
-import os
+from tensorflow.keras.layers import Dense, SimpleRNN
 
 # Load and preprocess data
 def load_and_preprocess_data():
@@ -56,18 +49,6 @@ def build_rnn():
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     return model
 
-def build_vgg16():
-    base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-    x = base_model.output
-    x = GlobalAveragePooling2D()(x)
-    x = Dense(1024, activation='relu')(x)
-    predictions = Dense(3, activation='softmax')(x)
-    model = Model(inputs=base_model.input, outputs=predictions)
-    for layer in base_model.layers:
-        layer.trainable = False
-    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    return model
-
 # Train and evaluate models
 def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
     if model_type in models:
@@ -77,7 +58,7 @@ def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
         accuracy = accuracy_score(y_test, y_pred)
         report = classification_report(y_test, y_pred)
         confusion = confusion_matrix(y_test, y_pred)
-        return accuracy, report, confusion
+        return accuracy, report, confusion, model
     elif model_type == 'Artificial Neural Network':
         model = build_ann()
         model.fit(X_train, y_train, epochs=10, verbose=0)
@@ -86,7 +67,7 @@ def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
         y_pred_classes = np.argmax(y_pred, axis=1)
         report = classification_report(y_test, y_pred_classes)
         confusion = confusion_matrix(y_test, y_pred_classes)
-        return accuracy, report, confusion
+        return accuracy, report, confusion, model
     elif model_type == 'Recurrent Neural Network':
         X_train_rnn = X_train.reshape(-1, 4, 1)
         X_test_rnn = X_test.reshape(-1, 4, 1)
@@ -97,16 +78,7 @@ def train_and_evaluate_models(model_type, X_train, y_train, X_test, y_test):
         y_pred_classes = np.argmax(y_pred, axis=1)
         report = classification_report(y_test, y_pred_classes)
         confusion = confusion_matrix(y_test, y_pred_classes)
-        return accuracy, report, confusion
-    elif model_type == 'VGG16':
-        model = build_vgg16()
-        model.fit(X_train, y_train, epochs=10, verbose=0)
-        loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
-        y_pred = model.predict(X_test)
-        y_pred_classes = np.argmax(y_pred, axis=1)
-        report = classification_report(y_test, y_pred_classes)
-        confusion = confusion_matrix(y_test, y_pred_classes)
-        return accuracy, report, confusion
+        return accuracy, report, confusion, model
 
 def perform_statistical_tests(data):
     from scipy.stats import ttest_ind, chi2_contingency, f_oneway, wilcoxon, mannwhitneyu, kruskal, friedmanchisquare, zscore
@@ -146,3 +118,7 @@ def perform_statistical_tests(data):
     results['z-score test'] = {'z_scores': z_scores}
 
     return results
+
+# Dummy function for get_llm_summary (since no LLM interaction provided)
+def get_llm_summary(stat_results):
+    return "LLM summary not implemented."
