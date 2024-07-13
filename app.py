@@ -1,53 +1,30 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from sklearn.datasets import load_iris
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
-from scipy.stats import ttest_ind, chi2_contingency, f_oneway, wilcoxon, mannwhitneyu, kruskal, friedmanchisquare, zscore
+from tensorflow.keras.models import load_model
 import joblib
+from PIL import Image
+import io
+from scipy.stats import ttest_ind, chi2_contingency, f_oneway, wilcoxon, mannwhitneyu, kruskal, friedmanchisquare, zscore
 
 # Load and preprocess data
-iris = load_iris()
-X = iris.data
-y = iris.target
+def load_data():
+    # This function should be replaced with your actual data loading logic
+    iris = load_iris()
+    X = iris.data
+    y = iris.target
+    return X, y, iris
+
+X, y, iris = load_data()
 
 # Standardize the data
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Train models (if not already trained, otherwise load from file)
-def train_models():
-    models = {
-        'Logistic Regression': LogisticRegression(),
-        'Naive Bayes': GaussianNB(),
-        'Support Vector Machine': SVC(),
-        'K-Nearest Neighbors': KNeighborsClassifier()
-    }
-    
-    trained_models = {}
-    for name, model in models.items():
-        model.fit(X_scaled, y)
-        joblib.dump(model, f"{name.replace(' ', '_').lower()}_model.pkl")
-        trained_models[name] = model
-    return trained_models
-
-try:
-    logistic_regression_model = joblib.load("logistic_regression_model.pkl")
-    naive_bayes_model = joblib.load("naive_bayes_model.pkl")
-    svm_model = joblib.load("support_vector_machine_model.pkl")
-    knn_model = joblib.load("k_nearest_neighbors_model.pkl")
-    trained_models = {
-        'Logistic Regression': logistic_regression_model,
-        'Naive Bayes': naive_bayes_model,
-        'Support Vector Machine': svm_model,
-        'K-Nearest Neighbors': knn_model
-    }
-except:
-    trained_models = train_models()
+# Load pre-trained models
+cnn_model = load_model('model.h5')
+best_model = joblib.load('best_model.pkl')  # Replace with the correct model loading logic
 
 # Perform statistical tests
 def perform_statistical_tests(X, y):
@@ -108,15 +85,29 @@ input_df = user_input_features()
 # Preprocess user input
 input_scaled = scaler.transform(input_df)
 
-# Display predictions
-st.subheader('Predictions')
-for name, model in trained_models.items():
-    prediction = model.predict(input_scaled)
-    prediction_proba = model.predict_proba(input_scaled)
-    st.write(f"{name} Prediction: {iris.target_names[prediction][0]}")
-    st.write(f"{name} Prediction Probability: {prediction_proba}")
+# Display CNN model predictions
+st.subheader('CNN Model Prediction')
+uploaded_image = st.file_uploader("Upload an image of an iris flower", type=["jpg", "jpeg", "png"])
+if uploaded_image is not None:
+    image = Image.open(uploaded_image).convert('RGB')
+    image = image.resize((64, 64))  # Resize to the size expected by your CNN
+    image_array = np.array(image) / 255.0
+    image_array = np.expand_dims(image_array, axis=0)
+    cnn_prediction = cnn_model.predict(image_array)
+    cnn_class = np.argmax(cnn_prediction, axis=1)
+    st.write(f"CNN Model Prediction: {iris.target_names[cnn_class[0]]}")
+
+# Display best model predictions
+st.subheader('Best Model Predictions')
+best_prediction = best_model.predict(input_scaled)
+best_prediction_proba = best_model.predict_proba(input_scaled)
+st.write(f"Best Model Prediction: {iris.target_names[best_prediction][0]}")
+st.write(f"Best Model Prediction Probability: {best_prediction_proba}")
 
 # Display statistical test results
 st.subheader('Statistical Test Results')
-test_results = perform_statistical_tests(X, y)
-st.write(test_results)
+if st.button('Show Statistical Tests'):
+    test_results = perform_statistical_tests(X, y)
+    st.write(test_results)
+
+# To run the app, use the command: streamlit run app.py
