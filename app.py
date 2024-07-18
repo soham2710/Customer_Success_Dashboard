@@ -269,16 +269,33 @@ def main():
     st.sidebar.title("Navigation")
     profile_summary()  # Add profile summary at the top
 
-    # Create buttons for each navigation option
-    if st.sidebar.button("Introduction"):
+    # Create a list of pages
+    pages = [
+        "Introduction",
+        "Predictive Analytics",
+        "Articles",
+        "Showcase Cards",
+        "Customer Journey Mapping and Optimization"
+    ]
+
+    # Add links for each page
+    for page in pages:
+        if st.sidebar.button(page):
+            st.session_state.page = page
+
+    # Determine which page to display
+    if "page" not in st.session_state:
+        st.session_state.page = "Introduction"
+
+    if st.session_state.page == "Introduction":
         introduction_page()
-    elif st.sidebar.button("Predictive Analytics"):
+    elif st.session_state.page == "Predictive Analytics":
         predictive_analytics_page()
-    elif st.sidebar.button("Articles"):
+    elif st.session_state.page == "Articles":
         articles_page()
-    elif st.sidebar.button("Showcase Cards"):
+    elif st.session_state.page == "Showcase Cards":
         showcase_cards_page()
-    elif st.sidebar.button("Customer Journey Mapping and Optimization"):
+    elif st.session_state.page == "Customer Journey Mapping and Optimization":
         customer_journey_page()
 
 if __name__ == "__main__":
