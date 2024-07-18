@@ -12,325 +12,13 @@ sys.path.insert(0, './')  # Adjust the path as needed
 # Page configuration
 st.set_page_config(page_title="Customer Success App", layout="wide")
 
+from model import (
+    simulate_predictive_analytics_data,
+    train_model,
+    train_email_template_model,
+    suggest_email_template
+)
 
-def simulate_customer_data(num_customers):
-    np.random.seed(42)
-    ages = np.random.randint(18, 70, size=num_customers)
-    incomes = np.random.randint(20000, 120000, size=num_customers)
-    credit_scores = np.random.randint(300, 850, size=num_customers)
-    purchases = np.random.randint(1, 20, size=num_customers)
-    churn_risks = np.random.randint(0, 2, size=num_customers)
-    nps_scores = np.random.randint(0, 100, size=num_customers)
-    retention_rates = np.random.uniform(50, 100, size=num_customers)
-
-    data = pd.DataFrame({
-        'CustomerID': range(1, num_customers + 1),
-        'Age': ages,
-        'Annual Income (USD)': incomes,
-        'Credit Score': credit_scores,
-        'Previous Purchases': purchases,
-        'Churn Risk': churn_risks,
-        'NPS Score': nps_scores,
-        'Retention Rate (%)': retention_rates
-    })
-
-    return data
-
-import streamlit as st
-import pandas as pd
-import numpy as np
-import pickle
-import plotly.express as px
-from model import select_email_template  # Import the email template selection function
-
-# Load the trained model and label encoder
-@st.cache_resource
-def load_model():
-    with open('email_template_model.pkl', 'rb') as f:
-        model = pickle.load(f)
-    with open('label_encoder.pkl', 'rb') as f:
-        label_encoder = pickle.load(f)
-    return model, label_encoder
-
-model, label_encoder = load_model()
-
-# Function to suggest the email template using the model
-def suggest_email_template(churn_risk, nps_score, retention_rate):
-    features = np.array([[churn_risk, nps_score, retention_rate]])
-    predicted_index = model.predict(features)[0]
-    predicted_template = label_encoder.inverse_transform([predicted_index])[0]
-    return predicted_template
-
-# Function to simulate customer data
-def simulate_customer_data(num_customers):
-    np.random.seed(42)
-    ages = np.random.randint(18, 70, size=num_customers)
-    incomes = np.random.randint(20000, 120000, size=num_customers)
-    credit_scores = np.random.randint(300, 850, size=num_customers)
-    purchases = np.random.randint(1, 20, size=num_customers)
-    churn_risks = np.random.randint(0, 2, size=num_customers)
-    nps_scores = np.random.randint(0, 100, size=num_customers)
-    retention_rates = np.random.uniform(50, 100, size=num_customers)
-
-    data = pd.DataFrame({
-        'CustomerID': range(1, num_customers + 1),
-        'Age': ages,
-        'Annual Income (USD)': incomes,
-        'Credit Score': credit_scores,
-        'Previous Purchases': purchases,
-        'Churn Risk': churn_risks,
-        'NPS Score': nps_scores,
-        'Retention Rate (%)': retention_rates
-    })
-
-    return data
-
-# Streamlit UI
-def predictive_analytics_page():
-    st.title("Customer Success Management - Predictive Analytics")
-
-    st.write("""
-        Predictive analytics uses historical data and statistical algorithms to predict future outcomes. It helps businesses make data-driven decisions and anticipate customer needs.
-
-        **Key Features:**
-        - **Age**: Customer's age.
-        - **Annual Income (USD)**: Customer's yearly income.
-        - **Credit Score**: Customer's credit score.
-        - **Previous Purchases**: Number of past purchases.
-        - **Churn Risk**: Likelihood of customer churn (0: Low Risk, 1: High Risk).
-        - **NPS Score**: Net Promoter Score, indicating customer satisfaction.
-        - **Retention Rate (%)**: Percentage of customers retained over a period.
-
-        Predictive analytics can help in identifying high-risk customers, targeting potential upsell opportunities, and optimizing marketing strategies.
-    """)
-
-    num_customers = st.number_input("Number of Customers", min_value=1, value=100)
-    analytics_data = simulate_customer_data(num_customers)
-
-    st.subheader("Simulated Predictive Analytics Data")
-    st.dataframe(analytics_data)
-
-    st.subheader("Predictive Analysis")
-
-    # Visualization of Churn Risk by Age
-    fig_age_churn = px.scatter(
-        analytics_data,
-        x='Age',
-        y='Churn Risk',
-        color='Churn Risk',
-        title='Churn Risk by Age',
-        labels={'Churn Risk': 'Churn Risk (0: Low, 1: High)'},
-        color_continuous_scale='Viridis'
-    )
-    st.plotly_chart(fig_age_churn, use_container_width=True)
-
-    # Visualization of Annual Income vs. Credit Score
-    fig_income_credit = px.scatter(
-        analytics_data,
-        x='Annual Income (USD)',
-        y='Credit Score',
-        color='Churn Risk',
-        title='Annual Income vs. Credit Score',
-        labels={'Churn Risk': 'Churn Risk (0: Low, 1: High)'},
-        color_continuous_scale='Blues'
-    )
-    st.plotly_chart(fig_income_credit, use_container_width=True)
-
-    # Visualization of Churn Risk Distribution
-    fig_churn_distribution = px.histogram(
-        analytics_data,
-        x='Churn Risk',
-        title='Distribution of Churn Risk',
-        labels={'Churn Risk': 'Churn Risk (0: Low, 1: High)'}
-    )
-    st.plotly_chart(fig_churn_distribution, use_container_width=True)
-
-    # User Selection for Detailed Analysis
-    st.subheader("Select Customer for Detailed Analysis")
-    selected_customer = st.selectbox("Select Customer", analytics_data['CustomerID'])
-    selected_data = analytics_data[analytics_data['CustomerID'] == selected_customer].iloc[0]
-
-    st.write(f"**Selected Customer Data:**")
-    st.write(f"Age: {selected_data['Age']}")
-    st.write(f"Annual Income: ${selected_data['Annual Income (USD)']}")
-    st.write(f"Credit Score: {selected_data['Credit Score']}")
-    st.write(f"Previous Purchases: {selected_data['Previous Purchases']}")
-    st.write(f"Churn Risk: {'High Risk' if selected_data['Churn Risk'] == 1 else 'Low Risk'}")
-    st.write(f"NPS Score: {selected_data['NPS Score']}")
-    st.write(f"Retention Rate: {selected_data['Retention Rate (%)']}%")
-
-    # Generate Email Templates
-    st.subheader("Generate Email Template")
-    email_templates = select_email_template(
-        selected_data['Churn Risk'],
-        selected_data['NPS Score'],
-        selected_data['Retention Rate (%)']
-    )
-
-    st.write("**Suggested Email Templates:**")
-    for template in email_templates:
-        st.write(f"**Subject:** {template['Subject']}")
-        st.write(f"**Body:** {template['Body']}")
-        st.write("---")
-
-# Main function to control the Streamlit app
-def main():
-    st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ["Predictive Analytics", "Suggest Email Template"])
-
-    if page == "Predictive Analytics":
-        predictive_analytics_page()
-    elif page == "Suggest Email Template":
-        st.title("Email Template Suggestion")
-        
-        churn_risk = st.slider("Churn Risk (0 or 1)", 0, 1, 0)
-        nps_score = st.slider("NPS Score", 0, 100, 50)
-        retention_rate = st.slider("Retention Rate (%)", 0, 100, 75)
-        
-        if st.button("Suggest Relevant Email Template"):
-            suggested_template = suggest_email_template(churn_risk, nps_score, retention_rate)
-            st.subheader("Suggested Email Template")
-            st.write(f"**Template:** {suggested_template}")
-
-            # Display the full email template content
-            email_templates = {
-                "Welcome Email": {
-                    "Subject": "Welcome to [Company Name]!",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    Welcome to [Company Name]! We are excited to have you on board. If you have any questions or need assistance, feel free to reach out to us. 
-
-                    Best regards,
-                    The [Company Name] Team
-                    """
-                },
-                "New Feature Announcement": {
-                    "Subject": "Check Out Our New Feature!",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    We are thrilled to announce a new feature in [Product/Service Name]! This feature will help you [briefly describe the benefit]. 
-
-                    Explore it today and let us know your feedback!
-
-                    Best,
-                    The [Company Name] Team
-                    """
-                },
-                "Engagement Follow-Up": {
-                    "Subject": "We Miss You at [Company Name]!",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    We noticed that it's been a while since you last engaged with us. We would love to hear your thoughts and help you with anything you need.
-
-                    Looking forward to your return!
-
-                    Cheers,
-                    The [Company Name] Team
-                    """
-                },
-                "Customer Feedback Request": {
-                    "Subject": "Your Feedback Matters to Us",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    We value your feedback and would appreciate if you could take a few minutes to share your thoughts on our recent [product/service]. Your input will help us improve and serve you better.
-
-                    Thank you,
-                    The [Company Name] Team
-                    """
-                },
-                "Special Offer": {
-                    "Subject": "Exclusive Offer Just for You!",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    As a valued customer, we're excited to offer you an exclusive [discount/offer]. Don't miss out on this special deal!
-
-                    Use code [OFFER CODE] at checkout.
-
-                    Best regards,
-                    The [Company Name] Team
-                    """
-                },
-                "Reminder Email": {
-                    "Subject": "Reminder: [Action Required]",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    Just a friendly reminder to [action required]. We want to make sure you don’t miss out on [benefit or important date].
-
-                    Thank you,
-                    The [Company Name] Team
-                    """
-                },
-                "Thank You Email": {
-                    "Subject": "Thank You for Your Purchase!",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    Thank you for your recent purchase of [Product/Service]. We hope you are satisfied with your purchase. 
-
-                    If you need any assistance, please do not hesitate to contact us.
-
-                    Warm regards,
-                    The [Company Name] Team
-                    """
-                },
-                "Churn Prevention": {
-                    "Subject": "We’re Here to Help",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    We noticed that you haven't been using [Product/Service] recently. Is there anything we can assist you with? We value your business and want to ensure you're getting the most out of our services.
-
-                    Please let us know how we can help.
-
-                    Best,
-                    The [Company Name] Team
-                    """
-                },
-                "Renewal Reminder": {
-                    "Subject": "Your Subscription is About to Expire",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    This is a reminder that your subscription to [Product/Service] is about to expire on [Expiration Date]. 
-
-                    Renew now to continue enjoying uninterrupted service.
-
-                    Thank you,
-                    The [Company Name] Team
-                    """
-                },
-                "Customer Appreciation": {
-                    "Subject": "We Appreciate You!",
-                    "Body": """
-                    Hi [Customer Name],
-
-                    We just wanted to take a moment to say thank you for being a loyal customer. We appreciate your support and look forward to continuing to serve you.
-
-                    Best wishes,
-                    The [Company Name] Team
-                    """
-                }
-            }
-
-            # Display the full email content
-            if suggested_template:
-                template_details = email_templates.get(suggested_template)
-                if template_details:
-                    st.write(f"**Subject:** {template_details['Subject']}")
-                    st.write(f"**Body:** {template_details['Body']}")
-                    st.write("---")
-
-if __name__ == "__main__":
-    main()
-
-
-'''# Predictive Analytics Page
 def predictive_analytics_page():
     st.title("Predictive Analytics")
     st.write("""
@@ -349,7 +37,7 @@ def predictive_analytics_page():
     """)
 
     num_customers = st.number_input("Number of Customers", min_value=1, value=100)
-    analytics_data = simulate_customer_data(num_customers)
+    analytics_data = simulate_predictive_analytics_data(num_customers)
 
     st.subheader("Simulated Predictive Analytics Data")
     st.dataframe(analytics_data)
@@ -363,74 +51,57 @@ def predictive_analytics_page():
         y='Churn Risk',
         color='Churn Risk',
         title='Churn Risk by Age',
-        labels={'Churn Risk': 'Churn Risk (0: Low, 1: High)'},
-        color_continuous_scale='Viridis'
+        labels={'Churn Risk': 'Churn Risk (0: Low Risk, 1: High Risk)'}
     )
-    st.plotly_chart(fig_age_churn, use_container_width=True)
+    st.plotly_chart(fig_age_churn)
 
-    # Visualization of Annual Income vs. Credit Score
-    fig_income_credit = px.scatter(
+    # Visualization of NPS Score by Retention Rate
+    fig_nps_retention = px.scatter(
         analytics_data,
-        x='Annual Income (USD)',
-        y='Credit Score',
+        x='NPS Score',
+        y='Retention Rate (%)',
         color='Churn Risk',
-        title='Annual Income vs. Credit Score',
-        labels={'Churn Risk': 'Churn Risk (0: Low, 1: High)'},
-        color_continuous_scale='Blues'
+        title='NPS Score vs. Retention Rate',
+        labels={'Retention Rate (%)': 'Retention Rate (%)'}
     )
-    st.plotly_chart(fig_income_credit, use_container_width=True)
+    st.plotly_chart(fig_nps_retention)
 
-    # Visualization of Churn Risk Distribution
-    fig_churn_distribution = px.histogram(
-        analytics_data,
-        x='Churn Risk',
-        title='Distribution of Churn Risk',
-        labels={'Churn Risk': 'Churn Risk (0: Low, 1: High)'}
-    )
-    st.plotly_chart(fig_churn_distribution, use_container_width=True)
+    # Model Training Section
+    if st.button("Train Model"):
+        model_data = simulate_predictive_analytics_data(num_customers)
+        trained_model = train_model(model_data)
+        st.success("Model trained successfully!")
 
-    # User Selection for Analysis
-    st.subheader("Select Customer for Detailed Analysis")
-    selected_customer = st.selectbox("Select Customer", analytics_data['CustomerID'])
-    selected_data = analytics_data[analytics_data['CustomerID'] == selected_customer].iloc[0]
+    if st.button("Train Email Template Model"):
+        email_template_data = pd.DataFrame({
+            'Churn Risk': np.random.choice([0, 1], num_customers),
+            'NPS Score': np.random.randint(-100, 101, num_customers),
+            'Retention Rate (%)': np.random.uniform(50, 100, num_customers),
+            'Email Template': np.random.choice(email_templates.keys(), num_customers)
+        })
+        trained_email_model = train_email_template_model(email_template_data)
+        st.success("Email Template Model trained successfully!")
 
-    st.write(f"**Selected Customer Data:**")
-    st.write(f"Age: {selected_data['Age']}")
-    st.write(f"Annual Income: ${selected_data['Annual Income (USD)']}")
-    st.write(f"Credit Score: {selected_data['Credit Score']}")
-    st.write(f"Previous Purchases: {selected_data['Previous Purchases']}")
-    st.write(f"Churn Risk: {'High Risk' if selected_data['Churn Risk'] == 1 else 'Low Risk'}")
-    st.write(f"NPS Score: {selected_data['NPS Score']}")
-    st.write(f"Retention Rate: {selected_data['Retention Rate (%)']}%")
+def email_template_suggestion_page():
+    st.title("Email Template Suggestion")
+    churn_risk = st.selectbox("Churn Risk", [0, 1])
+    nps_score = st.slider("NPS Score", -100, 100)
+    retention_rate = st.slider("Retention Rate (%)", 0, 100)
 
-    # Generate Email Templates
-    st.subheader("Generate Email Template")
-    email_templates = generate_email_templates(
-        selected_data['Age'],
-        selected_data['Annual Income (USD)'],
-        selected_data['Credit Score'],
-        selected_data['Churn Risk'],
-        selected_data['NPS Score'],
-        selected_data['Retention Rate (%)']
-    )
-    
-    for i, template in enumerate(email_templates, 1):
-        st.write(f"### Email Template {i}")
-        st.write(template)
+    if st.button("Suggest Relevant Email Template"):
+        suggested_template = suggest_email_template(churn_risk, nps_score, retention_rate)
+        st.write(f"**Suggested Email Template:** {suggested_template}")
+        st.write(email_templates[suggested_template])
 
-    # Optimization Suggestions
-    st.subheader("Optimization Suggestions")
-    st.write("""
-        Based on the predictive analytics data, here are some suggestions for optimizing customer engagement:
+# Streamlit app
+if __name__ == "__main__":
+    st.sidebar.title("Navigation")
+    page = st.sidebar.radio("Select a Page", ["Predictive Analytics", "Email Template Suggestion"])
 
-        - **High Churn Risk Customers**: Implement retention strategies such as personalized offers or proactive support.
-        - **Low Credit Score**: Consider offering financial advice or improved payment options to enhance customer satisfaction.
-        - **Frequent Purchasers**: Develop loyalty programs to reward frequent shoppers and encourage repeat business.
-        - **Income-Based Targeting**: Customize marketing strategies based on income levels to better meet customer needs.
-        - **NPS Score**: Address negative feedback and work to improve customer satisfaction. Use positive feedback to enhance marketing efforts.
-
-        By leveraging predictive analytics, you can tailor your approach to effectively address customer needs and improve business outcomes.
-    """)'''
+    if page == "Predictive Analytics":
+        predictive_analytics_page()
+    elif page == "Email Template Suggestion":
+        email_template_suggestion_page()
 
 
 #--------------------------------
