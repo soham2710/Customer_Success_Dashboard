@@ -131,6 +131,7 @@ email_templates = {
     }
 }
 
+
 # Function to simulate predictive analytics data
 def simulate_predictive_analytics_data(num_customers=100):
     data = {
@@ -159,7 +160,6 @@ def train_model(data):
 
 # Function to train email template prediction model
 def train_email_template_model(data):
-    # Encode the target variable (Email Template)
     label_encoder = LabelEncoder()
     data['Email Template Encoded'] = label_encoder.fit_transform(data['Email Template'])
 
@@ -171,7 +171,6 @@ def train_email_template_model(data):
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 
-    # Save the trained model and label encoder
     with open('email_template_model.pkl', 'wb') as f:
         pickle.dump(model, f)
 
@@ -180,20 +179,16 @@ def train_email_template_model(data):
 
     return model
 
-# Function to predict the email template
+# Function to suggest the email template
 def suggest_email_template(churn_risk, nps_score, retention_rate):
-    # Load the trained model and label encoder
     with open('email_template_model.pkl', 'rb') as f:
         model = pickle.load(f)
     
     with open('label_encoder.pkl', 'rb') as f:
         label_encoder = pickle.load(f)
     
-    # Predict the email template
     features = np.array([[churn_risk, nps_score, retention_rate]])
     predicted_index = model.predict(features)[0]
-    
-    # Decode the predicted template
     predicted_template = label_encoder.inverse_transform([predicted_index])[0]
     
     return predicted_template
