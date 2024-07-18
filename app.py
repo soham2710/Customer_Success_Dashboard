@@ -240,49 +240,30 @@ def customer_journey_page():
     """)
 
 
-
 import streamlit as st
+from PIL import Image
 import requests
+from io import BytesIO
 
-def add_custom_css():
-    st.markdown(
-        """
-        <style>
-        /* Sidebar styling */
-        .css-1d391kg {  /* Sidebar container */
-            background-color: #f5f5f5;  /* Background color */
-            padding: 20px;  /* Padding */
-        }
-        .css-1d391kg .css-1v0mbdj {  /* Sidebar title */
-            color: #333;  /* Text color */
-            font-size: 20px;  /* Font size */
-            font-weight: bold;  /* Font weight */
-        }
-        .css-1d391kg .css-1m8z4rf {  /* Sidebar links */
-            color: #007bff;  /* Link color */
-            text-decoration: none;  /* Remove underline */
-        }
-        .css-1d391kg .css-1m8z4rf:hover {  /* Hover effect */
-            text-decoration: underline;
-        }
-        /* Custom button styling */
-        .css-1kp0b9p {
-            background-color: #007bff;  /* Button background color */
-            color: white;  /* Button text color */
-        }
-        .css-1kp0b9p:hover {
-            background-color: #0056b3;  /* Button hover color */
-        }
-        </style>
-        """, unsafe_allow_html=True
-    )
-
+# Function to display the profile summary and other sidebar elements
 def profile_summary():
-    st.sidebar.title("Profile Summary")
-    st.sidebar.write("Your profile summary goes here.")
+    st.sidebar.title("Profile")
     
-    # Add a download button for the resume
-    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
+    # Display profile image
+    image_url = "https://your-image-url.com/profile_image.jpg"  # Replace with your image URL
+    response = requests.get(image_url)
+    img = Image.open(BytesIO(response.content))
+    st.sidebar.image(img, width=100)
+    
+    # Display profile summary
+    st.sidebar.markdown("""
+    **Profile Summary**
+
+    I am an experienced AI and data science professional with over 8 years in the IT industry. My expertise spans product management, technical training, and customer success. I hold a Bachelor's degree in Aircraft Maintenance Engineering and am pursuing a PG Diploma in Applied Statistics. Skilled in Python, AWS, and AI tools, I focus on delivering innovative, scalable solutions to drive business growth.
+    """)
+    
+    # Download resume button
+    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"  # Replace with your resume URL
     st.sidebar.download_button(
         label="Download Resume",
         data=requests.get(resume_url).content,
@@ -290,54 +271,48 @@ def profile_summary():
         mime="application/pdf"
     )
     
-    # Add social media links with icons
-    st.sidebar.title("Connect with Me")
-    social_links = {
-        "LinkedIn": "https://www.linkedin.com/in/your-profile/",
-        "GitHub": "https://github.com/your-profile/"
-    }
-
-    icons = {
-        "LinkedIn": "🔗",
-        "GitHub": "🐙"
-    }
-
-    for platform, url in social_links.items():
-        st.sidebar.markdown(f"{icons[platform]} [ {platform} ]({url})", unsafe_allow_html=True)
-
-def main():
-    add_custom_css()  # Apply custom CSS
-    st.sidebar.title("Navigation")
+    # Social media links with icons
+    st.sidebar.markdown("**Connect with Me**")
+    st.sidebar.markdown("[![LinkedIn](https://img.icons8.com/ios-filled/50/000000/linkedin.png)](https://www.linkedin.com/in/yourprofile) LinkedIn")
+    st.sidebar.markdown("[![GitHub](https://img.icons8.com/ios-filled/50/000000/github.png)](https://github.com/yourprofile) GitHub")
     
-    # Navigation options with icons
-    st.sidebar.markdown("""
-    - 🏠 [Introduction](#Introduction)
-    - 📊 [Predictive Analytics](#Predictive-Analytics)
-    - 📄 [Articles](#Articles)
-    - 🖼️ [Showcase Cards](#Showcase-Cards)
-    - 🗺️ [Customer Journey Mapping and Optimization](#Customer-Journey-Mapping-and-Optimization)
-    """, unsafe_allow_html=True)
+    # Navigation with icons
+    st.sidebar.title("Navigation")
+    pages = {
+        "Introduction": "introduction_page",
+        "Predictive Analytics": "predictive_analytics_page",
+        "Articles": "articles_page",
+        "Showcase Cards": "showcase_cards_page",
+        "Customer Journey Mapping and Optimization": "customer_journey_page"
+    }
+    
+    icons = {
+        "Introduction": "https://img.icons8.com/ios-filled/50/000000/home.png",
+        "Predictive Analytics": "https://img.icons8.com/ios-filled/50/000000/analytics.png",
+        "Articles": "https://img.icons8.com/ios-filled/50/000000/article.png",
+        "Showcase Cards": "https://img.icons8.com/ios-filled/50/000000/cards.png",
+        "Customer Journey Mapping and Optimization": "https://img.icons8.com/ios-filled/50/000000/map.png"
+    }
+    
+    for page, func in pages.items():
+        st.sidebar.markdown(f"- [{page}]({func}) ![icon]({icons[page]})")
 
-    # Define the page selection
-    page = st.sidebar.radio("Choose a Page", [
-        "Introduction",
-        "Predictive Analytics",
-        "Articles",
-        "Showcase Cards",
-        "Customer Journey Mapping and Optimization"
-    ])
-
-    # Page selection logic
-    if page == "Introduction":
-        introduction_page()
-    elif page == "Predictive Analytics":
-        predictive_analytics_page()
-    elif page == "Articles":
-        articles_page()
-    elif page == "Showcase Cards":
-        showcase_cards_page()
-    elif page == "Customer Journey Mapping and Optimization":
-        customer_journey_page()
+# Main function to call the profile_summary function and handle page navigation
+def main():
+    st.sidebar.title("Navigation")
+    profile_summary()  # Add profile summary at the top
+    
+    # Page selection
+    pages = {
+        "Introduction": introduction_page,
+        "Predictive Analytics": predictive_analytics_page,
+        "Articles": articles_page,
+        "Showcase Cards": showcase_cards_page,
+        "Customer Journey Mapping and Optimization": customer_journey_page
+    }
+    
+    selected_option = st.sidebar.selectbox("Choose a Page", list(pages.keys()))
+    pages[selected_option]()
 
 if __name__ == "__main__":
     main()
