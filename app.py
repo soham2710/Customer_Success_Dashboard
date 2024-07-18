@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 # Page configuration
-st.set_page_config(page_title="Customer Success App", layout="wide")
+st.set_page_config(page_title="Customer Success App", layout='wide')
 
 # Function to simulate customer data
 def simulate_customer_data(num_customers):
@@ -176,15 +176,30 @@ def predictive_analytics_page():
     st.subheader("Email Template")
     st.code(generate_email_templates('Yes' if prediction > 0.5 else 'No', selected_template), language='markdown')
 
-# Main app logic
-def main():
-    st.sidebar.title("Navigation")
-    selection = st.sidebar.radio("Go to", ["Customer Journey Mapping", "Predictive Analytics Playbooks"])
+# Introduction Page
+def introduction_page():
+    st.title("Introduction to the Customer Success Manager (CSM) Dashboard App")
+    st.markdown("""
+                This dashboard app provides tools and insights for Customer Success Managers (CSMs) to optimize customer interactions and drive business outcomes. It integrates predictive analytics to forecast customer needs and recommends personalized engagement strategies. The app includes two main functionalities:
+                
+                - **Customer Journey Mapping and Optimization**: Visualize and analyze customer journeys to improve touchpoint effectiveness.
+                - **Predictive Analytics Playbooks**: Develop dynamic playbooks based on predictive models to enhance customer success efforts.
+                
+                For detailed usage instructions and additional features, please refer to the README file.
+                """)
 
-    if selection == "Customer Journey Mapping":
-        customer_journey_page()
-    elif selection == "Predictive Analytics Playbooks":
-        predictive_analytics_page()
+# Main function to run the app
+def main():
+    pages = {
+        "Introduction": introduction_page,
+        "Customer Journey Mapping": customer_journey_page,
+        "Predictive Analytics Playbooks": predictive_analytics_page
+    }
+
+    st.sidebar.title("Navigation")
+    selection = st.sidebar.radio("Go to", list(pages.keys()))
+
+    pages[selection]()
 
 if __name__ == "__main__":
     main()
