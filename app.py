@@ -4,18 +4,14 @@ import numpy as np
 import plotly.express as px
 import sys
 import requests
+from model import train_model, simulate_customer_data, predict_needs, generate_email_templates, simulate_predictive_analytics_data, select_email_template
+
 # Add the directory containing model.py to Python path if necessary
 sys.path.insert(0, './')  # Adjust the path as needed
-
-from model import train_model, simulate_customer_data, predict_needs, generate_email_templates
 
 # Page configuration
 st.set_page_config(page_title="Customer Success App", layout="wide")
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-from model import simulate_predictive_analytics_data, select_email_template
 
 def simulate_customer_data(num_customers):
     np.random.seed(42)
