@@ -1,113 +1,57 @@
 import streamlit as st
-import numpy as np
 import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from tensorflow.keras.models import load_model
-import joblib
-from PIL import Image
-import io
-from scipy.stats import ttest_ind, chi2_contingency, f_oneway, wilcoxon, mannwhitneyu, kruskal, friedmanchisquare, zscore
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
 
-# Load and preprocess data
-def load_data():
-    # This function should be replaced with your actual data loading logic
-    iris = load_iris()
-    X = iris.data
-    y = iris.target
-    return X, y, iris
+# Sample Data
+data = {
+    'Feature1': np.random.rand(100),
+    'Feature2': np.random.rand(100),
+    'Needs': np.random.randint(0, 2, 100)
+}
+df = pd.DataFrame(data)
 
-X, y, iris = load_data()
+# Streamlit App
+st.title("Customer Success Playbooks Using Predictive Analytics")
 
-# Standardize the data
+st.header("Customer Data")
+st.write(df.head())
+
+st.header("Predictive Model")
+
+# Preprocess Data
+X = df[['Feature1', 'Feature2']]
+y = df['Needs']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-# Load pre-trained models
-cnn_model = load_model('model.h5')
-best_model = joblib.load('best_model.pkl')  # Replace with the correct model loading logic
+# Build TensorFlow Model
+model = Sequential([
+    Dense(10, input_shape=(2,), activation='relu'),
+    Dense(1, activation='sigmoid')
+])
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-# Perform statistical tests
-def perform_statistical_tests(X, y):
-    results = {}
+# Train Model
+model.fit(X_train_scaled, y_train, epochs=50, verbose=0, validation_data=(X_test_scaled, y_test))
 
-    # Perform t-test
-    t_stat, t_p = ttest_ind(X[y == 0], X[y == 1], axis=0)
-    results['t-test'] = {'t_stat': t_stat, 'p_value': t_p}
+st.subheader("Model Performance")
+loss, accuracy = model.evaluate(X_test_scaled, y_test)
+st.write(f"Test Accuracy: {accuracy:.2f}")
 
-    # Perform chi-squared test
-    chi2_stat, chi2_p, _, _ = chi2_contingency(pd.crosstab(y, X[:, 0]))
-    results['chi-squared test'] = {'chi2_stat': chi2_stat, 'p_value': chi2_p}
+st.subheader("Predict Needs")
+features = st.sidebar.slider("Features", 0.0, 1.0, (0.5, 0.5))
+prediction = model.predict(np.array([features]))
+st.write(f"Predicted Need: {'Yes' if prediction > 0.5 else 'No'}")
 
-    # Perform ANOVA
-    anova_stat, anova_p = f_oneway(X[y == 0], X[y == 1], X[y == 2])
-    results['ANOVA'] = {'anova_stat': anova_stat, 'p_value': anova_p}
-
-    # Perform Wilcoxon test
-    wilcoxon_stat, wilcoxon_p = wilcoxon(X[y == 0, 0], X[y == 1, 0])
-    results['Wilcoxon test'] = {'wilcoxon_stat': wilcoxon_stat, 'p_value': wilcoxon_p}
-
-    # Perform Mann-Whitney U test
-    mannwhitney_stat, mannwhitney_p = mannwhitneyu(X[y == 0, 0], X[y == 1, 0])
-    results['Mann-Whitney U test'] = {'mannwhitney_stat': mannwhitney_stat, 'p_value': mannwhitney_p}
-
-    # Perform Kruskal-Wallis test
-    kruskal_stat, kruskal_p = kruskal(X[y == 0], X[y == 1], X[y == 2])
-    results['Kruskal-Wallis test'] = {'kruskal_stat': kruskal_stat, 'p_value': kruskal_p}
-
-    # Perform Friedman test
-    friedman_stat, friedman_p = friedmanchisquare(X[y == 0, 0], X[y == 1, 0], X[y == 2, 0])
-    results['Friedman test'] = {'friedman_stat': friedman_stat, 'p_value': friedman_p}
-
-    # Calculate z-scores
-    z_scores = zscore(X, axis=0)
-    results['Z-scores'] = z_scores
-
-    return results
-
-# Streamlit UI
-st.title("Iris Species Prediction and Statistical Analysis")
-
-st.sidebar.header("User Input Parameters")
-def user_input_features():
-    sepal_length = st.sidebar.slider('Sepal length', float(iris.data[:, 0].min()), float(iris.data[:, 0].max()), float(iris.data[:, 0].mean()))
-    sepal_width = st.sidebar.slider('Sepal width', float(iris.data[:, 1].min()), float(iris.data[:, 1].max()), float(iris.data[:, 1].mean()))
-    petal_length = st.sidebar.slider('Petal length', float(iris.data[:, 2].min()), float(iris.data[:, 2].max()), float(iris.data[:, 2].mean()))
-    petal_width = st.sidebar.slider('Petal width', float(iris.data[:, 3].min()), float(iris.data[:, 3].max()), float(iris.data[:, 3].mean()))
-    data = {'sepal_length': sepal_length,
-            'sepal_width': sepal_width,
-            'petal_length': petal_length,
-            'petal_width': petal_width}
-    features = pd.DataFrame(data, index=[0])
-    return features
-
-input_df = user_input_features()
-
-# Preprocess user input
-input_scaled = scaler.transform(input_df)
-
-# Display CNN model predictions
-st.subheader('CNN Model Prediction')
-uploaded_image = st.file_uploader("Upload an image of an iris flower", type=["jpg", "jpeg", "png"])
-if uploaded_image is not None:
-    image = Image.open(uploaded_image).convert('RGB')
-    image = image.resize((64, 64))  # Resize to the size expected by your CNN
-    image_array = np.array(image) / 255.0
-    image_array = np.expand_dims(image_array, axis=0)
-    cnn_prediction = cnn_model.predict(image_array)
-    cnn_class = np.argmax(cnn_prediction, axis=1)
-    st.write(f"CNN Model Prediction: {iris.target_names[cnn_class[0]]}")
-
-# Display best model predictions
-st.subheader('Best Model Predictions')
-best_prediction = best_model.predict(input_scaled)
-best_prediction_proba = best_model.predict_proba(input_scaled)
-st.write(f"Best Model Prediction: {iris.target_names[best_prediction][0]}")
-st.write(f"Best Model Prediction Probability: {best_prediction_proba}")
-
-# Display statistical test results
-st.subheader('Statistical Test Results')
-if st.button('Show Statistical Tests'):
-    test_results = perform_statistical_tests(X, y)
-    st.write(test_results)
-
-# To run the app, use the command: streamlit run app.py
+st.subheader("Dynamic Playbook")
+st.write("Suggest specific actions based on predicted needs.")
+if prediction > 0.5:
+    st.write("Suggested Action: Offer a personalized demo and follow-up call.")
+else:
+    st.write("Suggested Action: Send a thank you email and a feedback survey.")
