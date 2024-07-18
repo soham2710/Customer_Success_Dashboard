@@ -180,7 +180,7 @@ def showcase_cards_page():
 
 import plotly.graph_objects as go
 
-----------------------------------------------------------------
+#----------------------------------------------------------------
 
 #Function to simulate customer journey data
 def simulate_customer_journey_data(num_customers=100):
@@ -302,7 +302,7 @@ def customer_journey_page():
 
 
 
-----------------------------------------------------------------
+#----------------------------------------------------------------
 
 def add_custom_css():
     st.markdown(
