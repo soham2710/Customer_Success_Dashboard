@@ -135,14 +135,28 @@ def articles_page():
     # Create DataFrame
     df = pd.DataFrame(articles)
 
+    # Convert DataFrame to HTML
+    html = df.to_html(escape=False, index=False, classes="table table-striped")
+    
+    # Add custom CSS for center alignment
+    st.markdown("""
+        <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 10px;
+            text-align: center;
+        }
+        .table th {
+            background-color: #f4f4f4;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
     # Display DataFrame with clickable links
-    st.write("### Articles List")
-    st.write(df.to_html(escape=False, index=False), unsafe_allow_html=True)
-
-# The rest of the code remains unchanged
-
-
-# The rest of the code remains unchanged
+    st.markdown(html, unsafe_allow_html=True)
 
 # Showcase Cards Page
 def showcase_cards_page():
