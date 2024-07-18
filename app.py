@@ -22,6 +22,43 @@ def simulate_customer_data(num_customers):
     }
     return pd.DataFrame(data)
 
+# Placeholder for predictive model
+model_playbooks = Sequential([
+    Dense(10, input_shape=(5,), activation='relu'),
+    Dense(1, activation='sigmoid')
+])
+model_playbooks.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# Train predictive model
+def train_predictive_model():
+    try:
+        # Generate synthetic dataset for predictive analytics
+        np.random.seed(42)
+        data = {
+            'Usage Frequency': np.random.choice(['Daily', 'Weekly', 'Monthly'], 1000),
+            'Support Tickets': np.random.randint(0, 10, 1000),
+            'Feedback Score': np.round(np.random.uniform(1, 5, 1000), 1),
+            'Purchase Amount': np.random.uniform(100, 1000, 1000),
+            'Tenure': np.random.randint(1, 60, 1000),
+            'Needs Engagement': np.random.randint(0, 2, 1000)
+        }
+
+        X = np.array([data['Support Tickets'], data['Feedback Score'], data['Purchase Amount'], data['Tenure'], data['Needs Engagement']]).T
+        y = np.array(data['Usage Frequency'])
+        
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+        
+        model_playbooks.fit(X_train_scaled, y_train, epochs=50, verbose=0, validation_data=(X_test_scaled, y_test))
+        
+        return True
+    except Exception as e:
+        st.error(f"Error during model training: {e}")
+        return False
+
 # Function to suggest email templates based on prediction
 def suggest_email_template(prediction_label, selected_action):
     templates = {
@@ -38,38 +75,12 @@ def suggest_email_template(prediction_label, selected_action):
     }
     return templates[prediction_label][selected_action]
 
-# Generate synthetic dataset for predictive analytics
-np.random.seed(42)
-data = {
-    'Usage Frequency': np.random.choice(['Daily', 'Weekly', 'Monthly'], 1000),
-    'Support Tickets': np.random.randint(0, 10, 1000),
-    'Feedback Score': np.round(np.random.uniform(1, 5, 1000), 1),
-    'Purchase Amount': np.random.uniform(100, 1000, 1000),
-    'Tenure': np.random.randint(1, 60, 1000),
-    'Needs Engagement': np.random.randint(0, 2, 1000)
-}
-
-# Placeholder for predictive model
-model_playbooks = Sequential([
-    Dense(10, input_shape=(5,), activation='relu'),
-    Dense(1, activation='sigmoid')
-])
-model_playbooks.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-
-# Train predictive model
-X = np.array([data['Support Tickets'], data['Feedback Score'], data['Purchase Amount'], data['Tenure'], data['Needs Engagement']]).T
-y = np.array(data['Usage Frequency'])
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-model_playbooks.fit(X_train_scaled, y_train, epochs=50, verbose=0, validation_data=(X_test_scaled, y_test))
-
 # Function to predict needs based on user input
 def predict_needs(support_tickets, feedback_score, purchase_amount, tenure, needs_engagement):
     try:
         input_data = np.array([[support_tickets, feedback_score, purchase_amount, tenure, needs_engagement]])
-        input_data_scaled = scaler.transform(input_data)
+        scaler = StandardScaler()
+        input_data_scaled = scaler.fit_transform(input_data)
         prediction = model_playbooks.predict(input_data_scaled)[0]
         return prediction
     except Exception as e:
@@ -123,7 +134,7 @@ def customer_journey_page():
                 - **Continuous Improvement:** Implement changes based on data insights and customer feedback.
                 """)
 
-# Customer Success Playbooks Using Predictive Analytics Page
+# Predictive Analytics Playbooks Using Predictive Analytics Page
 def predictive_analytics_page():
     st.title("Customer Success Playbooks Using Predictive Analytics")
     st.markdown("""
@@ -168,11 +179,6 @@ def predictive_analytics_page():
 # Main app logic
 def main():
     st.sidebar.title("Navigation")
-    st.sidebar.markdown("""
-                        Choose a page to view:
-                        - **Customer Journey Mapping**
-                        - **Predictive Analytics Playbooks**
-                        """)
     selection = st.sidebar.radio("Go to", ["Customer Journey Mapping", "Predictive Analytics Playbooks"])
 
     if selection == "Customer Journey Mapping":
