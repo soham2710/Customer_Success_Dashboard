@@ -64,6 +64,7 @@ def predictive_analytics_page():
 # Introduction Page
 def introduction_page():
     st.title("Introduction to Customer Success Dashboard App")
+    st.image("your_profile_picture.jpg", use_column_width=True)
     st.markdown("""
                 Welcome to the Customer Success Dashboard App! This application leverages predictive analytics
                 to enhance customer success efforts. It includes tools for simulating customer data, developing
@@ -74,7 +75,44 @@ def introduction_page():
                 - **Predictive Analytics Playbooks:** Use predictive models to forecast customer needs and suggest appropriate engagement strategies.
                 - **Customer Journey Mapping:** Visualize customer journey maps and optimize touchpoints for better customer experiences.
                 """)
-    st.image("customer_success_dashboard.jpg", use_column_width=True)
+
+    # Social sharing options (example buttons)
+    st.subheader("Share This App")
+    st.markdown("""
+                - LinkedIn
+                - Twitter
+                - Facebook
+                """)
+
+# List of Articles Page
+def articles_page():
+    st.title("List of Articles")
+    st.markdown("""
+                Here is a list of articles I have written:
+                - Article 1: [Link to Article 1]
+                - Article 2: [Link to Article 2]
+                - Article 3: [Link to Article 3]
+                """)
+
+# Showcase Cards Page
+def showcase_cards_page():
+    st.title("Showcase Cards")
+    st.markdown("""
+                Showcase of websites I have worked on:
+                """)
+    
+    # Example cards (replace with actual content)
+    st.markdown("""
+                ### Website 1
+                ![Website 1](website1_image.jpg)
+                - Description: A brief description of Website 1.
+                - [Link to Website 1]
+
+                ### Website 2
+                ![Website 2](website2_image.jpg)
+                - Description: A brief description of Website 2.
+                - [Link to Website 2]
+                """)
 
 # Customer Journey Mapping and Optimization Page
 def customer_journey_page():
@@ -112,7 +150,9 @@ def main():
     pages = {
         "Introduction": introduction_page,
         "Customer Journey Mapping": customer_journey_page,
-        "Predictive Analytics Playbooks": predictive_analytics_page
+        "Predictive Analytics Playbooks": predictive_analytics_page,
+        "List of Articles": articles_page,
+        "Showcase Cards": showcase_cards_page
     }
     selection = st.sidebar.radio("Go to", list(pages.keys()))
 
