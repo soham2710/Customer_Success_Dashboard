@@ -1,7 +1,8 @@
-import pandas as pd
 import streamlit as st
+import pandas as pd
 import numpy as np
-from model import train_model, predict_needs
+import plotly.express as px
+from model import train_model, simulate_customer_data, generate_dummy_journey_data
 
 # Page configuration
 st.set_page_config(page_title="Customer Success App", layout="wide")
@@ -18,67 +19,8 @@ def simulate_customer_data(num_customers):
     }
     return pd.DataFrame(data)
 
-# Function to generate dummy data for customer journey mapping
-def generate_dummy_journey_data():
-    stages = ['Awareness', 'Consideration', 'Purchase', 'Retention', 'Advocacy']
-    customers = np.random.randint(20, 100, size=len(stages))
-    satisfaction = np.round(np.random.uniform(3.0, 5.0, size=len(stages)), 1)
-    data = {
-        'Stage': stages,
-        'Customers': customers,
-        'Satisfaction': satisfaction
-    }
-    return pd.DataFrame(data)
-
-# Function to generate email templates based on prediction label and selected action
-def generate_email_templates(prediction_label, selected_action):
-    templates = {
-        'Yes': {
-            'Offer a product demo': """Dear [Customer], As a valued customer, we would like to offer you a product demo to help you get the most out of our product. Please let us know a convenient time for you.""",
-            'Schedule a follow-up call': """Dear [Customer], We would like to schedule a follow-up call to discuss your experience with our product and address any concerns you may have. Please let us know a suitable time for you.""",
-            'Invite to customer success webinar': """Dear [Customer], We are excited to invite you to our upcoming customer success webinar, where we will share tips and best practices for using our product effectively. Please join us on [date].""",
-            'Send promotional offers': """Dear [Customer], We have some exciting promotional offers just for you! Check your account for exclusive discounts and offers."""
-        },
-        'No': {
-            'Send a feedback survey': """Dear [Customer], Thank you for your recent interaction with us. We would appreciate your feedback to help us improve our services. Please take a moment to complete our feedback survey.""",
-            'Thank you for your feedback': """Dear [Customer], Thank you for your valuable feedback. We appreciate your input and will use it to enhance your experience with us."""
-        }
-    }
-
-    # Check if prediction_label and selected_action are valid keys in templates
-    if prediction_label in templates and selected_action in templates[prediction_label]:
-        return templates[prediction_label][selected_action]
-    else:
-        return f"No email template found for '{selected_action}' under '{prediction_label}' scenario."
-
-# Customer Journey Mapping and Optimization Page
-def customer_journey_page():
-    st.title("Customer Journey Mapping and Optimization")
-    st.markdown("""
-                This page visualizes customer journey maps and optimizes touchpoints for better customer experiences.
-                """)
-    
-    # Generate dummy customer journey data
-    df_journey = generate_dummy_journey_data()
-    
-    # Display customer journey data table
-    st.subheader("Customer Journey Data")
-    st.dataframe(df_journey)
-    
-    # Customer journey map
-    st.subheader("Customer Journey Map")
-    # Include your visualization code here using Plotly or other libraries
-
-    # Optimization strategies
-    st.subheader("Optimization Strategies")
-    st.markdown("""
-                - **Journey Mapping:** Create visual maps highlighting key touchpoints.
-                - **Data Analytics:** Analyze data at each touchpoint to identify bottlenecks and pain points.
-                - **Continuous Improvement:** Implement changes based on data insights and customer feedback.
-                """)
-
-# Predictive Analytics Playbooks Using Predictive Analytics Page
-def predictive_analytics_page(model_playbooks, scaler):
+# Customer Success Playbooks Using Predictive Analytics Page
+def predictive_analytics_page():
     st.title("Customer Success Playbooks Using Predictive Analytics")
     st.markdown("""
                 This page develops dynamic playbooks using predictive analytics to enhance customer success efforts.
@@ -101,40 +43,67 @@ def predictive_analytics_page(model_playbooks, scaler):
     needs_engagement = st.radio("Needs Engagement", options=['Yes', 'No'])
     
     needs_engagement_binary = 1 if needs_engagement == 'Yes' else 0
-    prediction = predict_needs(model_playbooks, scaler, support_tickets, feedback_score, purchase_amount, tenure, needs_engagement_binary)
+    prediction = predict_needs(support_tickets, feedback_score, purchase_amount, tenure, needs_engagement_binary)
     
     st.write(f"Predicted Usage Frequency: {prediction}")
     
     # Select email template based on prediction
     st.subheader("Select Email Template")
-    if prediction is not None:
-        if prediction > 0.5:
-            selected_template = st.selectbox("Choose Email Template", 
-                                             ["Offer a product demo", "Schedule a follow-up call", 
-                                              "Invite to customer success webinar", "Send promotional offers"])
-        else:
-            selected_template = st.selectbox("Choose Email Template", 
-                                             ["Send a feedback survey", "Thank you for your feedback"])
-        
-        # Display selected email template
-        st.subheader("Email Template")
-        st.code(generate_email_templates('Yes' if prediction > 0.5 else 'No', selected_template), language='markdown')
+    if prediction > 0.5:
+        selected_template = st.selectbox("Choose Email Template", 
+                                         ["Offer a product demo", "Schedule a follow-up call", 
+                                          "Invite to customer success webinar", "Send promotional offers"])
     else:
-        st.warning("Please adjust the input sliders to predict customer needs.")
+        selected_template = st.selectbox("Choose Email Template", 
+                                         ["Send a feedback survey", "Thank you for your feedback"])
+    
+    # Display selected email template
+    st.subheader("Email Template")
+    st.code(generate_email_templates('Yes' if prediction > 0.5 else 'No', selected_template), language='markdown')
 
-# Introduction to Customer Success Dashboard Page
+# Introduction Page
 def introduction_page():
-    st.title("Introduction to Customer Success Dashboard")
+    st.title("Introduction to Customer Success Dashboard App")
     st.markdown("""
-                Welcome to the Customer Success Dashboard application! This dashboard leverages predictive analytics to enhance customer success efforts. Here, you can visualize customer journey maps, optimize touchpoints, and develop dynamic playbooks tailored to customer needs.
+                Welcome to the Customer Success Dashboard App! This application leverages predictive analytics
+                to enhance customer success efforts. It includes tools for simulating customer data, developing
+                dynamic playbooks, and visualizing customer journey maps.
+
+                ### Features:
+                - **Customer Data Simulation:** Simulate customer data based on usage frequency, support tickets, feedback score, purchase amount, and tenure.
+                - **Predictive Analytics Playbooks:** Use predictive models to forecast customer needs and suggest appropriate engagement strategies.
+                - **Customer Journey Mapping:** Visualize customer journey maps and optimize touchpoints for better customer experiences.
                 """)
+    st.image("customer_success_dashboard.jpg", use_column_width=True)
+
+# Customer Journey Mapping and Optimization Page
+def customer_journey_page():
+    st.title("Customer Journey Mapping and Optimization")
     st.markdown("""
-                This application is divided into two main sections:
-                - **Customer Journey Mapping and Optimization:** Visualizes customer journey maps, identifies optimization strategies, and suggests improvements based on data insights.
-                - **Predictive Analytics Playbooks:** Utilizes predictive modeling to predict customer needs, recommends personalized engagement strategies, and generates email templates based on predictions.
+                This page visualizes customer journey maps and optimizes touchpoints for better customer experiences.
                 """)
+    
+    # Generate dummy customer journey data
+    df_journey = generate_dummy_journey_data()
+    
+    # Display customer journey data table
+    st.subheader("Customer Journey Data")
+    st.dataframe(df_journey)
+    
+    # Customer journey map
+    st.subheader("Customer Journey Map")
+    fig = px.scatter(df_journey, x='Stage', y='Customers', size='Satisfaction', 
+                     hover_data=['Satisfaction'], color='Stage',
+                     title='Customer Journey Map')
+    fig.update_layout(xaxis_title='Stage', yaxis_title='Number of Customers')
+    st.plotly_chart(fig)
+
+    # Optimization strategies
+    st.subheader("Optimization Strategies")
     st.markdown("""
-                To get started, use the navigation sidebar to explore different sections of the dashboard.
+                - **Journey Mapping:** Create visual maps highlighting key touchpoints.
+                - **Data Analytics:** Analyze data at each touchpoint to identify bottlenecks and pain points.
+                - **Continuous Improvement:** Implement changes based on data insights and customer feedback.
                 """)
 
 # Main app logic
@@ -143,15 +112,11 @@ def main():
     pages = {
         "Introduction": introduction_page,
         "Customer Journey Mapping": customer_journey_page,
-        "Predictive Analytics Playbooks": lambda: predictive_analytics_page(model_playbooks, scaler)
+        "Predictive Analytics Playbooks": predictive_analytics_page
     }
-
     selection = st.sidebar.radio("Go to", list(pages.keys()))
 
     pages[selection]()
 
-# Initialize model and scaler
 if __name__ == "__main__":
-    data = simulate_customer_data(100)  # Simulate 100 customers
-    model_playbooks, scaler = train_model(data)
     main()
