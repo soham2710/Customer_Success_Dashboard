@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from model import train_model, simulate_customer_data, predict_needs, generate_dummy_journey_data
+
+from model import train_model, simulate_customer_data, predict_needs, generate_email_templates, generate_dummy_journey_data
 
 # Page configuration
 st.set_page_config(page_title="Customer Success App", layout="wide")
