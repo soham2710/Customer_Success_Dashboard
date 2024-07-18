@@ -95,9 +95,7 @@ def introduction_page():
 
 # Ensure to call introduction_page() in your main function or wherever you need this content
 
-import streamlit as st
-import pandas as pd
-
+#Articles Page
 def articles_page():
     st.title("Articles")
     st.write("Explore our collection of articles on customer success:")
@@ -139,8 +137,10 @@ def articles_page():
 
     # Display DataFrame with clickable links
     st.write("### Articles List")
-    df["link"] = df["link"].apply(lambda x: f"[Read more]({x})")
-    st.dataframe(df, unsafe_allow_html=True)
+    st.write(df.to_html(escape=False, index=False), unsafe_allow_html=True)
+
+# The rest of the code remains unchanged
+
 
 # The rest of the code remains unchanged
 
