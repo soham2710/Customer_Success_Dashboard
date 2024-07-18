@@ -222,8 +222,8 @@ def profile_summary():
 
 st.download_button(
     label="Download Resume",
-    data=open("path/to/your/resume.pdf", "rb").read(),
-    file_name="resume.pdf",
+    data=open("https://github.com/soham2710/Customer_Success_Dashboard/blob/main/Customer%20Success%20Resume.pdf", "rb").read(),
+    file_name="Customer Success Resume.pdf",
     mime="application/pdf"
 )
 
