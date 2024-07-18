@@ -1,5 +1,79 @@
 import pandas as pd
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+import pickle
+
+# Define your email templates here
+email_templates = [
+    "Welcome Email",
+    "New Feature Announcement",
+    "Engagement Follow-Up",
+    "Customer Feedback Request",
+    "Special Offer",
+    "Reminder Email",
+    "Thank You Email",
+    "Churn Prevention",
+    "Renewal Reminder",
+    "Customer Appreciation"
+]
+
+# Create a mock dataset for training
+# In practice, use a real dataset
+data = {
+    'Churn Risk': np.random.randint(0, 2, 1000),
+    'NPS Score': np.random.randint(0, 100, 1000),
+    'Retention Rate (%)': np.random.randint(50, 100, 1000),
+    'Email Template': np.random.choice(email_templates, 1000)
+}
+
+df = pd.DataFrame(data)
+
+# Encode the target variable (Email Template)
+label_encoder = LabelEncoder()
+df['Email Template Encoded'] = label_encoder.fit_transform(df['Email Template'])
+
+# Split the data into features and target variable
+X = df[['Churn Risk', 'NPS Score', 'Retention Rate (%)']]
+y = df['Email Template Encoded']
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Initialize and train the Random Forest model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Save the trained model and label encoder
+with open('email_template_model.pkl', 'wb') as f:
+    pickle.dump(model, f)
+
+with open('label_encoder.pkl', 'wb') as f:
+    pickle.dump(label_encoder, f)
+
+def suggest_email_template(churn_risk, nps_score, retention_rate):
+    # Load the trained model and label encoder
+    with open('email_template_model.pkl', 'rb') as f:
+        model = pickle.load(f)
+    
+    with open('label_encoder.pkl', 'rb') as f:
+        label_encoder = pickle.load(f)
+    
+    # Predict the email template
+    features = np.array([[churn_risk, nps_score, retention_rate]])
+    predicted_index = model.predict(features)[0]
+    
+    # Decode the predicted template
+    predicted_template = label_encoder.inverse_transform([predicted_index])[0]
+    
+    return predicted_template
+
+
+
+'''
+import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
@@ -226,3 +300,4 @@ def select_email_template(churn_risk, nps_score, retention_rate):
             return templates["Engagement Follow-Up"], templates["Special Offer"], templates["Reminder Email"]
         else:
             return templates["Churn Prevention"], templates["Renewal Reminder"]
+'''
