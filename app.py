@@ -20,7 +20,6 @@ def simulate_customer_data(num_customers):
     }
     return pd.DataFrame(data)
 
-# Predictive Analytics Playbooks Page
 def predictive_analytics_page():
     st.title("Customer Success Playbooks Using Predictive Analytics")
     st.markdown("""
@@ -44,30 +43,25 @@ def predictive_analytics_page():
     needs_engagement = st.radio("Needs Engagement", options=['Yes', 'No'])
     
     needs_engagement_binary = 1 if needs_engagement == 'Yes' else 0
-    
-    # Call predict_needs and print prediction
     prediction = predict_needs(support_tickets, feedback_score, purchase_amount, tenure, needs_engagement_binary)
-    print(f"Prediction: {prediction}")  # Add this print statement
-    
-    # Handle prediction type if necessary (example: convert to float)
-    if isinstance(prediction, np.ndarray):
-        prediction = prediction[0]  # Assuming the first element is the prediction
     
     st.write(f"Predicted Usage Frequency: {prediction}")
-    
+
     # Select email template based on prediction
     st.subheader("Select Email Template")
-    if prediction > 0.5:
+    if prediction == 'Daily':
         selected_template = st.selectbox("Choose Email Template", 
                                          ["Offer a product demo", "Schedule a follow-up call", 
                                           "Invite to customer success webinar", "Send promotional offers"])
-    else:
+    elif prediction == 'Weekly':
         selected_template = st.selectbox("Choose Email Template", 
                                          ["Send a feedback survey", "Thank you for your feedback"])
-    
+    else:
+        st.warning("Unable to determine suitable template.")
+
     # Display selected email template
     st.subheader("Email Template")
-    st.code(generate_email_templates('Yes' if prediction > 0.5 else 'No', selected_template), language='markdown')
+    st.code(generate_email_templates('Yes' if prediction in ['Daily', 'Weekly'] else 'No', selected_template), language='markdown')
 
 
 
