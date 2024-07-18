@@ -150,7 +150,7 @@ def articles_page():
             text-align: center;
         }
         .table th {
-            background-color: #f4f4f4;
+            background-color: #000000;
         }
         </style>
     """, unsafe_allow_html=True)
