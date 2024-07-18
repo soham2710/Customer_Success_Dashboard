@@ -4,7 +4,7 @@ import numpy as np
 import plotly.express as px
 import sys
 import requests
-from model import (
+from model import
     simulate_predictive_analytics_data,
     train_model,
     train_email_template_model,
@@ -13,7 +13,6 @@ from model import (
     predict_needs,
     generate_email_templates,
     select_email_template
-)
 # Add the directory containing model.py to Python path if necessary
 sys.path.insert(0, './')  # Adjust the path as needed
 
