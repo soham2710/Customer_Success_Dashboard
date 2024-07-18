@@ -16,7 +16,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from model import simulate_predictive_analytics_data, generate_email_templates
-
 # Predictive Analytics Page
 def predictive_analytics_page():
     st.title("Predictive Analytics")
@@ -36,7 +35,7 @@ def predictive_analytics_page():
     """)
 
     num_customers = st.number_input("Number of Customers", min_value=1, value=100)
-    analytics_data = simulate_predictive_analytics_data(num_customers)
+    analytics_data = simulate_customer_data(num_customers)
 
     st.subheader("Simulated Predictive Analytics Data")
     st.dataframe(analytics_data)
@@ -119,9 +118,8 @@ def predictive_analytics_page():
         By leveraging predictive analytics, you can tailor your approach to effectively address customer needs and improve business outcomes.
     """)
 
-'''# Run the app
-if __name__ == "__main__":
-    predictive_analytics_page()'''
+
+#--------------------------------
 
 def introduction_page():
     st.title("Introduction")
