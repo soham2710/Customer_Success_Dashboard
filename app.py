@@ -19,52 +19,10 @@ def simulate_customer_data(num_customers):
     }
     return pd.DataFrame(data)
 
-# Customer Success Playbooks Using Predictive Analytics Page
-def predictive_analytics_page():
-    st.title("Customer Success Playbooks Using Predictive Analytics")
-    st.markdown("""
-                This page develops dynamic playbooks using predictive analytics to enhance customer success efforts.
-                """)
-    
-    # Placeholder for predictive analytics content
-    st.subheader("Predictive Analytics Content")
-    st.markdown("""
-                - **Predictive Modeling:** Use historical data to predict customer needs and issues.
-                - **Dynamic Playbooks:** Create playbooks that adapt based on predictive insights.
-                - **Personalized Engagement:** Tailor support and engagement based on predicted customer behavior.
-                """)
-    
-    # Predictive model simulation
-    st.subheader("Predict Customer Needs")
-    support_tickets = st.slider("Support Tickets", 0, 10, 5)
-    feedback_score = st.slider("Feedback Score", 2.0, 5.0, 3.5, 0.1)
-    purchase_amount = st.slider("Purchase Amount", 100, 1000, 500)
-    tenure = st.slider("Tenure (Months)", 1, 60, 30)
-    needs_engagement = st.radio("Needs Engagement", options=['Yes', 'No'])
-    
-    needs_engagement_binary = 1 if needs_engagement == 'Yes' else 0
-    prediction = predict_needs(support_tickets, feedback_score, purchase_amount, tenure, needs_engagement_binary)
-    
-    st.write(f"Predicted Usage Frequency: {prediction}")
-    
-    # Select email template based on prediction
-    st.subheader("Select Email Template")
-    if prediction > 0.5:
-        selected_template = st.selectbox("Choose Email Template", 
-                                         ["Offer a product demo", "Schedule a follow-up call", 
-                                          "Invite to customer success webinar", "Send promotional offers"])
-    else:
-        selected_template = st.selectbox("Choose Email Template", 
-                                         ["Send a feedback survey", "Thank you for your feedback"])
-    
-    # Display selected email template
-    st.subheader("Email Template")
-    st.code(generate_email_templates('Yes' if prediction > 0.5 else 'No', selected_template), language='markdown')
-
 # Introduction Page
 def introduction_page():
     st.title("Introduction to Customer Success Dashboard App")
-    st.image("your_profile_picture.jpg", use_column_width=True)
+    st.image("https://via.placeholder.com/600x400", use_column_width=True)
     st.markdown("""
                 Welcome to the Customer Success Dashboard App! This application leverages predictive analytics
                 to enhance customer success efforts. It includes tools for simulating customer data, developing
@@ -87,32 +45,41 @@ def introduction_page():
 # List of Articles Page
 def articles_page():
     st.title("List of Articles")
-    st.markdown("""
-                Here is a list of articles I have written:
-                - Article 1: [Link to Article 1]
-                - Article 2: [Link to Article 2]
-                - Article 3: [Link to Article 3]
-                """)
+    articles_data = {
+        "Article 1": "Link to Article 1",
+        "Article 2": "Link to Article 2",
+        "Article 3": "Link to Article 3"
+    }
+    df_articles = pd.DataFrame(list(articles_data.items()), columns=["Article Title", "Link"])
+    st.table(df_articles)
 
-# Showcase Cards Page
-def showcase_cards_page():
-    st.title("Showcase Cards")
+# Websites Page
+def websites_page():
+    st.title("Websites")
     st.markdown("""
                 Showcase of websites I have worked on:
                 """)
     
-    # Example cards (replace with actual content)
-    st.markdown("""
-                ### Website 1
-                ![Website 1](website1_image.jpg)
-                - Description: A brief description of Website 1.
-                - [Link to Website 1]
-
-                ### Website 2
-                ![Website 2](website2_image.jpg)
-                - Description: A brief description of Website 2.
-                - [Link to Website 2]
-                """)
+    # Example card elements (replace with actual content)
+    websites_data = [
+        {
+            "image": "https://via.placeholder.com/300x200",
+            "description": "A brief description of Website 1.",
+            "link": "[Link to Website 1]"
+        },
+        {
+            "image": "https://via.placeholder.com/300x200",
+            "description": "A brief description of Website 2.",
+            "link": "[Link to Website 2]"
+        }
+    ]
+    
+    for website in websites_data:
+        st.markdown(f"""
+                    ### Website
+                    [![Website]({website['image']})]({website['link']})
+                    - Description: {website['description']}
+                    """)
 
 # Customer Journey Mapping and Optimization Page
 def customer_journey_page():
@@ -152,7 +119,7 @@ def main():
         "Customer Journey Mapping": customer_journey_page,
         "Predictive Analytics Playbooks": predictive_analytics_page,
         "List of Articles": articles_page,
-        "Showcase Cards": showcase_cards_page
+        "Websites": websites_page
     }
     selection = st.sidebar.radio("Go to", list(pages.keys()))
 
