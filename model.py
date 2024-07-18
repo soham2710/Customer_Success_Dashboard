@@ -21,14 +21,19 @@ email_templates = [
 
 # Create a mock dataset for training
 # In practice, use a real dataset
-data = {
-    'Churn Risk': np.random.randint(0, 2, 1000),
-    'NPS Score': np.random.randint(0, 100, 1000),
-    'Retention Rate (%)': np.random.randint(50, 100, 1000),
-    'Email Template': np.random.choice(email_templates, 1000)
-}
-
-df = pd.DataFrame(data)
+# Function to simulate predictive analytics data
+def simulate_predictive_analytics_data(num_customers=100):
+    data = {
+        'CustomerID': np.arange(1, num_customers + 1),
+        'Age': np.random.randint(18, 70, num_customers),
+        'Annual Income (USD)': np.random.randint(30000, 150000, num_customers),
+        'Credit Score': np.random.randint(300, 850, num_customers),
+        'Previous Purchases': np.random.randint(0, 20, num_customers),
+        'Churn Risk': np.random.choice([0, 1], num_customers),  # 0: Low Risk, 1: High Risk
+        'NPS Score': np.random.randint(-100, 101, num_customers),  # Net Promoter Score
+        'Retention Rate (%)': np.random.uniform(50, 100, num_customers)  # Retention Rate
+    }
+    return pd.DataFrame(data)
 
 # Encode the target variable (Email Template)
 label_encoder = LabelEncoder()
