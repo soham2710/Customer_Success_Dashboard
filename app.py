@@ -95,11 +95,14 @@ def introduction_page():
 
 # Ensure to call introduction_page() in your main function or wherever you need this content
 
-# List of Articles Page
+import streamlit as st
+import pandas as pd
+
 def articles_page():
     st.title("Articles")
     st.write("Explore our collection of articles on customer success:")
 
+    # List of articles
     articles = [
         {"title": "Agile Approach to Data Strategy", "link": "https://datascience.salon/an-agile-approach-to-data-strategy"},
         {"title": "Anomaly detection in Machine learning", "link": "https://roundtable.datascience.salon/using-deep-learning-for-anomaly-detection-in-cybersecurity"},
@@ -130,10 +133,16 @@ def articles_page():
         {"title": "HRIS Data Security", "link": "https://www.vaulthrsolutions.com/blogs/essentials-of-hris-data-security"},
         {"title": "Exploring effective HRIS", "link": "https://www.vaulthrsolutions.com/blogs/exploring-effective-hris"}
     ]
-    
-    for article in articles:
-        st.write(f"### {article['title']}")
-        st.write(f"[Read more]({article['link']})")
+
+    # Create DataFrame
+    df = pd.DataFrame(articles)
+
+    # Display DataFrame with clickable links
+    st.write("### Articles List")
+    df["link"] = df["link"].apply(lambda x: f"[Read more]({x})")
+    st.dataframe(df, unsafe_allow_html=True)
+
+# The rest of the code remains unchanged
 
 # Showcase Cards Page
 def showcase_cards_page():
