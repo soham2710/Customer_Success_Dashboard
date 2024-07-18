@@ -320,15 +320,6 @@ def main():
     
     profile_summary()  # Add profile summary, image, resume, and social media links
 
-    # Navigation options with icons
-    st.sidebar.markdown("""
-    - 🏠 [Introduction](#Introduction)
-    - 📊 [Predictive Analytics](#Predictive-Analytics)
-    - 📄 [Articles](#Articles)
-    - 🖼️ [Showcase Cards](#Showcase-Cards)
-    - 🗺️ [Customer Journey Mapping and Optimization](#Customer-Journey-Mapping-and-Optimization)
-    """, unsafe_allow_html=True)
-
     # Define the page selection
     page = st.sidebar.selectbox("Choose a Page", [
         "Introduction",
