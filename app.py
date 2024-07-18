@@ -70,16 +70,40 @@ def introduction_page():
 def articles_page():
     st.title("Articles")
     st.write("Explore our collection of articles on customer success:")
-    
+
     articles = [
-        {"title": "How to Improve Customer Engagement", "summary": "Learn strategies for increasing customer engagement.", "link": "https://example.com/article1"},
-        {"title": "Optimizing Customer Journeys", "summary": "A guide to mapping and optimizing customer journeys.", "link": "https://example.com/article2"},
-        {"title": "Using AI for Customer Success", "summary": "Discover how AI can enhance customer success initiatives.", "link": "https://example.com/article3"},
+        {"title": "Agile Approach to Data Strategy", "link": "https://datascience.salon/an-agile-approach-to-data-strategy"},
+        {"title": "Anomaly detection in Machine learning", "link": "https://roundtable.datascience.salon/using-deep-learning-for-anomaly-detection-in-cybersecurity"},
+        {"title": "Machine learning podcasts", "link": "https://datascience.salon/machine-learning-podcasts-top-shows-for-deepening-your-understanding"},
+        {"title": "CNN", "link": "https://datascience.salon/convolutional-neural-networks-overview"},
+        {"title": "Fundamentals of Product Development Roadmap", "link": "https://collato.com/the-fundamentals-of-a-product-development-roadmap"},
+        {"title": "How to Reduce Bias in Machine learning", "link": "https://datascience.salon/reducing-bias-in-machine-learning"},
+        {"title": "Incorporating Ethical Considerations into Product Development", "link": "https://productledalliance.com/incorporating-ethical-considerations-into-product-development"},
+        {"title": "Leveraging ChatGPT for Product Managers", "link": "https://productledalliance.com/leveraging-chatgpt-for-product-managers-enhancing-productivity-and-collaboration"},
+        {"title": "Correlation and Regression Analysis: Exploring Relationships in Data", "link": "https://roundtable.datascience.salon/correlation-and-regression-analysis-exploring-relationships-in-data"},
+        {"title": "Beyond the Matrix: Advanced Prioritization Techniques for Product Managers", "link": "https://productledalliance.com/beyond-the-matrix-advanced-prioritization-techniques-for-product-managers"},
+        {"title": "Building Minimum Viable Products (MVPs) that Matter", "link": "https://productledalliance.com/building-minimum-viable-products-that-matter"},
+        {"title": "Time Series with RNN", "link": "https://encord.com/blog/time-series-predictions-with-recurrent-neural-networks"},
+        {"title": "Building and Leading High-Performing Product Teams", "link": "https://productledalliance.com/building-and-leading-high-performing-product-teams"},
+        {"title": "Meta-Learning and Few-Shot Learning: Adapting Deep Learning Models to Learn from Limited Data", "link": "https://datascience.salon/meta-learning-and-few-shot-learning-adapting-deep-learning-models-to-learn-from-limited-data"},
+        {"title": "Glossary terms", "link": "https://encord.com/glossary"},
+        {"title": "User-Centric Product Design: Keeping Customer Needs at the Core of Development", "link": "https://collato.com/user-centric-product-design-how-to-understand-user-needs"},
+        {"title": "Sudoku Solver", "link": "https://encord.com/blog/sudoku-solver-cv-project"},
+        {"title": "Image thresholding", "link": "https://encord.com/blog/image-thresholding-image-processing"},
+        {"title": "Text detection via CV", "link": "https://encord.com/blog/realtime-text-recognition-with-tesseract-using-opencv"},
+        {"title": "Guide to Supervised learning", "link": "https://encord.com/blog/mastering-supervised-learning-a-comprehensive-guide"},
+        {"title": "Logistic regression", "link": "https://encord.com/blog/what-is-logistic-regression"},
+        {"title": "Federated learning", "link": "https://datascience.salon/federated-learning-for-privacy-preserving-ai"},
+        {"title": "Creating a Live Virtual Pen Project with OpenCV", "link": "https://medium.com/p/ed477487b75f/edit"},
+        {"title": "LabelBox Alternatives", "link": "https://encord.com/blog/labelbox-alternatives"},
+        {"title": "Ensemble Learning", "link": "https://encord.com/blog/what-is-ensemble-learning"},
+        {"title": "Challenges for AI in e-commerce", "link": "https://datascience.salon/challenges-for-ai-in-e-commerce"},
+        {"title": "HRIS Data Security", "link": "https://www.vaulthrsolutions.com/blogs/essentials-of-hris-data-security"},
+        {"title": "Exploring effective HRIS", "link": "https://www.vaulthrsolutions.com/blogs/exploring-effective-hris"}
     ]
     
     for article in articles:
         st.write(f"### {article['title']}")
-        st.write(f"{article['summary']}")
         st.write(f"[Read more]({article['link']})")
 
 # Showcase Cards Page
