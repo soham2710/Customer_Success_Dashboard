@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import sys
+
+# Add the directory containing model.py to Python path if necessary
+sys.path.insert(0, './')  # Adjust the path as needed
 
 from model import train_model, simulate_customer_data, predict_needs, generate_email_templates, generate_dummy_journey_data
 
