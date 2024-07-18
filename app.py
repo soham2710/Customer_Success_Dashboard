@@ -53,18 +53,47 @@ def predictive_analytics_page():
     email_template = generate_email_templates(prediction, selected_template)
     st.code(email_template, language='markdown')
 
-# Introduction Page
 def introduction_page():
     st.title("Introduction")
-    st.write("""
-        Welcome to the Customer Success App! This app is designed to help you manage and optimize customer engagement.
-        - **Predictive Analytics**: Simulate customer data and predict engagement needs.
-        - **Articles**: Explore articles and resources on customer success.
-        - **Showcase Cards**: View case studies and projects.
-        - **Customer Journey Mapping and Optimization**: Learn about mapping customer journeys and optimizing them.
 
-        Use the navigation menu to explore different sections of the app.
+    st.header("Purpose of This Project")
+    st.write("""
+        This project aims to enhance customer success through the use of advanced analytics and optimization techniques. 
+        The primary goals are to better understand customer behavior, improve engagement strategies, and optimize the customer journey.
+        Each section of this application is designed to provide insights into different aspects of customer success and 
+        predictive analytics to help in making informed decisions.
     """)
+
+    st.header("Section Descriptions")
+
+    st.subheader("Customer Journey Mapping and Optimization")
+    st.write("""
+        This section focuses on mapping out the customer journey and identifying key touchpoints where optimization can be implemented. 
+        The purpose of this page is to visualize and analyze the different stages a customer goes through from initial contact to 
+        post-purchase interactions. 
+
+        Key Sections:
+        - **Customer Journey Map**: Provides a visual representation of the customer journey, highlighting different phases and touchpoints.
+        - **Optimization Insights**: Offers insights and recommendations on how to improve customer experience at various stages.
+        - **Engagement Metrics**: Displays metrics related to customer engagement and provides suggestions for enhancing interactions.
+
+        This page is designed to help businesses understand and optimize their customer interactions, ultimately leading to improved satisfaction and retention.
+    """)
+
+    st.subheader("Predictive Analytics")
+    st.write("""
+        The Predictive Analytics page is designed to forecast key metrics and trends using historical data. The purpose is to 
+        provide actionable insights that can guide decision-making and strategic planning.
+
+        **Purpose and Plan:**
+        - **Forecasting Metrics**: Uses historical data to predict future trends, such as sales performance, customer behavior, or engagement levels.
+        - **App Features**: The app includes various predictive models that allow users to select different parameters and view predictions based on different scenarios.
+        - **Usage Guide**: Users can input historical data, select relevant features, and view predictive results. The app also provides visualizations to help interpret the forecasts.
+
+        This page aims to equip users with the tools needed to anticipate future trends and make data-driven decisions to enhance their business strategies.
+    """)
+
+# Ensure to call introduction_page() in your main function or wherever you need this content
 
 # List of Articles Page
 def articles_page():
