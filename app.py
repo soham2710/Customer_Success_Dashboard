@@ -59,8 +59,8 @@ def train_predictive_model():
         st.error(f"Error during model training: {e}")
         return False
 
-# Function to suggest email templates based on prediction
-def suggest_email_template(prediction_label, selected_action):
+# Function to generate email templates based on prediction label and selected action
+def generate_email_templates(prediction_label, selected_action):
     templates = {
         'Yes': {
             'Offer a product demo': """Dear [Customer], As a valued customer, we would like to offer you a product demo to help you get the most out of our product. Please let us know a convenient time for you.""",
@@ -73,24 +73,57 @@ def suggest_email_template(prediction_label, selected_action):
             'Thank you for your feedback': """Dear [Customer], Thank you for your valuable feedback. We appreciate your input and will use it to enhance your experience with us."""
         }
     }
-    return templates[prediction_label][selected_action]
 
-# Function to predict needs based on user input
-def predict_needs(support_tickets, feedback_score, purchase_amount, tenure, needs_engagement):
-    try:
-        input_data = np.array([[support_tickets, feedback_score, purchase_amount, tenure, needs_engagement]])
-        scaler = StandardScaler()
-        input_data_scaled = scaler.fit_transform(input_data)
-        prediction = model_playbooks.predict(input_data_scaled)[0]
-        return prediction
-    except Exception as e:
-        st.error(f"Error during prediction: {e}")
-        return None
+    # Check if prediction_label and selected_action are valid keys in templates
+    if prediction_label in templates and selected_action in templates[prediction_label]:
+        return templates[prediction_label][selected_action]
+    else:
+        return f"No email template found for '{selected_action}' under '{prediction_label}' scenario."
 
-# Function to generate email templates based on prediction label and selected action
-def generate_email_templates(prediction_label, selected_action):
-    templates = suggest_email_template(prediction_label, selected_action)
-    return templates[selected_action]
+# Predictive Analytics Playbooks Using Predictive Analytics Page
+def predictive_analytics_page():
+    st.title("Customer Success Playbooks Using Predictive Analytics")
+    st.markdown("""
+                This page develops dynamic playbooks using predictive analytics to enhance customer success efforts.
+                """)
+    
+    # Placeholder for predictive analytics content
+    st.subheader("Predictive Analytics Content")
+    st.markdown("""
+                - **Predictive Modeling:** Use historical data to predict customer needs and issues.
+                - **Dynamic Playbooks:** Create playbooks that adapt based on predictive insights.
+                - **Personalized Engagement:** Tailor support and engagement based on predicted customer behavior.
+                """)
+    
+    # Predictive model simulation
+    st.subheader("Predict Customer Needs")
+    support_tickets = st.slider("Support Tickets", 0, 10, 5)
+    feedback_score = st.slider("Feedback Score", 2.0, 5.0, 3.5, 0.1)
+    purchase_amount = st.slider("Purchase Amount", 100, 1000, 500)
+    tenure = st.slider("Tenure (Months)", 1, 60, 30)
+    needs_engagement = st.radio("Needs Engagement", options=['Yes', 'No'])
+    
+    needs_engagement_binary = 1 if needs_engagement == 'Yes' else 0
+    prediction = predict_needs(support_tickets, feedback_score, purchase_amount, tenure, needs_engagement_binary)
+    
+    st.write(f"Predicted Usage Frequency: {prediction}")
+    
+    # Select email template based on prediction
+    st.subheader("Select Email Template")
+    if prediction is not None:
+        if prediction > 0.5:
+            selected_template = st.selectbox("Choose Email Template", 
+                                             ["Offer a product demo", "Schedule a follow-up call", 
+                                              "Invite to customer success webinar", "Send promotional offers"])
+        else:
+            selected_template = st.selectbox("Choose Email Template", 
+                                             ["Send a feedback survey", "Thank you for your feedback"])
+        
+        # Display selected email template
+        st.subheader("Email Template")
+        st.code(generate_email_templates('Yes' if prediction > 0.5 else 'No', selected_template), language='markdown')
+    else:
+        st.warning("Please adjust the input sliders to predict customer needs.")
 
 # Function to generate dummy data for customer journey mapping
 def generate_dummy_journey_data():
