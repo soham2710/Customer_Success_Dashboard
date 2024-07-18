@@ -36,8 +36,59 @@ def simulate_customer_data(num_customers):
 
     return data
 
+import streamlit as st
+import pandas as pd
+import numpy as np
+import pickle
+import plotly.express as px
+from model import select_email_template  # Import the email template selection function
+
+# Load the trained model and label encoder
+@st.cache_resource
+def load_model():
+    with open('email_template_model.pkl', 'rb') as f:
+        model = pickle.load(f)
+    with open('label_encoder.pkl', 'rb') as f:
+        label_encoder = pickle.load(f)
+    return model, label_encoder
+
+model, label_encoder = load_model()
+
+# Function to suggest the email template using the model
+def suggest_email_template(churn_risk, nps_score, retention_rate):
+    features = np.array([[churn_risk, nps_score, retention_rate]])
+    predicted_index = model.predict(features)[0]
+    predicted_template = label_encoder.inverse_transform([predicted_index])[0]
+    return predicted_template
+
+# Function to simulate customer data
+def simulate_customer_data(num_customers):
+    np.random.seed(42)
+    ages = np.random.randint(18, 70, size=num_customers)
+    incomes = np.random.randint(20000, 120000, size=num_customers)
+    credit_scores = np.random.randint(300, 850, size=num_customers)
+    purchases = np.random.randint(1, 20, size=num_customers)
+    churn_risks = np.random.randint(0, 2, size=num_customers)
+    nps_scores = np.random.randint(0, 100, size=num_customers)
+    retention_rates = np.random.uniform(50, 100, size=num_customers)
+
+    data = pd.DataFrame({
+        'CustomerID': range(1, num_customers + 1),
+        'Age': ages,
+        'Annual Income (USD)': incomes,
+        'Credit Score': credit_scores,
+        'Previous Purchases': purchases,
+        'Churn Risk': churn_risks,
+        'NPS Score': nps_scores,
+        'Retention Rate (%)': retention_rates
+    })
+
+    return data
+
+# Streamlit UI
 def predictive_analytics_page():
-    st.title("Predictive Analytics")
+    st.title("Customer Success Management - Predictive Analytics")
+
     st.write("""
         Predictive analytics uses historical data and statistical algorithms to predict future outcomes. It helps businesses make data-driven decisions and anticipate customer needs.
 
@@ -94,7 +145,7 @@ def predictive_analytics_page():
     )
     st.plotly_chart(fig_churn_distribution, use_container_width=True)
 
-    # User Selection for Analysis
+    # User Selection for Detailed Analysis
     st.subheader("Select Customer for Detailed Analysis")
     selected_customer = st.selectbox("Select Customer", analytics_data['CustomerID'])
     selected_data = analytics_data[analytics_data['CustomerID'] == selected_customer].iloc[0]
@@ -122,7 +173,161 @@ def predictive_analytics_page():
         st.write(f"**Body:** {template['Body']}")
         st.write("---")
 
+# Main function to control the Streamlit app
+def main():
+    st.sidebar.title("Navigation")
+    page = st.sidebar.radio("Go to", ["Predictive Analytics", "Suggest Email Template"])
 
+    if page == "Predictive Analytics":
+        predictive_analytics_page()
+    elif page == "Suggest Email Template":
+        st.title("Email Template Suggestion")
+        
+        churn_risk = st.slider("Churn Risk (0 or 1)", 0, 1, 0)
+        nps_score = st.slider("NPS Score", 0, 100, 50)
+        retention_rate = st.slider("Retention Rate (%)", 0, 100, 75)
+        
+        if st.button("Suggest Relevant Email Template"):
+            suggested_template = suggest_email_template(churn_risk, nps_score, retention_rate)
+            st.subheader("Suggested Email Template")
+            st.write(f"**Template:** {suggested_template}")
+
+            # Display the full email template content
+            email_templates = {
+                "Welcome Email": {
+                    "Subject": "Welcome to [Company Name]!",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    Welcome to [Company Name]! We are excited to have you on board. If you have any questions or need assistance, feel free to reach out to us. 
+
+                    Best regards,
+                    The [Company Name] Team
+                    """
+                },
+                "New Feature Announcement": {
+                    "Subject": "Check Out Our New Feature!",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    We are thrilled to announce a new feature in [Product/Service Name]! This feature will help you [briefly describe the benefit]. 
+
+                    Explore it today and let us know your feedback!
+
+                    Best,
+                    The [Company Name] Team
+                    """
+                },
+                "Engagement Follow-Up": {
+                    "Subject": "We Miss You at [Company Name]!",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    We noticed that it's been a while since you last engaged with us. We would love to hear your thoughts and help you with anything you need.
+
+                    Looking forward to your return!
+
+                    Cheers,
+                    The [Company Name] Team
+                    """
+                },
+                "Customer Feedback Request": {
+                    "Subject": "Your Feedback Matters to Us",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    We value your feedback and would appreciate if you could take a few minutes to share your thoughts on our recent [product/service]. Your input will help us improve and serve you better.
+
+                    Thank you,
+                    The [Company Name] Team
+                    """
+                },
+                "Special Offer": {
+                    "Subject": "Exclusive Offer Just for You!",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    As a valued customer, we're excited to offer you an exclusive [discount/offer]. Don't miss out on this special deal!
+
+                    Use code [OFFER CODE] at checkout.
+
+                    Best regards,
+                    The [Company Name] Team
+                    """
+                },
+                "Reminder Email": {
+                    "Subject": "Reminder: [Action Required]",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    Just a friendly reminder to [action required]. We want to make sure you don’t miss out on [benefit or important date].
+
+                    Thank you,
+                    The [Company Name] Team
+                    """
+                },
+                "Thank You Email": {
+                    "Subject": "Thank You for Your Purchase!",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    Thank you for your recent purchase of [Product/Service]. We hope you are satisfied with your purchase. 
+
+                    If you need any assistance, please do not hesitate to contact us.
+
+                    Warm regards,
+                    The [Company Name] Team
+                    """
+                },
+                "Churn Prevention": {
+                    "Subject": "We’re Here to Help",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    We noticed that you haven't been using [Product/Service] recently. Is there anything we can assist you with? We value your business and want to ensure you're getting the most out of our services.
+
+                    Please let us know how we can help.
+
+                    Best,
+                    The [Company Name] Team
+                    """
+                },
+                "Renewal Reminder": {
+                    "Subject": "Your Subscription is About to Expire",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    This is a reminder that your subscription to [Product/Service] is about to expire on [Expiration Date]. 
+
+                    Renew now to continue enjoying uninterrupted service.
+
+                    Thank you,
+                    The [Company Name] Team
+                    """
+                },
+                "Customer Appreciation": {
+                    "Subject": "We Appreciate You!",
+                    "Body": """
+                    Hi [Customer Name],
+
+                    We just wanted to take a moment to say thank you for being a loyal customer. We appreciate your support and look forward to continuing to serve you.
+
+                    Best wishes,
+                    The [Company Name] Team
+                    """
+                }
+            }
+
+            # Display the full email content
+            if suggested_template:
+                template_details = email_templates.get(suggested_template)
+                if template_details:
+                    st.write(f"**Subject:** {template_details['Subject']}")
+                    st.write(f"**Body:** {template_details['Body']}")
+                    st.write("---")
+
+if __name__ == "__main__":
+    main()
 
 
 '''# Predictive Analytics Page
