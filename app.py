@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import sys
-
+import requests
 # Add the directory containing model.py to Python path if necessary
 sys.path.insert(0, './')  # Adjust the path as needed
 
