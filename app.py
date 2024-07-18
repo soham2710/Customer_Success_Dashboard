@@ -12,46 +12,116 @@ from model import train_model, simulate_customer_data, predict_needs, generate_e
 # Page configuration
 st.set_page_config(page_title="Customer Success App", layout="wide")
 
-# Function to simulate customer data
-def simulate_customer_data(num_customers):
-    data = {
-        'CustomerID': np.arange(1, num_customers + 1),
-        'Usage Frequency': np.random.choice(['Daily', 'Weekly', 'Monthly'], num_customers),
-        'Support Tickets': np.random.randint(0, 10, num_customers),
-        'Feedback Score': np.round(np.random.uniform(2.0, 5.0, num_customers), 1),
-        'Purchase Amount': np.random.randint(100, 1000, num_customers),
-        'Tenure (Months)': np.random.randint(1, 36, num_customers)
-    }
-    return pd.DataFrame(data)
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+from model import simulate_predictive_analytics_data, generate_email_templates
 
 # Predictive Analytics Page
 def predictive_analytics_page():
     st.title("Predictive Analytics")
+    st.write("""
+        Predictive analytics uses historical data and statistical algorithms to predict future outcomes. It helps businesses make data-driven decisions and anticipate customer needs.
+
+        **Key Features:**
+        - **Age**: Customer's age.
+        - **Annual Income (USD)**: Customer's yearly income.
+        - **Credit Score**: Customer's credit score.
+        - **Previous Purchases**: Number of past purchases.
+        - **Churn Risk**: Likelihood of customer churn (0: Low Risk, 1: High Risk).
+        - **NPS Score**: Net Promoter Score, indicating customer satisfaction.
+        - **Retention Rate (%)**: Percentage of customers retained over a period.
+
+        Predictive analytics can help in identifying high-risk customers, targeting potential upsell opportunities, and optimizing marketing strategies.
+    """)
 
     num_customers = st.number_input("Number of Customers", min_value=1, value=100)
-    customer_data = simulate_customer_data(num_customers)
+    analytics_data = simulate_predictive_analytics_data(num_customers)
 
-    st.subheader("Simulated Customer Data")
-    st.dataframe(customer_data)
+    st.subheader("Simulated Predictive Analytics Data")
+    st.dataframe(analytics_data)
 
-    st.subheader("Prediction")
-    selected_customer = st.selectbox("Select Customer", customer_data['CustomerID'])
-    selected_data = customer_data[customer_data['CustomerID'] == selected_customer].iloc[0]
+    st.subheader("Predictive Analysis")
 
-    prediction = predict_needs(
-        selected_data['Support Tickets'],
-        selected_data['Feedback Score'],
-        selected_data['Purchase Amount'],
-        selected_data['Tenure (Months)'],
-        np.random.randint(0, 2)  # Example engagement data
+    # Visualization of Churn Risk by Age
+    fig_age_churn = px.scatter(
+        analytics_data,
+        x='Age',
+        y='Churn Risk',
+        color='Churn Risk',
+        title='Churn Risk by Age',
+        labels={'Churn Risk': 'Churn Risk (0: Low, 1: High)'},
+        color_continuous_scale='Viridis'
     )
+    st.plotly_chart(fig_age_churn, use_container_width=True)
 
-    st.write(f"Predicted Usage Frequency: {prediction}")
+    # Visualization of Annual Income vs. Credit Score
+    fig_income_credit = px.scatter(
+        analytics_data,
+        x='Annual Income (USD)',
+        y='Credit Score',
+        color='Churn Risk',
+        title='Annual Income vs. Credit Score',
+        labels={'Churn Risk': 'Churn Risk (0: Low, 1: High)'},
+        color_continuous_scale='Blues'
+    )
+    st.plotly_chart(fig_income_credit, use_container_width=True)
 
+    # Visualization of Churn Risk Distribution
+    fig_churn_distribution = px.histogram(
+        analytics_data,
+        x='Churn Risk',
+        title='Distribution of Churn Risk',
+        labels={'Churn Risk': 'Churn Risk (0: Low, 1: High)'}
+    )
+    st.plotly_chart(fig_churn_distribution, use_container_width=True)
+
+    # User Selection for Analysis
+    st.subheader("Select Customer for Detailed Analysis")
+    selected_customer = st.selectbox("Select Customer", analytics_data['CustomerID'])
+    selected_data = analytics_data[analytics_data['CustomerID'] == selected_customer].iloc[0]
+
+    st.write(f"**Selected Customer Data:**")
+    st.write(f"Age: {selected_data['Age']}")
+    st.write(f"Annual Income: ${selected_data['Annual Income (USD)']}")
+    st.write(f"Credit Score: {selected_data['Credit Score']}")
+    st.write(f"Previous Purchases: {selected_data['Previous Purchases']}")
+    st.write(f"Churn Risk: {'High Risk' if selected_data['Churn Risk'] == 1 else 'Low Risk'}")
+    st.write(f"NPS Score: {selected_data['NPS Score']}")
+    st.write(f"Retention Rate: {selected_data['Retention Rate (%)']}%")
+
+    # Generate Email Templates
     st.subheader("Generate Email Template")
-    selected_template = st.selectbox("Select Template", ['Template 1', 'Template 2'])
-    email_template = generate_email_templates(prediction, selected_template)
-    st.code(email_template, language='markdown')
+    email_templates = generate_email_templates(
+        selected_data['Age'],
+        selected_data['Annual Income (USD)'],
+        selected_data['Credit Score'],
+        selected_data['Churn Risk'],
+        selected_data['NPS Score'],
+        selected_data['Retention Rate (%)']
+    )
+    
+    for i, template in enumerate(email_templates, 1):
+        st.write(f"### Email Template {i}")
+        st.write(template)
+
+    # Optimization Suggestions
+    st.subheader("Optimization Suggestions")
+    st.write("""
+        Based on the predictive analytics data, here are some suggestions for optimizing customer engagement:
+
+        - **High Churn Risk Customers**: Implement retention strategies such as personalized offers or proactive support.
+        - **Low Credit Score**: Consider offering financial advice or improved payment options to enhance customer satisfaction.
+        - **Frequent Purchasers**: Develop loyalty programs to reward frequent shoppers and encourage repeat business.
+        - **Income-Based Targeting**: Customize marketing strategies based on income levels to better meet customer needs.
+        - **NPS Score**: Address negative feedback and work to improve customer satisfaction. Use positive feedback to enhance marketing efforts.
+
+        By leveraging predictive analytics, you can tailor your approach to effectively address customer needs and improve business outcomes.
+    """)
+
+'''# Run the app
+if __name__ == "__main__":
+    predictive_analytics_page()'''
 
 def introduction_page():
     st.title("Introduction")
