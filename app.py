@@ -220,22 +220,38 @@ def profile_summary():
     st.sidebar.write("**Title:** Customer Success and Product Management Expert")
     st.sidebar.write("**Summary:** A passionate AI and product management professional with extensive experience in data analytics, customer success strategies, and AI-driven solutions. Expertise in creating impactful AI projects and optimizing customer experiences.")
 
+st.download_button(
+    label="Download Resume",
+    data=open("path/to/your/resume.pdf", "rb").read(),
+    file_name="resume.pdf",
+    mime="application/pdf"
+)
+
+
 # Main function to run the Streamlit app
 def main():
     st.sidebar.title("Navigation")
     profile_summary()  # Add profile summary at the top
-    
-    page = st.sidebar.radio("Go to", ["Introduction", "Predictive Analytics", "Articles", "Showcase Cards", "Customer Journey Mapping and Optimization"])
 
-    if page == "Introduction":
+    options = [
+        "Introduction",
+        "Predictive Analytics",
+        "Articles",
+        "Showcase Cards",
+        "Customer Journey Mapping and Optimization"
+    ]
+    
+    selected_option = st.sidebar.selectbox("Choose a Page", options)
+
+    if selected_option == "Introduction":
         introduction_page()
-    elif page == "Predictive Analytics":
+    elif selected_option == "Predictive Analytics":
         predictive_analytics_page()
-    elif page == "Articles":
+    elif selected_option == "Articles":
         articles_page()
-    elif page == "Showcase Cards":
+    elif selected_option == "Showcase Cards":
         showcase_cards_page()
-    elif page == "Customer Journey Mapping and Optimization":
+    elif selected_option == "Customer Journey Mapping and Optimization":
         customer_journey_page()
 
 if __name__ == "__main__":
