@@ -83,3 +83,146 @@ def generate_email_templates(age, annual_income, credit_score, churn_risk, nps_s
     }
 
     return templates.get(churn_risk, {}).get('Template 1', "No template available for the selected options.")
+
+
+
+
+
+def select_email_template(churn_risk, nps_score, retention_rate):
+    # Define email templates
+    templates = {
+        "Welcome Email": {
+            "Subject": "Welcome to [Company Name]!",
+            "Body": """
+            Hi [Customer Name],
+
+            Welcome to [Company Name]! We are excited to have you on board. If you have any questions or need assistance, feel free to reach out to us. 
+
+            Best regards,
+            The [Company Name] Team
+            """
+        },
+        "New Feature Announcement": {
+            "Subject": "Check Out Our New Feature!",
+            "Body": """
+            Hi [Customer Name],
+
+            We are thrilled to announce a new feature in [Product/Service Name]! This feature will help you [briefly describe the benefit]. 
+
+            Explore it today and let us know your feedback!
+
+            Best,
+            The [Company Name] Team
+            """
+        },
+        "Engagement Follow-Up": {
+            "Subject": "We Miss You at [Company Name]!",
+            "Body": """
+            Hi [Customer Name],
+
+            We noticed that it's been a while since you last engaged with us. We would love to hear your thoughts and help you with anything you need.
+
+            Looking forward to your return!
+
+            Cheers,
+            The [Company Name] Team
+            """
+        },
+        "Customer Feedback Request": {
+            "Subject": "Your Feedback Matters to Us",
+            "Body": """
+            Hi [Customer Name],
+
+            We value your feedback and would appreciate if you could take a few minutes to share your thoughts on our recent [product/service]. Your input will help us improve and serve you better.
+
+            Thank you,
+            The [Company Name] Team
+            """
+        },
+        "Special Offer": {
+            "Subject": "Exclusive Offer Just for You!",
+            "Body": """
+            Hi [Customer Name],
+
+            As a valued customer, we're excited to offer you an exclusive [discount/offer]. Don't miss out on this special deal!
+
+            Use code [OFFER CODE] at checkout.
+
+            Best regards,
+            The [Company Name] Team
+            """
+        },
+        "Reminder Email": {
+            "Subject": "Reminder: [Action Required]",
+            "Body": """
+            Hi [Customer Name],
+
+            Just a friendly reminder to [action required]. We want to make sure you don’t miss out on [benefit or important date].
+
+            Thank you,
+            The [Company Name] Team
+            """
+        },
+        "Thank You Email": {
+            "Subject": "Thank You for Your Purchase!",
+            "Body": """
+            Hi [Customer Name],
+
+            Thank you for your recent purchase of [Product/Service]. We hope you are satisfied with your purchase. 
+
+            If you need any assistance, please do not hesitate to contact us.
+
+            Warm regards,
+            The [Company Name] Team
+            """
+        },
+        "Churn Prevention": {
+            "Subject": "We’re Here to Help",
+            "Body": """
+            Hi [Customer Name],
+
+            We noticed that you haven't been using [Product/Service] recently. Is there anything we can assist you with? We value your business and want to ensure you're getting the most out of our services.
+
+            Please let us know how we can help.
+
+            Best,
+            The [Company Name] Team
+            """
+        },
+        "Renewal Reminder": {
+            "Subject": "Your Subscription is About to Expire",
+            "Body": """
+            Hi [Customer Name],
+
+            This is a reminder that your subscription to [Product/Service] is about to expire on [Expiration Date]. 
+
+            Renew now to continue enjoying uninterrupted service.
+
+            Thank you,
+            The [Company Name] Team
+            """
+        },
+        "Customer Appreciation": {
+            "Subject": "We Appreciate You!",
+            "Body": """
+            Hi [Customer Name],
+
+            We just wanted to take a moment to say thank you for being a loyal customer. We appreciate your support and look forward to continuing to serve you.
+
+            Best wishes,
+            The [Company Name] Team
+            """
+        }
+    }
+
+    # Determine the email template based on scores
+    if churn_risk == 0:
+        if nps_score > 50:
+            return templates["Welcome Email"], templates["New Feature Announcement"], templates["Special Offer"], templates["Thank You Email"], templates["Customer Appreciation"]
+        else:
+            return templates["Engagement Follow-Up"], templates["Customer Feedback Request"], templates["Reminder Email"]
+    else:
+        if retention_rate > 75:
+            return templates["Engagement Follow-Up"], templates["Special Offer"], templates["Reminder Email"]
+        else:
+            return templates["Churn Prevention"], templates["Renewal Reminder"]
