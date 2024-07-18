@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 import numpy as np
 from model import train_model, predict_needs
