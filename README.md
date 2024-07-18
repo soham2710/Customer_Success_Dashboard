@@ -1,33 +1,52 @@
-# Streamlit Model Comparison App
+## Customer Success Projects
 
-## Overview
+This repository contains two advanced Customer Success use cases implemented using Streamlit and TensorFlow:
+1. Customer Journey Mapping and Optimization
+2. Customer Success Playbooks Using Predictive Analytics
 
-This Streamlit app allows users to upload a CSV file containing their data and choose from various machine learning and neural network models. The app trains and evaluates the selected model, performs statistical tests, and provides a summary and interpretation of the results using a Large Language Model (LLM). Users can also input new data to make predictions with the trained model.
+## Project 1: Customer Journey Mapping and Optimization
 
-## Features
+### Objective:
+Develop detailed customer journey maps and use data analytics to optimize each touchpoint for better customer experiences.
 
-- **Data Upload:** Upload CSV files for analysis.
-- **Model Selection:** Choose from a variety of machine learning and neural network models.
-- **Model Evaluation:** View accuracy, classification reports, and confusion matrices.
-- **Statistical Tests:** Perform and display results of various statistical tests.
-- **LLM Integration:** Get summaries and interpretations of statistical tests.
-- **Prediction:** Input new data to make predictions with the trained model.
-- **Model Comparison:** Visualize performance of different models.
+### Features:
+- Visual journey maps of the customer lifecycle.
+- Data analytics to identify bottlenecks and opportunities for improvement.
+- Machine learning model to predict customer satisfaction.
 
-## Requirements
+### Implementation:
+- Uses Streamlit for the UI.
+- TensorFlow for building predictive models.
+- Pandas and Seaborn for data manipulation and visualization.
 
-- Python 3.x
-- Streamlit
-- numpy
-- pandas
-- scikit-learn
-- OpenAI (for LLM integration)
+## Project 2: Customer Success Playbooks Using Predictive Analytics
 
-## Setup
+### Objective:
+Develop dynamic playbooks that use predictive analytics to guide customer success teams in delivering tailored support and proactive engagement.
+
+### Features:
+- Predictive modeling using historical data.
+- Dynamic playbooks that adapt based on predictive insights.
+- Personalized engagement strategies.
+- Performance metrics tracking.
+
+### Implementation:
+- Uses Streamlit for the UI.
+- TensorFlow for building predictive models.
+- Scikit-learn for data preprocessing and model evaluation.
+
+## Setup Instructions
+
+### Prerequisites:
+- Python 3.7 or higher
+- pip (Python package installer)
+
+### Installation:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/streamlit-model-comparison.git
+    git clone https://github.com/yourusername/customer-success-projects.git
+    cd customer-success-projects
     ```
 
 2. Install the required packages:
@@ -35,38 +54,57 @@ This Streamlit app allows users to upload a CSV file containing their data and c
     pip install -r requirements.txt
     ```
 
-3. Set up your OpenAI API key:
+## Running the Projects
+
+### Project 1: Customer Journey Mapping and Optimization
+1. Navigate to the project directory:
     ```bash
-    export OPENAI_API_KEY='your_openai_api_key'
+    cd journey-mapping
     ```
 
-4. Run the Streamlit app:
+2. Run the Streamlit app:
     ```bash
     streamlit run app.py
     ```
 
+### Project 2: Customer Success Playbooks Using Predictive Analytics
+1. Navigate to the project directory:
+    ```bash
+    cd playbooks
+    ```
+
+2. Run the Streamlit app:
+    ```bash
+    streamlit run app.py
+    ```
+
+## Project Structure
+
+### journey-mapping
+- `app.py`: Streamlit application for Customer Journey Mapping and Optimization.
+
+### playbooks
+- `app.py`: Streamlit application for Customer Success Playbooks Using Predictive Analytics.
+
 ## Usage
 
-1. **Upload Data:** Use the sidebar to upload your CSV file.
-2. **Select Model:** Choose a model from the dropdown menu.
-3. **View Results:** See model evaluation metrics, statistical tests, and LLM summaries.
-4. **Predict New Data:** Enter feature values in the sidebar to make predictions.
-5. **Compare Models:** View a bar chart comparing the performance of different models.
+### Customer Journey Mapping and Optimization:
+- The app provides a visual map of the customer journey, highlighting key touchpoints.
+- It includes satisfaction analysis charts and a simple predictive model for customer satisfaction.
+- Users can interact with the data and view predictive insights.
 
-## Code Explanation
-
-- **app.py:** The main script that runs the Streamlit app.
-- **model.py:** Contains functions for data preprocessing, model training, evaluation, statistical tests, and LLM summaries.
-
-## Contributing
-
-Feel free to open issues or submit pull requests if you have suggestions or improvements.
+### Customer Success Playbooks Using Predictive Analytics:
+- The app allows users to view customer data and predictive model performance.
+- It provides personalized playbook suggestions based on predictive insights.
+- Users can test the model with different feature values and get tailored action recommendations.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
-## Contact
+## Acknowledgements
 
-For questions or feedback, please contact [your_email@example.com](mailto:your_email@example.com).
+- Streamlit documentation and community for support and guidance.
+- TensorFlow and Scikit-learn for providing powerful machine learning tools.
+- Open source contributors for their valuable libraries and tools.
 
