@@ -22,18 +22,6 @@ def simulate_customer_data(num_customers):
     }
     return pd.DataFrame(data)
 
-# Function to generate dummy data for customer journey mapping
-def generate_dummy_journey_data():
-    stages = ['Awareness', 'Consideration', 'Purchase', 'Retention', 'Advocacy']
-    customers = np.random.randint(20, 100, size=len(stages))
-    satisfaction = np.round(np.random.uniform(3.0, 5.0, size=len(stages)), 1)
-    data = {
-        'Stage': stages,
-        'Customers': customers,
-        'Satisfaction': satisfaction
-    }
-    return pd.DataFrame(data)
-
 # Function to suggest email templates based on prediction
 def suggest_email_template(prediction_label, selected_action):
     templates = {
@@ -76,12 +64,6 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 model_playbooks.fit(X_train_scaled, y_train, epochs=50, verbose=0, validation_data=(X_test_scaled, y_test))
-
-# Train predictive model
-try:
-    model_playbooks.fit(X_train_scaled, y_train, epochs=50, verbose=0, validation_data=(X_test_scaled, y_test))
-except Exception as e:
-    st.error(f"Error during model training: {e}")
 
 # Function to predict needs based on user input
 def predict_needs(support_tickets, feedback_score, purchase_amount, tenure, needs_engagement):
@@ -186,6 +168,11 @@ def predictive_analytics_page():
 # Main app logic
 def main():
     st.sidebar.title("Navigation")
+    st.sidebar.markdown("""
+                        Choose a page to view:
+                        - **Customer Journey Mapping**
+                        - **Predictive Analytics Playbooks**
+                        """)
     selection = st.sidebar.radio("Go to", ["Customer Journey Mapping", "Predictive Analytics Playbooks"])
 
     if selection == "Customer Journey Mapping":
