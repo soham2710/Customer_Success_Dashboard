@@ -1,5 +1,3 @@
-# model.py
-
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -61,3 +59,27 @@ def predict_needs(support_tickets, feedback_score, purchase_amount, tenure, need
         return 'Monthly'
     else:
         return 'Unknown'  # Handle unexpected cases
+
+# Function to generate email templates based on prediction
+def generate_email_templates(prediction, selected_template):
+    templates = {
+        'Daily': {
+            'Template 1': "Subject: Daily Update\n\nDear Customer,\n\nThank you for your continued engagement with our product. Here are your daily updates...",
+            'Template 2': "Subject: Your Daily Summary\n\nHello,\n\nWe appreciate your frequent use of our services. Here’s a summary of today’s activities..."
+        },
+        'Weekly': {
+            'Template 1': "Subject: Weekly Update\n\nDear Customer,\n\nThank you for your engagement with our product. Here are your weekly updates...",
+            'Template 2': "Subject: Your Weekly Summary\n\nHello,\n\nWe appreciate your continued use of our services. Here’s a summary of this week’s activities..."
+        },
+        'Monthly': {
+            'Template 1': "Subject: Monthly Update\n\nDear Customer,\n\nThank you for your engagement with our product. Here are your monthly updates...",
+            'Template 2': "Subject: Your Monthly Summary\n\nHello,\n\nWe appreciate your loyalty to our services. Here’s a summary of this month’s activities..."
+        },
+        'Unknown': {
+            'Template 1': "Subject: Engagement Update\n\nDear Customer,\n\nWe value your engagement with our product. Here are some updates...",
+            'Template 2': "Subject: Your Engagement Summary\n\nHello,\n\nThank you for using our services. Here’s a summary of your recent activities..."
+        }
+    }
+
+    return templates.get(prediction, {}).get(selected_template, "No template available for the selected options.")
+
