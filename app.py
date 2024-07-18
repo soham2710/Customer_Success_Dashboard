@@ -179,7 +179,10 @@ def showcase_cards_page():
             st.write(f"[View Project]({project['link']})")
 
 import plotly.graph_objects as go
-# Function to simulate customer journey data
+
+----------------------------------------------------------------
+
+#Function to simulate customer journey data
 def simulate_customer_journey_data(num_customers=100):
     data = {
         'CustomerID': np.arange(1, num_customers + 1),
@@ -196,7 +199,7 @@ def customer_journey_page():
     st.title("Customer Journey Mapping and Optimization")
     st.write("""
         Customer journey mapping is a powerful tool for understanding and optimizing the experiences customers have with your brand.
-        
+
         **Steps to create a customer journey map:**
         1. Define your objectives.
         2. Gather customer data.
@@ -229,30 +232,65 @@ def customer_journey_page():
         st.write(f"Average Resolution Time: {stage_data['Resolution Time (Days)'].mean():.2f} days")
 
     st.subheader("Visualizations")
-    
+
     # Visualization of Customer Feedback Scores by Stage
     fig_feedback = px.box(
         journey_data, 
         x='Stage', 
         y='Feedback Score', 
-        title='Customer Feedback Scores by Stage'
+        title='Customer Feedback Scores by Stage',
+        color='Stage',
+        category_orders={'Stage': ['Awareness', 'Consideration', 'Purchase', 'Retention', 'Advocacy']}
     )
-    st.plotly_chart(fig_feedback)
+    fig_feedback.update_layout(boxmode='group')
+    st.plotly_chart(fig_feedback, use_container_width=True)
 
     # Visualization of Resolution Time by Stage
     fig_resolution = px.histogram(
         journey_data,
         x='Resolution Time (Days)',
         color='Stage',
-        title='Distribution of Resolution Time by Stage'
+        title='Distribution of Resolution Time by Stage',
+        barmode='overlay',
+        marginal='rug'
     )
-    st.plotly_chart(fig_resolution)
+    fig_resolution.update_layout(
+        xaxis_title='Resolution Time (Days)',
+        yaxis_title='Count'
+    )
+    st.plotly_chart(fig_resolution, use_container_width=True)
+
+    # Trend Analysis: Average Feedback Score Over Time
+    feedback_trend = journey_data.groupby('Stage').agg({'Feedback Score': ['mean', 'std']}).reset_index()
+    feedback_trend.columns = ['Stage', 'Average Feedback Score', 'Feedback Score Std Dev']
+    fig_feedback_trend = px.line(
+        feedback_trend,
+        x='Stage',
+        y='Average Feedback Score',
+        error_y='Feedback Score Std Dev',
+        title='Trend of Average Feedback Score by Stage',
+        markers=True
+    )
+    fig_feedback_trend.update_layout(
+        xaxis_title='Customer Journey Stage',
+        yaxis_title='Average Feedback Score'
+    )
+    st.plotly_chart(fig_feedback_trend, use_container_width=True)
+
+    # Pain Points Distribution
+    fig_pain_points = px.pie(
+        journey_data,
+        names='Pain Point',
+        title='Distribution of Pain Points',
+        color='Pain Point'
+    )
+    st.plotly_chart(fig_pain_points, use_container_width=True)
 
     # Optimization Suggestions
     st.subheader("Optimization Suggestions")
     st.write("""
         Based on the simulated data, here are some suggestions for optimizing the customer journey:
-        
+
         - **Awareness Stage**: Focus on improving initial engagement through personalized outreach and targeted marketing.
         - **Consideration Stage**: Enhance support and provide detailed product information to address common pain points.
         - **Purchase Stage**: Streamline the checkout process and offer timely assistance to reduce cart abandonment.
@@ -262,8 +300,9 @@ def customer_journey_page():
         Regularly updating and analyzing customer journey maps can help in continuously improving customer experiences and achieving better outcomes.
     """)
 
-import streamlit as st
-import requests
+
+
+----------------------------------------------------------------
 
 def add_custom_css():
     st.markdown(
