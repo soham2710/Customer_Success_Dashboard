@@ -270,8 +270,8 @@ def main():
     st.sidebar.title("Navigation")
     profile_summary()  # Add profile summary at the top
 
-    # Create a list of pages
-    pages = [
+    # Page selection using selectbox
+    options = [
         "Introduction",
         "Predictive Analytics",
         "Articles",
@@ -279,24 +279,17 @@ def main():
         "Customer Journey Mapping and Optimization"
     ]
 
-    # Add links for each page
-    for page in pages:
-        if st.sidebar.button(page):
-            st.session_state.page = page
+    selected_option = st.sidebar.selectbox("Choose a Page", options)
 
-    # Determine which page to display
-    if "page" not in st.session_state:
-        st.session_state.page = "Introduction"
-
-    if st.session_state.page == "Introduction":
+    if selected_option == "Introduction":
         introduction_page()
-    elif st.session_state.page == "Predictive Analytics":
+    elif selected_option == "Predictive Analytics":
         predictive_analytics_page()
-    elif st.session_state.page == "Articles":
+    elif selected_option == "Articles":
         articles_page()
-    elif st.session_state.page == "Showcase Cards":
+    elif selected_option == "Showcase Cards":
         showcase_cards_page()
-    elif st.session_state.page == "Customer Journey Mapping and Optimization":
+    elif selected_option == "Customer Journey Mapping and Optimization":
         customer_journey_page()
 
 if __name__ == "__main__":
