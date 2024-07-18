@@ -277,7 +277,17 @@ def add_custom_css():
 
 def profile_summary():
     st.sidebar.title("Profile Summary")
-    st.sidebar.write("Your profile summary goes here.")
+
+    # Placeholder for profile image
+    st.sidebar.image("https://via.placeholder.com/150", use_column_width=True)  # Placeholder image
+
+    st.sidebar.write(
+        """
+        **Profile Summary**
+
+        I am an experienced AI and data science professional with over 8 years in the IT industry. My expertise spans product management, technical training, and customer success. I hold a Bachelor's degree in Aircraft Maintenance Engineering and am pursuing a PG Diploma in Applied Statistics. Skilled in Python, AWS, and AI tools, I focus on delivering innovative, scalable solutions to drive business growth.
+        """
+    )
     
     # Add a download button for the resume
     resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
@@ -285,7 +295,8 @@ def profile_summary():
         label="Download Resume",
         data=requests.get(resume_url).content,
         file_name="Customer_Success_Resume.pdf",
-        mime="application/pdf"
+        mime="application/pdf",
+        use_container_width=True
     )
     
     # Add social media links with icons
@@ -307,6 +318,8 @@ def main():
     add_custom_css()  # Apply custom CSS
     st.sidebar.title("Navigation")
     
+    profile_summary()  # Add profile summary, image, resume, and social media links
+
     # Navigation options with icons
     st.sidebar.markdown("""
     - 🏠 [Introduction](#Introduction)
@@ -317,7 +330,7 @@ def main():
     """, unsafe_allow_html=True)
 
     # Define the page selection
-    page = st.sidebar.radio("Choose a Page", [
+    page = st.sidebar.selectbox("Choose a Page", [
         "Introduction",
         "Predictive Analytics",
         "Articles",
@@ -339,4 +352,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
