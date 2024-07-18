@@ -126,6 +126,19 @@ def showcase_cards_page():
             st.write(project["description"])
             st.write(f"[View Project]({project['link']})")
 
+import plotly.graph_objects as go
+# Function to simulate customer journey data
+def simulate_customer_journey_data(num_customers=100):
+    data = {
+        'CustomerID': np.arange(1, num_customers + 1),
+        'Stage': np.random.choice(['Awareness', 'Consideration', 'Purchase', 'Retention', 'Advocacy'], num_customers),
+        'Interaction': np.random.choice(['Email', 'Ad', 'Social Media', 'In-Store', 'Support Call'], num_customers),
+        'Feedback Score': np.round(np.random.uniform(1.0, 5.0, num_customers), 1),
+        'Pain Point': np.random.choice(['Price', 'Quality', 'Customer Service', 'Delivery', 'None'], num_customers),
+        'Resolution Time (Days)': np.random.randint(1, 15, num_customers)  # Example field
+    }
+    return pd.DataFrame(data)
+
 # Customer Journey Mapping and Optimization Page
 def customer_journey_page():
     st.title("Customer Journey Mapping and Optimization")
@@ -145,9 +158,7 @@ def customer_journey_page():
         - Enhancing the renewal and upsell journey.
 
         By understanding and optimizing these journeys, you can improve customer satisfaction and drive better business outcomes.
-        
-        ### Simulated Customer Journey Data
-        """)
+    """)
 
     num_customers = st.number_input("Number of Customers", min_value=1, value=100)
     journey_data = simulate_customer_journey_data(num_customers)
@@ -162,9 +173,9 @@ def customer_journey_page():
     st.write(f"Number of Customers: {stage_data.shape[0]}")
     st.write(f"Average Feedback Score: {stage_data['Feedback Score'].mean():.2f}")
     st.write(f"Most Common Pain Point: {stage_data['Pain Point'].mode()[0]}")
-    st.write(f"Average Resolution Time: {stage_data['Resolution Time (Days)'].mean():.2f} days")
+    if 'Resolution Time (Days)' in stage_data.columns:
+        st.write(f"Average Resolution Time: {stage_data['Resolution Time (Days)'].mean():.2f} days")
 
-    # Visualize Customer Journey Data
     st.subheader("Visualizations")
     
     # Visualization of Customer Feedback Scores by Stage
@@ -199,18 +210,33 @@ def customer_journey_page():
         Regularly updating and analyzing customer journey maps can help in continuously improving customer experiences and achieving better outcomes.
     """)
 
-# Main app logic
+
+
+
+
+# Main function to run the Streamlit app
 def main():
     st.sidebar.title("Navigation")
-    pages = {
-        "Introduction": introduction_page,
-        "Predictive Analytics": predictive_analytics_page,
-        "Articles": articles_page,
-        "Showcase Cards": showcase_cards_page,
-        "Customer Journey Mapping and Optimization": customer_journey_page
-    }
-    selection = st.sidebar.radio("Go to", list(pages.keys()))
-    pages[selection]()
+    page = st.sidebar.radio("Go to", ["Introduction", "Predictive Analytics", "Articles", "Showcase Cards", "Customer Journey Mapping and Optimization"])
+
+    profile_summary()  # Add profile summary at the top
+
+    if page == "Introduction":
+        introduction_page()
+    elif page == "Predictive Analytics":
+        predictive_analytics_page()
+    elif page == "Articles":
+        articles_page()
+    elif page == "Showcase Cards":
+        showcase_cards_page()
+    elif page == "Customer Journey Mapping and Optimization":
+        customer_journey_page()
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
