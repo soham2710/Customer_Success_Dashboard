@@ -241,64 +241,106 @@ def customer_journey_page():
 
 
 
+import streamlit as st
+import requests
 
-# Define the profile_summary function
+def add_custom_css():
+    st.markdown(
+        """
+        <style>
+        /* Sidebar styling */
+        .css-1d391kg {  /* Sidebar container */
+            background-color: #f5f5f5;  /* Background color */
+            padding: 20px;  /* Padding */
+        }
+        .css-1d391kg .css-1v0mbdj {  /* Sidebar title */
+            color: #333;  /* Text color */
+            font-size: 20px;  /* Font size */
+            font-weight: bold;  /* Font weight */
+        }
+        .css-1d391kg .css-1m8z4rf {  /* Sidebar links */
+            color: #007bff;  /* Link color */
+            text-decoration: none;  /* Remove underline */
+        }
+        .css-1d391kg .css-1m8z4rf:hover {  /* Hover effect */
+            text-decoration: underline;
+        }
+        /* Custom button styling */
+        .css-1kp0b9p {
+            background-color: #007bff;  /* Button background color */
+            color: white;  /* Button text color */
+        }
+        .css-1kp0b9p:hover {
+            background-color: #0056b3;  /* Button hover color */
+        }
+        </style>
+        """, unsafe_allow_html=True
+    )
+
 def profile_summary():
-    st.sidebar.image("https://via.placeholder.com/150", use_column_width=True)  # Replace with your profile image
-    st.sidebar.write("**Name:** Soham Sharma")
-    st.sidebar.write("**Title:** Customer Success and Product Management Expert")
-    st.sidebar.write("**Summary:** A passionate AI and product management professional with extensive experience in data analytics, customer success strategies, and AI-driven solutions. Expertise in creating impactful AI projects and optimizing customer experiences.")
-
+    st.sidebar.title("Profile Summary")
+    st.sidebar.write("Your profile summary goes here.")
+    
     # Add a download button for the resume
     resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
-    st.sidebar.markdown(f"[Download Resume]({resume_url})", unsafe_allow_html=True)
-
+    st.sidebar.download_button(
+        label="Download Resume",
+        data=requests.get(resume_url).content,
+        file_name="Customer_Success_Resume.pdf",
+        mime="application/pdf"
+    )
     
-    # Add social media links
+    # Add social media links with icons
     st.sidebar.title("Connect with Me")
     social_links = {
-        "LinkedIn": "https://www.linkedin.com/in/soham-sharma/",
-        "GitHub": "https://github.com/soham2710",
+        "LinkedIn": "https://www.linkedin.com/in/your-profile/",
+        "GitHub": "https://github.com/your-profile/"
+    }
+
+    icons = {
+        "LinkedIn": "🔗",
+        "GitHub": "🐙"
     }
 
     for platform, url in social_links.items():
-        st.sidebar.markdown(f"[{platform}]({url})", unsafe_allow_html=True)
+        st.sidebar.markdown(f"{icons[platform]} [ {platform} ]({url})", unsafe_allow_html=True)
 
-
-# Main function to run the Streamlit app
 def main():
+    add_custom_css()  # Apply custom CSS
     st.sidebar.title("Navigation")
-    profile_summary()  # Add profile summary at the top
+    
+    # Navigation options with icons
+    st.sidebar.markdown("""
+    - 🏠 [Introduction](#Introduction)
+    - 📊 [Predictive Analytics](#Predictive-Analytics)
+    - 📄 [Articles](#Articles)
+    - 🖼️ [Showcase Cards](#Showcase-Cards)
+    - 🗺️ [Customer Journey Mapping and Optimization](#Customer-Journey-Mapping-and-Optimization)
+    """, unsafe_allow_html=True)
 
-    # Page selection using selectbox
-    options = [
+    # Define the page selection
+    page = st.sidebar.radio("Choose a Page", [
         "Introduction",
         "Predictive Analytics",
         "Articles",
         "Showcase Cards",
         "Customer Journey Mapping and Optimization"
-    ]
+    ])
 
-    selected_option = st.sidebar.selectbox("Choose a Page", options)
-
-    if selected_option == "Introduction":
+    # Page selection logic
+    if page == "Introduction":
         introduction_page()
-    elif selected_option == "Predictive Analytics":
+    elif page == "Predictive Analytics":
         predictive_analytics_page()
-    elif selected_option == "Articles":
+    elif page == "Articles":
         articles_page()
-    elif selected_option == "Showcase Cards":
+    elif page == "Showcase Cards":
         showcase_cards_page()
-    elif selected_option == "Customer Journey Mapping and Optimization":
+    elif page == "Customer Journey Mapping and Optimization":
         customer_journey_page()
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
 
 
 
