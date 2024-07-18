@@ -1,3 +1,5 @@
+# model.py
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -50,22 +52,12 @@ def predict_needs(support_tickets, feedback_score, purchase_amount, tenure, need
     model = train_model(simulate_customer_data(100))  # Replace with actual data
     prediction = model.predict(df)
 
-    return prediction[0]  # Assuming single prediction for simplicity
-
-# Function to generate email templates based on prediction
-def generate_email_templates(needs_engagement, selected_template):
-    if needs_engagement == 'Yes':
-        return f"Dear Customer, based on our analysis, we recommend {selected_template} to enhance your experience."
+    # Convert numerical prediction to category
+    if prediction == 0:
+        return 'Daily'
+    elif prediction == 1:
+        return 'Weekly'
+    elif prediction == 2:
+        return 'Monthly'
     else:
-        return f"Dear Customer, thank you for your feedback. We appreciate your input regarding {selected_template}."
-
-# Function to generate dummy journey data (for customer journey mapping)
-def generate_dummy_journey_data():
-    stages = ['Awareness', 'Consideration', 'Purchase', 'Retention']
-    satisfaction = np.random.randint(1, 10, len(stages))
-    data = {
-        'Stage': stages,
-        'Customers': np.random.randint(100, 1000, len(stages)),
-        'Satisfaction': satisfaction
-    }
-    return pd.DataFrame(data)
+        return 'Unknown'  # Handle unexpected cases
