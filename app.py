@@ -249,19 +249,20 @@ def profile_summary():
     st.sidebar.write("**Title:** Customer Success and Product Management Expert")
     st.sidebar.write("**Summary:** A passionate AI and product management professional with extensive experience in data analytics, customer success strategies, and AI-driven solutions. Expertise in creating impactful AI projects and optimizing customer experiences.")
 
-# File download
-    url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
-    response = requests.get(url)
-    file_content = response.content
+    # Add a download button for the resume
+    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
+    st.sidebar.markdown(f"[Download Resume]({resume_url})", unsafe_allow_html=True)
+
     
-    st.download_button(
-        label="Download Resume",
-        data=file_content,
-        file_name="Customer_Success_Resume.pdf",
-        mime="application/pdf"
-    )
-    st.sidebar.markdown(f"[Download Resume]({url})", unsafe_allow_html=True)
-    
+    # Add social media links
+    st.sidebar.title("Connect with Me")
+    social_links = {
+        "LinkedIn": "https://www.linkedin.com/in/soham-sharma/",
+        "GitHub": "https://github.com/soham2710",
+    }
+
+    for platform, url in social_links.items():
+        st.sidebar.markdown(f"[{platform}]({url})", unsafe_allow_html=True)
 
 
 # Main function to run the Streamlit app
