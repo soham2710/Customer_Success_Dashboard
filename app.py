@@ -213,13 +213,19 @@ def customer_journey_page():
 
 
 
+# Define the profile_summary function
+def profile_summary():
+    st.sidebar.image("https://via.placeholder.com/150", use_column_width=True)  # Replace with your profile image
+    st.sidebar.write("**Name:** Soham Sharma")
+    st.sidebar.write("**Title:** Customer Success and Product Management Expert")
+    st.sidebar.write("**Summary:** A passionate AI and product management professional with extensive experience in data analytics, customer success strategies, and AI-driven solutions. Expertise in creating impactful AI projects and optimizing customer experiences.")
 
 # Main function to run the Streamlit app
 def main():
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ["Introduction", "Predictive Analytics", "Articles", "Showcase Cards", "Customer Journey Mapping and Optimization"])
-
     profile_summary()  # Add profile summary at the top
+    
+    page = st.sidebar.radio("Go to", ["Introduction", "Predictive Analytics", "Articles", "Showcase Cards", "Customer Journey Mapping and Optimization"])
 
     if page == "Introduction":
         introduction_page()
@@ -234,6 +240,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
 
 
 
