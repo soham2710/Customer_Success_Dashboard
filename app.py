@@ -15,7 +15,7 @@ st.set_page_config(page_title="Customer Success App", layout="wide")
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from model import simulate_predictive_analytics_data, generate_email_templates
+from model import simulate_predictive_analytics_data, select_email_template
 
 def simulate_customer_data(num_customers):
     np.random.seed(42)
