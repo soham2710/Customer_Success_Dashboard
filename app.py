@@ -220,14 +220,17 @@ def profile_summary():
     st.sidebar.write("**Title:** Customer Success and Product Management Expert")
     st.sidebar.write("**Summary:** A passionate AI and product management professional with extensive experience in data analytics, customer success strategies, and AI-driven solutions. Expertise in creating impactful AI projects and optimizing customer experiences.")
 
-st.download_button(
-    label="Download Resume",
-    data=open("https://github.com/soham2710/Customer_Success_Dashboard/blob/main/Customer Success Resume.pdf", "rb").read(),
-    file_name="Customer Success Resume.pdf",
-    mime="application/pdf"
-)
-
-
+# File download
+    url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
+    response = requests.get(url)
+    file_content = response.content
+    
+    st.download_button(
+        label="Download Resume",
+        data=file_content,
+        file_name="Customer_Success_Resume.pdf",
+        mime="application/pdf"
+    )
 # Main function to run the Streamlit app
 def main():
     st.sidebar.title("Navigation")
