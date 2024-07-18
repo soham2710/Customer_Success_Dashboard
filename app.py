@@ -77,12 +77,22 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 model_playbooks.fit(X_train_scaled, y_train, epochs=50, verbose=0, validation_data=(X_test_scaled, y_test))
 
+# Train predictive model
+try:
+    model_playbooks.fit(X_train_scaled, y_train, epochs=50, verbose=0, validation_data=(X_test_scaled, y_test))
+except Exception as e:
+    st.error(f"Error during model training: {e}")
+
 # Function to predict needs based on user input
 def predict_needs(support_tickets, feedback_score, purchase_amount, tenure, needs_engagement):
-    input_data = np.array([[support_tickets, feedback_score, purchase_amount, tenure, needs_engagement]])
-    input_data_scaled = scaler.transform(input_data)
-    prediction = model_playbooks.predict(input_data_scaled)[0]
-    return prediction
+    try:
+        input_data = np.array([[support_tickets, feedback_score, purchase_amount, tenure, needs_engagement]])
+        input_data_scaled = scaler.transform(input_data)
+        prediction = model_playbooks.predict(input_data_scaled)[0]
+        return prediction
+    except Exception as e:
+        st.error(f"Error during prediction: {e}")
+        return None
 
 # Function to generate email templates based on prediction label and selected action
 def generate_email_templates(prediction_label, selected_action):
