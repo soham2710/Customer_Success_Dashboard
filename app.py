@@ -20,7 +20,8 @@ def simulate_customer_data(num_customers):
     }
     return pd.DataFrame(data)
 
-# Customer Success Playbooks Using Predictive Analytics Page
+
+# Predictive Analytics Playbooks Page
 def predictive_analytics_page():
     st.title("Customer Success Playbooks Using Predictive Analytics")
     st.markdown("""
@@ -46,6 +47,10 @@ def predictive_analytics_page():
     needs_engagement_binary = 1 if needs_engagement == 'Yes' else 0
     prediction = predict_needs(support_tickets, feedback_score, purchase_amount, tenure, needs_engagement_binary)
     
+    # Handle prediction type if necessary (example: convert to float)
+    if isinstance(prediction, np.ndarray):
+        prediction = prediction[0]  # Assuming the first element is the prediction
+    
     st.write(f"Predicted Usage Frequency: {prediction}")
     
     # Select email template based on prediction
@@ -61,6 +66,9 @@ def predictive_analytics_page():
     # Display selected email template
     st.subheader("Email Template")
     st.code(generate_email_templates('Yes' if prediction > 0.5 else 'No', selected_template), language='markdown')
+
+
+
 
 # Introduction Page
 def introduction_page():
