@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 # Page configuration
 st.set_page_config(page_title="Customer Success App", layout="wide")
@@ -18,33 +21,64 @@ def simulate_customer_data(num_customers):
     }
     return pd.DataFrame(data)
 
-# Customer Journey Mapping and Optimization Page
-def customer_journey_page():
-    st.title("Customer Journey Mapping and Optimization")
-    st.markdown("""
-                This page visualizes customer journey maps and optimizes touchpoints for better customer experiences.
-                """)
-    
-    # Simulated customer data
-    num_customers = 50
-    df_customers = simulate_customer_data(num_customers)
-    
-    # Display customer data table
-    st.subheader("Customer Data")
-    st.dataframe(df_customers)
-    
-    # Customer journey map
-    st.subheader("Customer Journey Map")
-    fig = px.scatter(df_customers, x='Tenure (Months)', y='Purchase Amount', color='Usage Frequency', size='Support Tickets', hover_data=['Feedback Score'])
-    st.plotly_chart(fig)
+# Function to suggest email templates based on customer needs
+def suggest_email_template(predicted_need, template_name):
+    templates = {
+        'Offer a product demo': """
+                                Dear [Customer],
 
-    # Optimization strategies
-    st.subheader("Optimization Strategies")
-    st.markdown("""
-                - **Journey Mapping:** Create visual maps highlighting key touchpoints.
-                - **Data Analytics:** Analyze data at each touchpoint to identify bottlenecks and pain points.
-                - **Continuous Improvement:** Implement changes based on data insights and customer feedback.
-                """)
+                                We noticed you might benefit from a personalized demo to explore our latest features. 
+                                Please let us know a convenient time for you.
+
+                                Best regards,
+                                Your Customer Success Team
+                                """,
+        'Schedule a follow-up call': """
+                                    Dear [Customer],
+
+                                    We would like to schedule a follow-up call to discuss your experience with our product and address any concerns you may have. 
+                                    Please let us know a suitable time for you.
+
+                                    Best regards,
+                                    Your Customer Success Team
+                                    """,
+        'Send a feedback survey': """
+                                Dear [Customer],
+
+                                Thank you for your continued support! We would love to hear your feedback 
+                                to improve our services. Please take a moment to fill out our feedback survey.
+
+                                Regards,
+                                Your Customer Success Team
+                                """,
+        'Thank you for your feedback': """
+                                        Dear [Customer],
+
+                                        Thank you for your valuable feedback! We appreciate your insights and will use them to improve our services.
+
+                                        Regards,
+                                        Your Customer Success Team
+                                        """,
+        'Invite to customer success webinar': """
+                                                Dear [Customer],
+
+                                                We are excited to invite you to our upcoming customer success webinar, where we will share tips and best practices for using our product effectively. Please join us on [date].
+
+                                                Best regards,
+                                                Your Customer Success Team
+                                                """,
+        'Send promotional offers': """
+                                    Dear [Customer],
+
+                                    We have some exciting promotional offers just for you! Check your account for exclusive discounts and offers.
+
+                                    Regards,
+                                    Your Customer Success Team
+                                    """
+        # Add more templates as needed
+    }
+
+    return templates.get(template_name, "Template not found")
 
 # Customer Success Playbooks Using Predictive Analytics Page
 def predictive_analytics_page():
@@ -60,6 +94,27 @@ def predictive_analytics_page():
                 - **Dynamic Playbooks:** Create playbooks that adapt based on predictive insights.
                 - **Personalized Engagement:** Tailor support and engagement based on predicted customer behavior.
                 """)
+    
+    # Predictive model simulation
+    st.subheader("Predict Customer Needs")
+    feature1 = st.slider("Feature 1", 0.0, 1.0, 0.5)
+    feature2 = st.slider("Feature 2", 0.0, 1.0, 0.5)
+    prediction = model_playbooks.predict(np.array([[feature1, feature2]]))
+    st.write(f"Predicted Need: {'Yes' if prediction > 0.5 else 'No'}")
+    
+    # Select email template based on prediction
+    st.subheader("Select Email Template")
+    if prediction > 0.5:
+        selected_template = st.selectbox("Choose Email Template", 
+                                         ["Offer a product demo", "Schedule a follow-up call", 
+                                          "Invite to customer success webinar", "Send promotional offers"])
+    else:
+        selected_template = st.selectbox("Choose Email Template", 
+                                         ["Send a feedback survey", "Thank you for your feedback"])
+    
+    # Display selected email template
+    st.subheader("Email Template")
+    st.code(suggest_email_template('Yes' if prediction > 0.5 else 'No', selected_template), language='markdown')
 
 # Main app logic to switch between pages
 def main():
