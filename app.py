@@ -112,16 +112,19 @@ def showcase_cards_page():
     st.write("Here are some key projects and case studies:")
     
     projects = [
-        {"title": "Project A", "description": "A comprehensive case study on improving customer retention.", "link": "https://example.com/projectA", "image": "https://via.placeholder.com/150"},
-        {"title": "Project B", "description": "An innovative approach to customer journey mapping.", "link": "https://example.com/projectB", "image": "https://via.placeholder.com/150"},
-        {"title": "Project C", "description": "Using AI to predict customer needs and enhance satisfaction.", "link": "https://example.com/projectC", "image": "https://via.placeholder.com/150"},
+        {"title": "Project A", "description": "Description of Project A.", "image": "https://via.placeholder.com/150", "link": "https://example.com/project-a"},
+        {"title": "Project B", "description": "Description of Project B.", "image": "https://via.placeholder.com/150", "link": "https://example.com/project-b"},
+        {"title": "Project C", "description": "Description of Project C.", "image": "https://via.placeholder.com/150", "link": "https://example.com/project-c"}
     ]
-    
+
     for project in projects:
-        st.image(project["image"], width=150)
-        st.write(f"### {project['title']}")
-        st.write(f"{project['description']}")
-        st.write(f"[Learn more]({project['link']})")
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.image(project["image"], width=150)
+        with col2:
+            st.write(f"**{project['title']}**")
+            st.write(project["description"])
+            st.write(f"[View Project]({project['link']})")
 
 # Customer Journey Mapping and Optimization Page
 def customer_journey_page():
@@ -142,6 +145,58 @@ def customer_journey_page():
         - Enhancing the renewal and upsell journey.
 
         By understanding and optimizing these journeys, you can improve customer satisfaction and drive better business outcomes.
+        
+        ### Simulated Customer Journey Data
+        """)
+
+    num_customers = st.number_input("Number of Customers", min_value=1, value=100)
+    journey_data = simulate_customer_journey_data(num_customers)
+
+    st.subheader("Simulated Customer Journey Data")
+    st.dataframe(journey_data)
+
+    st.subheader("Customer Journey Analysis")
+    selected_stage = st.selectbox("Select Stage", journey_data['Stage'].unique())
+    stage_data = journey_data[journey_data['Stage'] == selected_stage]
+    st.write(f"### Insights for the {selected_stage} Stage")
+    st.write(f"Number of Customers: {stage_data.shape[0]}")
+    st.write(f"Average Feedback Score: {stage_data['Feedback Score'].mean():.2f}")
+    st.write(f"Most Common Pain Point: {stage_data['Pain Point'].mode()[0]}")
+    st.write(f"Average Resolution Time: {stage_data['Resolution Time (Days)'].mean():.2f} days")
+
+    # Visualize Customer Journey Data
+    st.subheader("Visualizations")
+    
+    # Visualization of Customer Feedback Scores by Stage
+    fig_feedback = px.box(
+        journey_data, 
+        x='Stage', 
+        y='Feedback Score', 
+        title='Customer Feedback Scores by Stage'
+    )
+    st.plotly_chart(fig_feedback)
+
+    # Visualization of Resolution Time by Stage
+    fig_resolution = px.histogram(
+        journey_data,
+        x='Resolution Time (Days)',
+        color='Stage',
+        title='Distribution of Resolution Time by Stage'
+    )
+    st.plotly_chart(fig_resolution)
+
+    # Optimization Suggestions
+    st.subheader("Optimization Suggestions")
+    st.write("""
+        Based on the simulated data, here are some suggestions for optimizing the customer journey:
+        
+        - **Awareness Stage**: Focus on improving initial engagement through personalized outreach and targeted marketing.
+        - **Consideration Stage**: Enhance support and provide detailed product information to address common pain points.
+        - **Purchase Stage**: Streamline the checkout process and offer timely assistance to reduce cart abandonment.
+        - **Retention Stage**: Implement proactive communication strategies to keep customers engaged and satisfied.
+        - **Advocacy Stage**: Encourage positive feedback and referrals through loyalty programs and exceptional customer service.
+
+        Regularly updating and analyzing customer journey maps can help in continuously improving customer experiences and achieving better outcomes.
     """)
 
 # Main app logic
