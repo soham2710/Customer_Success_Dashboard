@@ -260,7 +260,7 @@ def profile_summary():
         file_name="Customer_Success_Resume.pdf",
         mime="application/pdf"
     )
-    st.sidebar.markdown(f"[Download Resume]({resume_url})", unsafe_allow_html=True)
+    st.sidebar.markdown(f"[Download Resume]({url})", unsafe_allow_html=True)
     
 
 
