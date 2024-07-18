@@ -130,7 +130,6 @@ email_templates = {
         """
     }
 }
-
 # Function to simulate predictive analytics data
 def simulate_predictive_analytics_data(num_customers=100):
     data = {
@@ -139,9 +138,9 @@ def simulate_predictive_analytics_data(num_customers=100):
         'Annual Income (USD)': np.random.randint(30000, 150000, num_customers),
         'Credit Score': np.random.randint(300, 850, num_customers),
         'Previous Purchases': np.random.randint(0, 20, num_customers),
-        'Churn Risk': np.random.choice([0, 1], num_customers),  # 0: Low Risk, 1: High Risk
-        'NPS Score': np.random.randint(-100, 101, num_customers),  # Net Promoter Score
-        'Retention Rate (%)': np.random.uniform(50, 100, num_customers)  # Retention Rate
+        'Churn Risk': np.random.choice([0, 1], num_customers),
+        'NPS Score': np.random.randint(-100, 101, num_customers),
+        'Retention Rate (%)': np.random.uniform(50, 100, num_customers)
     }
     return pd.DataFrame(data)
 
@@ -200,15 +199,14 @@ def simulate_customer_data(num_customers):
         'Annual Income (USD)': np.random.randint(30000, 150000, num_customers),
         'Credit Score': np.random.randint(300, 850, num_customers),
         'Previous Purchases': np.random.randint(0, 20, num_customers),
-        'Churn Risk': np.random.choice([0, 1], num_customers),  # 0: Low Risk, 1: High Risk
-        'NPS Score': np.random.randint(-100, 101, num_customers),  # Net Promoter Score
-        'Retention Rate (%)': np.random.uniform(50, 100, num_customers)  # Retention Rate
+        'Churn Risk': np.random.choice([0, 1], num_customers),
+        'NPS Score': np.random.randint(-100, 101, num_customers),
+        'Retention Rate (%)': np.random.uniform(50, 100, num_customers)
     }
     return pd.DataFrame(data)
 
 # Function to predict customer needs (dummy implementation)
 def predict_needs(age, annual_income, credit_score, previous_purchases, nps_score, retention_rate):
-    # Dummy implementation, replace with actual predictive model
     data = {
         'Age': [age],
         'Annual Income (USD)': [annual_income],
@@ -219,7 +217,7 @@ def predict_needs(age, annual_income, credit_score, previous_purchases, nps_scor
     }
     df = pd.DataFrame(data)
 
-    model = train_model(simulate_predictive_analytics_data(100))  # Replace with actual data
+    model = train_model(simulate_predictive_analytics_data(100))
     prediction = model.predict(df)
 
     return 'High Risk' if prediction[0] == 1 else 'Low Risk'
@@ -239,10 +237,7 @@ def generate_email_templates(age, annual_income, credit_score, churn_risk, nps_s
 
     return templates.get(churn_risk, {}).get('Template 1', "No template available for the selected options.")
 
-# Function to select email template
-def select_email_template(churn_risk, nps_score, retention_rate):
-    # Define your email templates
-templates = {
+email_templates = {
     "Welcome Email": {
         "Subject": "Welcome to [Company Name]!",
         "Body": """
