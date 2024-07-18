@@ -4,6 +4,21 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
+
+# Function to simulate predictive analytics data
+def simulate_predictive_analytics_data(num_customers=100):
+    data = {
+        'CustomerID': np.arange(1, num_customers + 1),
+        'Age': np.random.randint(18, 70, num_customers),
+        'Annual Income (USD)': np.random.randint(30000, 150000, num_customers),
+        'Credit Score': np.random.randint(300, 850, num_customers),
+        'Previous Purchases': np.random.randint(0, 20, num_customers),
+        'Churn Risk': np.random.choice([0, 1], num_customers),  # 0: Low Risk, 1: High Risk
+        'NPS Score': np.random.randint(-100, 101, num_customers),  # Net Promoter Score
+        'Retention Rate (%)': np.random.uniform(50, 100, num_customers)  # Retention Rate
+    }
+    return pd.DataFrame(data)
+
 # Function to train the predictive model
 def train_model(data):
     X = data[['Support Tickets', 'Feedback Score', 'Purchase Amount', 'Tenure (Months)', 'Needs Engagement']]
