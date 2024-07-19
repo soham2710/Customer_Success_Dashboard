@@ -255,9 +255,7 @@ def customer_journey_mapping_page():
 
 ######Predictive Analytics Page
 
-# URL of the pickle file
-model_url = 'https://github.com/soham2710/Customer_Success_Dashboard/raw/main/predictive_model.pkl'
-
+# Function to load the model from a URL
 def load_model_from_url(url):
     try:
         response = requests.get(url)
@@ -268,6 +266,9 @@ def load_model_from_url(url):
     except Exception as e:
         st.error(f"Error loading the model: {e}")
         return None
+
+# URL of the pickle file
+model_url = 'https://github.com/soham2710/Customer_Success_Dashboard/raw/main/predictive_model.pkl'
 
 # Load the model
 model = load_model_from_url(model_url)
@@ -285,8 +286,8 @@ def generate_predictions(features):
         st.error("Model not loaded.")
         return [0] * 12  # Return a default value in case of error
 
+# Dummy implementation for email suggestions
 def suggest_email_template(predictions):
-    # Dummy implementation for email suggestions
     return [
         "Template 1: Improve NPS with personalized follow-ups.",
         "Template 2: Enhance Customer Satisfaction with targeted feedback requests.",
@@ -333,10 +334,7 @@ def predictive_analytics_page():
             st.write(f"- {email}")
 
 def show_navbar():
-    st.sidebar.title("Navigation")
-
-    profile_image_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/BH6A0835.jpg"
-    st.sidebar.image(profile_image_url, use_column_width=True)
+    st.sidebar.title("CSM Dashboard")
     st.sidebar.write("**Name:** Your Name")
     st.sidebar.write("**Position:** Your Position")
     st.sidebar.write("**Bio:** Brief bio or description.")
@@ -350,15 +348,10 @@ def show_navbar():
         mime="application/pdf"
     )
 
-    pages = [
-        "Introduction",
-        "Contact",
-        "Articles",
-        "Customer Journey Mapping",
-        "Predictive Analytics"  # Add the new page here
-    ]
+    pages = ["Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"]
     selected_page = st.sidebar.radio("Select a page", pages)
     return selected_page
+
 
 def main():
     st.set_page_config(page_title="My Web App", page_icon=":guardsman:", layout="wide")
