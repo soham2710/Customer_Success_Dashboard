@@ -14,8 +14,14 @@ def introduction_page():
     row1_col1, row1_col2 = st.columns([1, 2])  # Adjust the ratio as needed
     
     with row1_col1:
-        # Display the image
-        st.image("https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg", width=150)  # Adjust width as needed
+        st.markdown(
+            """
+            <div style="display: flex; align-items: center; height: 150px;">
+                <img src="https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg" style="height: 100%; width: auto;"/>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     with row1_col2:
         # Contact details and download resume
