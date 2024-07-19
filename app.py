@@ -56,6 +56,10 @@ def articles_page():
     # Convert DataFrame to HTML
     html = df.to_html(escape=False, index=False, classes="table table-striped")
 
+    # Render HTML in Streamlit
+    st.markdown(html, unsafe_allow_html=True)
+
+
 # Define the navigation bar
 def show_navbar():
     st.sidebar.title("Navigation")
