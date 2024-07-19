@@ -306,21 +306,56 @@ def predictive_analytics_page():
 
     st.table(metrics_df)
 
-    st.subheader("Suggestions for Improvement")
-    suggestions = {
-        "Net Promoter Score": "Focus on personalized follow-ups and customer feedback.",
-        "Customer Lifetime Value": "Improve customer engagement and upsell opportunities.",
-        "Customer Acquisition Cost": "Optimize marketing strategies and reduce costs.",
-        "Churn Rate": "Enhance customer support and provide value-added services.",
-        "Customer Satisfaction Score": "Solicit feedback and improve service quality.",
-        "Customer Retention Rate": "Strengthen loyalty programs and customer engagement.",
-        "Monthly Recurring Revenue": "Increase subscription offerings and upsell opportunities.",
-        "Average Time on Platform": "Enhance user experience and platform features.",
-        "First Contact Resolution Rate": "Improve support efficiency and training.",
-        "Free Trial Conversion Rate": "Optimize trial experience and onboarding.",
-        "Repeat Purchase Rate": "Encourage repeat purchases through targeted offers.",
-        "Customer Effort Score": "Streamline processes and simplify interactions."
-    }
+    st.subheader("Improvement Suggestions")
+    st.write("""
+    **Net Promoter Score (NPS)**: 
+    *Formula*: (Percentage of Promoters - Percentage of Detractors) × 100
+    *Improvement*: Increase customer satisfaction by addressing key pain points and delivering exceptional customer service.
+
+    **Customer Lifetime Value (CLV)**: 
+    *Formula*: Average Purchase Value × Number of Purchases per Year × Customer Lifespan
+    *Improvement*: Increase customer retention through loyalty programs and personalized offers.
+
+    **Customer Acquisition Cost (CAC)**: 
+    *Formula*: Total Cost of Acquiring New Customers / Number of New Customers Acquired
+    *Improvement*: Optimize marketing strategies to reduce costs and improve conversion rates.
+
+    **Churn Rate**: 
+    *Formula*: (Number of Customers Lost During Period / Total Number of Customers at Start of Period) × 100
+    *Improvement*: Implement retention strategies such as regular check-ins and addressing customer feedback promptly.
+
+    **Customer Satisfaction Score (CSAT)**: 
+    *Formula*: (Number of Satisfied Customers / Number of Survey Responses) × 100
+    *Improvement*: Enhance product/service quality and provide excellent customer support.
+
+    **Customer Retention Rate**: 
+    *Formula*: ((Number of Customers at End of Period - Number of New Customers) / Number of Customers at Start of Period) × 100
+    *Improvement*: Foster strong relationships with existing customers and offer value-added services.
+
+    **Monthly Recurring Revenue (MRR)**: 
+    *Formula*: Total Revenue from Subscriptions / Number of Months
+    *Improvement*: Increase subscription rates and offer upsells to boost recurring revenue.
+
+    **Average Time on Platform**: 
+    *Formula*: Total Time Spent by All Users / Number of Users
+    *Improvement*: Enhance user experience to encourage longer engagement with the platform.
+
+    **First Contact Resolution Rate (FCR)**: 
+    *Formula*: (Number of Issues Resolved on First Contact / Total Number of Issues) × 100
+    *Improvement*: Improve training for customer service representatives to resolve issues more effectively on the first contact.
+
+    **Free Trial Conversion Rate**: 
+    *Formula*: (Number of Free Trial Users Who Become Paying Customers / Total Number of Free Trial Users) × 100
+    *Improvement*: Optimize the free trial experience to highlight key benefits and increase conversions.
+
+    **Repeat Purchase Rate**: 
+    *Formula*: (Number of Repeat Purchases / Total Number of Purchases) × 100
+    *Improvement*: Encourage repeat purchases through targeted marketing and loyalty programs.
+
+    **Customer Effort Score (CES)**: 
+    *Formula*: Average Score from Customer Effort Surveys
+    *Improvement*: Simplify processes and interactions to reduce customer effort and enhance satisfaction.
+    """)
 
     for metric, suggestion in suggestions.items():
         st.write(f"For improving **{metric}**: {suggestion}")
