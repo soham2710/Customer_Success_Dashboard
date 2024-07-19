@@ -31,10 +31,13 @@ def show_navbar():
     st.sidebar.write("**Position:** Your Position")
     st.sidebar.write("**Bio:** Brief bio or description.")
     
-    # Download resume button
+   # Fetch resume from URL
+    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/blob/main/Customer%20Success%20Resume.pdf?raw=true"
+    response = requests.get(resume_url)
+    
     st.sidebar.download_button(
         label="Download Resume",
-        data=open("https://github.com/soham2710/Customer_Success_Dashboard/blob/main/Customer Success Resume.pdf", "rb").read(),
+        data=response.content,
         file_name="Customer Success Resume.pdf",
         mime="application/pdf"
     )
