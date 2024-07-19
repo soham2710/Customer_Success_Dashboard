@@ -9,9 +9,9 @@ def introduction_page():
 def contact_page():
     st.title("Contact Us")
     st.write("Get in touch with us through the following channels:")
-    st.write("- Email: example@example.com")
-    st.write("- Phone: +1234567890")
-    st.write("- Address: 123 Main Street, Anytown, USA")
+    st.write("- Email: sohamnsharma@gmail.com")
+    st.write("- Phone: +91-9730084626")
+    st.write("- Address: Indore MP")
 
 def articles_page():
     st.title("Articles")
@@ -26,7 +26,7 @@ def show_navbar():
     selected_page = st.sidebar.radio("Go to", ["Introduction", "Contact", "Articles"])
     
     # Display profile summary and picture
-    st.sidebar.image("path/to/profile_picture.jpg", use_column_width=True)
+    st.sidebar.image("https://github.com/soham2710/Customer_Success_Dashboard/blob/main/BH6A0835.jpg", use_column_width=True)
     st.sidebar.write("**Name:** Your Name")
     st.sidebar.write("**Position:** Your Position")
     st.sidebar.write("**Bio:** Brief bio or description.")
@@ -34,8 +34,8 @@ def show_navbar():
     # Download resume button
     st.sidebar.download_button(
         label="Download Resume",
-        data=open("path/to/resume.pdf", "rb").read(),
-        file_name="resume.pdf",
+        data=open("https://github.com/soham2710/Customer_Success_Dashboard/blob/main/Customer%20Success%20Resume.pdf", "rb").read(),
+        file_name="Customer Success Resume.pdf",
         mime="application/pdf"
     )
     
