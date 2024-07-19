@@ -426,7 +426,7 @@ def predictive_analytics_page():
 def shownavbar():
     st.sidebar.title("CSM Dashboard")
     st.sidebar.markdown(
-        "<h2 style='font-size:24px;'>Select a Page</h2>",
+        "<h2 style='font-size:19px;'>Select a Page</h2>",
         unsafe_allow_html=True
     )
     page = st.sidebar.radio("", ("Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"))
