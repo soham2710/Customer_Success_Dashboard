@@ -35,11 +35,6 @@ try:
 except Exception as e:
     st.error(f"Error loading models: {e}")
 
-
-
-# Page configuration
-st.set_page_config(page_title="Customer Success App", layout="wide")
-
 # Define email templates
 email_templates = {
     'Template 1': 'Dear Customer, we noticed you may be at risk of churn. Here’s how we can help...',
