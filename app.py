@@ -250,7 +250,60 @@ def customer_journey_mapping_page():
                               yaxis_title="Sequence",
                               yaxis=dict(showticklabels=False))
     st.plotly_chart(roadmap_fig)
-    
+
+
+# Load the trained model (ensure you have the pickle file in the same directory or provide the correct path)
+model_file = 'path_to_your_model.pkl'
+
+# Load the model
+with open(model_file, 'rb') as file:
+    model = pickle.load(file)
+
+# Function to generate predictions based on input features
+def generate_predictions(features):
+    scores = predict_scores(model, features)
+    return scores
+
+def predictive_analytics_page():
+    st.title("Customer Predictive Analytics")
+
+    # Sidebar for user inputs
+    st.sidebar.header("Input Data")
+    age = st.sidebar.slider("Age", min_value=18, max_value=100, value=30)
+    annual_income = st.sidebar.slider("Annual Income", min_value=0, max_value=200000, value=50000)
+    credit_score = st.sidebar.slider("Credit Score", min_value=300, max_value=850, value=650)
+    churn_risk = st.sidebar.slider("Churn Risk", min_value=0.0, max_value=1.0, value=0.5)
+
+    features = np.array([[age, annual_income, credit_score, churn_risk]])
+    predictions = generate_predictions(features)
+
+    st.subheader("Predicted Metrics")
+    metrics = {
+        "Net Promoter Score": predictions[0],
+        "Customer Lifetime Value": predictions[1],
+        "Customer Acquisition Cost": predictions[2],
+        "Churn Rate": predictions[3],
+        "Customer Satisfaction Score": predictions[4],
+        "Customer Retention Rate": predictions[5],
+        "Monthly Recurring Revenue": predictions[6],
+        "Average Time on Platform": predictions[7],
+        "First Contact Resolution Rate": predictions[8],
+        "Free Trial Conversion Rate": predictions[9],
+        "Repeat Purchase Rate": predictions[10],
+        "Customer Effort Score": predictions[11],
+    }
+
+    for metric, value in metrics.items():
+        st.write(f"{metric}: {value:.2f}")
+
+    st.subheader("Suggest Email Templates")
+    if st.button("Suggest Email"):
+        email_suggestions = suggest_email_template(predictions)
+        st.write("Top 3 Email Templates:")
+        for email in email_suggestions:
+            st.write(f"- {email}")
+
+
 def show_navbar():
     st.sidebar.title("Navigation")
 
@@ -269,7 +322,13 @@ def show_navbar():
         mime="application/pdf"
     )
 
-    pages = ["Introduction", "Contact", "Articles", "Customer Journey Mapping"]
+    pages = [
+        "Introduction",
+        "Contact",
+        "Articles",
+        "Customer Journey Mapping",
+        "Predictive Analytics"  # Add the new page here
+    ]
     selected_page = st.sidebar.radio("Select a page", pages)
     return selected_page
 
@@ -285,6 +344,8 @@ def main():
         articles_page()
     elif selected_page == "Customer Journey Mapping":
         customer_journey_mapping_page()
+    elif selected_page == "Predictive Analytics":  # Handle the new page here
+        predictive_analytics_page()
 
 if __name__ == "__main__":
     main()
