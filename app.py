@@ -419,13 +419,17 @@ def predictive_analytics_page():
         st.write(f"### {metric}")
         for detail in details:
             st.write(f"- {detail}")
-######NAVBAR
 
-import streamlit as st
+
+######NAVBAR
 
 def shownavbar():
     st.sidebar.title("CSM Dashboard")
-    page = st.sidebar.radio("Select a Page", ("Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"))
+    st.sidebar.markdown(
+        "<h2 style='font-size:24px;'>Select a Page</h2>",
+        unsafe_allow_html=True
+    )
+    page = st.sidebar.radio("", ("Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"))
 
     return page
 
