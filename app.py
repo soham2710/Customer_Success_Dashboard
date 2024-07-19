@@ -471,7 +471,7 @@ def shownavbar():
         "<h2 style='font-size:19px;'>Select a Page</h2>",
         unsafe_allow_html=True
     )
-    page = st.sidebar.radio("", ("Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"))
+    page = st.sidebar.radio("", ("Introduction", "Articles", "Customer Journey Mapping", "Predictive Analytics"))
 
     return page
 
