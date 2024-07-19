@@ -6,6 +6,8 @@ import seaborn as sns
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import pickle
+from io import BytesIO
 
 # Introduction Page content
 def introduction_page():
@@ -251,18 +253,38 @@ def customer_journey_mapping_page():
                               yaxis=dict(showticklabels=False))
     st.plotly_chart(roadmap_fig)
 
+######Predictive Analytics Page
 
-# Load the trained model (ensure you have the pickle file in the same directory or provide the correct path)
-model_file = 'https://github.com/soham2710/Customer_Success_Dashboard/blob/main/predictive_model.pkl'
+# URL of the pickle file
+model_url = 'https://github.com/soham2710/Customer_Success_Dashboard/raw/main/predictive_model.pkl'
+
+# Download the pickle file
+response = requests.get(model_url)
+response.raise_for_status()  # Check if the request was successful
+
+# Load the pickle file into memory
+model_file = BytesIO(response.content)
 
 # Load the model
-with open(model_file, 'rb') as file:
-    model = pickle.load(file)
+model = pickle.load(model_file)
 
 # Function to generate predictions based on input features
 def generate_predictions(features):
-    scores = predict_scores(model, features)
-    return scores
+    # Ensure the predict_scores function is available in the model
+    if hasattr(model, 'predict'):
+        predictions = model.predict(features)
+        return predictions
+    else:
+        raise ValueError("Model does not have a 'predict' method.")
+
+def suggest_email_template(predictions):
+    # Dummy implementation for email suggestions
+    # Replace with actual logic to suggest emails based on predictions
+    return [
+        "Template 1: Improve NPS with personalized follow-ups.",
+        "Template 2: Enhance Customer Satisfaction with targeted feedback requests.",
+        "Template 3: Reduce Churn Rate through special offers and engagement."
+    ]
 
 def predictive_analytics_page():
     st.title("Customer Predictive Analytics")
@@ -302,7 +324,6 @@ def predictive_analytics_page():
         st.write("Top 3 Email Templates:")
         for email in email_suggestions:
             st.write(f"- {email}")
-
 
 def show_navbar():
     st.sidebar.title("Navigation")
