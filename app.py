@@ -281,99 +281,76 @@ def predictive_analytics_page():
     churn_risk = st.sidebar.slider("Churn Risk", min_value=0.0, max_value=100.0, value=50.0)
 
     features = np.array([[age, annual_income, credit_score, churn_risk]])
-    predictions = generate_predictions(features)[0]
+    predictions = generate_predictions(features)
 
     st.subheader("Predicted Metrics")
-
-    # Display metrics in a tabular format
-    metrics_df = pd.DataFrame({
-        "Metric": [
-            "Net Promoter Score",
-            "Customer Lifetime Value",
-            "Customer Acquisition Cost",
-            "Churn Rate",
-            "Customer Satisfaction Score",
-            "Customer Retention Rate",
-            "Monthly Recurring Revenue",
-            "Average Time on Platform",
-            "First Contact Resolution Rate",
-            "Free Trial Conversion Rate",
-            "Repeat Purchase Rate",
-            "Customer Effort Score"
-        ],
-        "Value": [f"{value:.2f}" for value in predictions]
-    })
-
-    st.table(metrics_df)
-
-    st.subheader("Suggestions for Improvement")
-    suggestions = {
-        "Net Promoter Score": "Focus on personalized follow-ups and customer feedback.",
-        "Customer Lifetime Value": "Improve customer engagement and upsell opportunities.",
-        "Customer Acquisition Cost": "Optimize marketing strategies and reduce costs.",
-        "Churn Rate": "Enhance customer support and provide value-added services.",
-        "Customer Satisfaction Score": "Solicit feedback and improve service quality.",
-        "Customer Retention Rate": "Strengthen loyalty programs and customer engagement.",
-        "Monthly Recurring Revenue": "Increase subscription offerings and upsell opportunities.",
-        "Average Time on Platform": "Enhance user experience and platform features.",
-        "First Contact Resolution Rate": "Improve support efficiency and training.",
-        "Free Trial Conversion Rate": "Optimize trial experience and onboarding.",
-        "Repeat Purchase Rate": "Encourage repeat purchases through targeted offers.",
-        "Customer Effort Score": "Streamline processes and simplify interactions."
+    metrics = {
+        "Net Promoter Score": predictions[0][0],
+        "Customer Lifetime Value": predictions[0][1],
+        "Customer Acquisition Cost": predictions[0][2],
+        "Churn Rate": predictions[0][3],
+        "Customer Satisfaction Score": predictions[0][4],
+        "Customer Retention Rate": predictions[0][5],
+        "Monthly Recurring Revenue": predictions[0][6],
+        "Average Time on Platform": predictions[0][7],
+        "First Contact Resolution Rate": predictions[0][8],
+        "Free Trial Conversion Rate": predictions[0][9],
+        "Repeat Purchase Rate": predictions[0][10],
+        "Customer Effort Score": predictions[0][11],
     }
 
-    for metric, suggestion in suggestions.items():
-        st.write(f"For improving **{metric}**: {suggestion}")
+    metrics_df = pd.DataFrame(list(metrics.items()), columns=["Metric", "Score"])
+    st.dataframe(metrics_df, use_container_width=True)
 
-    st.subheader("Improvement Suggestions")
+    st.subheader("Suggestions for Improvement")
     st.write("""
-    **Net Promoter Score (NPS)**: 
-    *Formula*: (Percentage of Promoters - Percentage of Detractors) × 100
-    *Improvement*: Increase customer satisfaction by addressing key pain points and delivering exceptional customer service.
+    - **Net Promoter Score (NPS):**
+      - *Formula*: (Percentage of Promoters - Percentage of Detractors) × 100
+      - *Improvement*: Increase customer satisfaction by addressing key pain points and delivering exceptional customer service.
 
-    **Customer Lifetime Value (CLV)**: 
-    *Formula*: Average Purchase Value × Number of Purchases per Year × Customer Lifespan
-    *Improvement*: Increase customer retention through loyalty programs and personalized offers.
+    - **Customer Lifetime Value (CLV):**
+      - *Formula*: Average Purchase Value × Number of Purchases per Year × Customer Lifespan
+      - *Improvement*: Increase customer retention through loyalty programs and personalized offers.
 
-    **Customer Acquisition Cost (CAC)**: 
-    *Formula*: Total Cost of Acquiring New Customers / Number of New Customers Acquired
-    *Improvement*: Optimize marketing strategies to reduce costs and improve conversion rates.
+    - **Customer Acquisition Cost (CAC):**
+      - *Formula*: Total Cost of Acquiring New Customers / Number of New Customers Acquired
+      - *Improvement*: Optimize marketing strategies to reduce costs and improve conversion rates.
 
-    **Churn Rate**: 
-    *Formula*: (Number of Customers Lost During Period / Total Number of Customers at Start of Period) × 100
-    *Improvement*: Implement retention strategies such as regular check-ins and addressing customer feedback promptly.
+    - **Churn Rate:**
+      - *Formula*: (Number of Customers Lost During Period / Total Number of Customers at Start of Period) × 100
+      - *Improvement*: Implement retention strategies such as regular check-ins and addressing customer feedback promptly.
 
-    **Customer Satisfaction Score (CSAT)**: 
-    *Formula*: (Number of Satisfied Customers / Number of Survey Responses) × 100
-    *Improvement*: Enhance product/service quality and provide excellent customer support.
+    - **Customer Satisfaction Score (CSAT):**
+      - *Formula*: (Number of Satisfied Customers / Number of Survey Responses) × 100
+      - *Improvement*: Enhance product/service quality and provide excellent customer support.
 
-    **Customer Retention Rate**: 
-    *Formula*: ((Number of Customers at End of Period - Number of New Customers) / Number of Customers at Start of Period) × 100
-    *Improvement*: Foster strong relationships with existing customers and offer value-added services.
+    - **Customer Retention Rate:**
+      - *Formula*: ((Number of Customers at End of Period - Number of New Customers) / Number of Customers at Start of Period) × 100
+      - *Improvement*: Foster strong relationships with existing customers and offer value-added services.
 
-    **Monthly Recurring Revenue (MRR)**: 
-    *Formula*: Total Revenue from Subscriptions / Number of Months
-    *Improvement*: Increase subscription rates and offer upsells to boost recurring revenue.
+    - **Monthly Recurring Revenue (MRR):**
+      - *Formula*: Total Revenue from Subscriptions / Number of Months
+      - *Improvement*: Increase subscription rates and offer upsells to boost recurring revenue.
 
-    **Average Time on Platform**: 
-    *Formula*: Total Time Spent by All Users / Number of Users
-    *Improvement*: Enhance user experience to encourage longer engagement with the platform.
+    - **Average Time on Platform:**
+      - *Formula*: Total Time Spent by All Users / Number of Users
+      - *Improvement*: Enhance user experience to encourage longer engagement with the platform.
 
-    **First Contact Resolution Rate (FCR)**: 
-    *Formula*: (Number of Issues Resolved on First Contact / Total Number of Issues) × 100
-    *Improvement*: Improve training for customer service representatives to resolve issues more effectively on the first contact.
+    - **First Contact Resolution Rate (FCR):**
+      - *Formula*: (Number of Issues Resolved on First Contact / Total Number of Issues) × 100
+      - *Improvement*: Improve training for customer service representatives to resolve issues more effectively on the first contact.
 
-    **Free Trial Conversion Rate**: 
-    *Formula*: (Number of Free Trial Users Who Become Paying Customers / Total Number of Free Trial Users) × 100
-    *Improvement*: Optimize the free trial experience to highlight key benefits and increase conversions.
+    - **Free Trial Conversion Rate:**
+      - *Formula*: (Number of Free Trial Users Who Become Paying Customers / Total Number of Free Trial Users) × 100
+      - *Improvement*: Optimize the free trial experience to highlight key benefits and increase conversions.
 
-    **Repeat Purchase Rate**: 
-    *Formula*: (Number of Repeat Purchases / Total Number of Purchases) × 100
-    *Improvement*: Encourage repeat purchases through targeted marketing and loyalty programs.
+    - **Repeat Purchase Rate:**
+      - *Formula*: (Number of Repeat Purchases / Total Number of Purchases) × 100
+      - *Improvement*: Encourage repeat purchases through targeted marketing and loyalty programs.
 
-    **Customer Effort Score (CES)**: 
-    *Formula*: Average Score from Customer Effort Surveys
-    *Improvement*: Simplify processes and interactions to reduce customer effort and enhance satisfaction.
+    - **Customer Effort Score (CES):**
+      - *Formula*: Average Score from Customer Effort Surveys
+      - *Improvement*: Simplify processes and interactions to reduce customer effort and enhance satisfaction.
     """)
 
 ######NAVBAR
