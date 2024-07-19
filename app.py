@@ -274,7 +274,6 @@ def generate_predictions(features):
     if model:
         try:
             predictions = model.predict(features)
-            st.write(f"Predictions raw output: {predictions}")
             return predictions
         except Exception as e:
             st.error(f"Error generating predictions: {e}")
@@ -283,24 +282,18 @@ def generate_predictions(features):
         st.error("Model not loaded.")
         return [0] * 12
 
-def suggest_email_template(predictions):
-    # Example email templates based on predictions
-    templates = {
-        "NPS": "Template 1: Improve NPS with personalized follow-ups.",
-        "Customer Satisfaction Score": "Template 2: Enhance Customer Satisfaction with targeted feedback requests.",
-        "Churn Rate": "Template 3: Reduce Churn Rate through special offers and engagement."
-    }
-    
-    # Example logic to select email templates based on predictions
-    email_suggestions = []
-    if predictions[0] < 50:  # Assuming NPS is low
-        email_suggestions.append(templates["NPS"])
-    if predictions[4] < 50:  # Assuming Customer Satisfaction Score is low
-        email_suggestions.append(templates["Customer Satisfaction Score"])
-    if predictions[3] > 0.5:  # Assuming Churn Rate is high
-        email_suggestions.append(templates["Churn Rate"])
+def provide_recommendations(predictions):
+    recommendations = []
 
-    return email_suggestions
+    # Example recommendations based on predictions
+    if predictions[0] < 50:  # Net Promoter Score
+        recommendations.append("Consider improving customer engagement and follow-up strategies.")
+    if predictions[4] < 50:  # Customer Satisfaction Score
+        recommendations.append("Enhance customer support and address feedback promptly.")
+    if predictions[3] > 0.5:  # Churn Rate
+        recommendations.append("Offer retention incentives and analyze customer pain points.")
+
+    return recommendations
 
 def predictive_analytics_page():
     st.title("Customer Predictive Analytics")
@@ -338,13 +331,13 @@ def predictive_analytics_page():
     for metric, value in metrics.items():
         st.write(f"{metric}: {value:.2f}")
 
-    st.subheader("Suggest Email Templates")
-    if st.button("Suggest Email"):
-        email_suggestions = suggest_email_template(predictions)
-        st.write("Top 3 Email Templates:")
-        for email in email_suggestions:
-            st.write(f"- {email}")
-
+    st.subheader("Recommendations")
+    recommendations = provide_recommendations(predictions)
+    if recommendations:
+        for rec in recommendations:
+            st.write(f"- {rec}")
+    else:
+        st.write("All metrics are in a good range. No immediate actions needed.")
 
 def show_navbar():
     st.sidebar.title("Navigation")
