@@ -255,18 +255,25 @@ def customer_journey_mapping_page():
 
 ######Predictive Analytics Page
 
+import streamlit as st
+import requests
+import pickle
+import numpy as np
+from io import BytesIO
+
 def load_model_from_url(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
         model_file = BytesIO(response.content)
+        # Try to load the model with a safe mode
         model = pickle.load(model_file)
         return model
     except Exception as e:
         st.error(f"Error loading the model: {e}")
         return None
 
-# Replace with your actual model URL
+# Replace with the correct model URL
 model_url = 'https://github.com/soham2710/Customer_Success_Dashboard/raw/main/predictive_model.pkl'
 model = load_model_from_url(model_url)
 
@@ -285,7 +292,6 @@ def generate_predictions(features):
 def provide_recommendations(predictions):
     recommendations = []
 
-    # Example recommendations based on predictions
     if predictions[0] < 50:  # Net Promoter Score
         recommendations.append("Consider improving customer engagement and follow-up strategies.")
     if predictions[4] < 50:  # Customer Satisfaction Score
@@ -307,7 +313,6 @@ def predictive_analytics_page():
     features = np.array([[age, annual_income, credit_score, churn_risk]])
     predictions = generate_predictions(features)
 
-    # Ensure predictions length is as expected
     if len(predictions) != 12:
         st.error("The predictions array does not have the expected number of elements.")
         return
@@ -338,6 +343,9 @@ def predictive_analytics_page():
             st.write(f"- {rec}")
     else:
         st.write("All metrics are in a good range. No immediate actions needed.")
+
+
+######NAVBAR
 
 def show_navbar():
     st.sidebar.title("Navigation")
