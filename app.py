@@ -258,28 +258,35 @@ def customer_journey_mapping_page():
 # URL of the pickle file
 model_url = 'https://github.com/soham2710/Customer_Success_Dashboard/raw/main/predictive_model.pkl'
 
-# Download the pickle file
-response = requests.get(model_url)
-response.raise_for_status()  # Check if the request was successful
-
-# Load the pickle file into memory
-model_file = BytesIO(response.content)
+def load_model_from_url(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Check if the request was successful
+        model_file = BytesIO(response.content)
+        model = pickle.load(model_file)
+        return model
+    except Exception as e:
+        st.error(f"Error loading the model: {e}")
+        return None
 
 # Load the model
-model = pickle.load(model_file)
+model = load_model_from_url(model_url)
 
 # Function to generate predictions based on input features
 def generate_predictions(features):
-    # Ensure the predict_scores function is available in the model
-    if hasattr(model, 'predict'):
-        predictions = model.predict(features)
-        return predictions
+    if model:
+        try:
+            predictions = model.predict(features)
+            return predictions
+        except Exception as e:
+            st.error(f"Error generating predictions: {e}")
+            return [0] * 12  # Return a default value in case of error
     else:
-        raise ValueError("Model does not have a 'predict' method.")
+        st.error("Model not loaded.")
+        return [0] * 12  # Return a default value in case of error
 
 def suggest_email_template(predictions):
     # Dummy implementation for email suggestions
-    # Replace with actual logic to suggest emails based on predictions
     return [
         "Template 1: Improve NPS with personalized follow-ups.",
         "Template 2: Enhance Customer Satisfaction with targeted feedback requests.",
