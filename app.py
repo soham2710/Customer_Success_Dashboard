@@ -334,7 +334,10 @@ def predictive_analytics_page():
             st.write(f"- {email}")
 
 def show_navbar():
-    st.sidebar.title("CSM Dashboard")
+    st.sidebar.title("Navigation")
+
+    profile_image_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/BH6A0835.jpg"
+    st.sidebar.image(profile_image_url, use_column_width=True)
     st.sidebar.write("**Name:** Your Name")
     st.sidebar.write("**Position:** Your Position")
     st.sidebar.write("**Bio:** Brief bio or description.")
@@ -352,9 +355,8 @@ def show_navbar():
     selected_page = st.sidebar.radio("Select a page", pages)
     return selected_page
 
-
 def main():
-    st.set_page_config(page_title="My Web App", page_icon=":guardsman:", layout="wide")
+    st.set_page_config(page_title="Customer Success Dashboard", page_icon=":guardsman:", layout="wide")
     selected_page = show_navbar()
 
     if selected_page == "Introduction":
@@ -365,7 +367,7 @@ def main():
         articles_page()
     elif selected_page == "Customer Journey Mapping":
         customer_journey_mapping_page()
-    elif selected_page == "Predictive Analytics":  # Handle the new page here
+    elif selected_page == "Predictive Analytics":
         predictive_analytics_page()
 
 if __name__ == "__main__":
