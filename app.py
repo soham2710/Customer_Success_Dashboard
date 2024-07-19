@@ -404,7 +404,7 @@ def profile_summary():
     st.sidebar.title("Profile Summary")
 
     # Placeholder for profile image
-    st.sidebar.image("https://via.placeholder.com/150", use_column_width=True)  # Placeholder image
+    st.sidebar.image("https://github.com/soham2710/Customer_Success_Dashboard/blob/main/BH6A0835.JPG", use_column_width=True)  # Placeholder image
 
     st.sidebar.write(
         """
