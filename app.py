@@ -397,25 +397,24 @@ def predictive_analytics_page():
 def show_navbar():
     st.sidebar.title("Navigation")
 
-    profile_image_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/BH6A0835.jpg"
-    st.sidebar.image(profile_image_url, use_column_width=True)
-    st.sidebar.write("**Name:** Your Name")
-    st.sidebar.write("**Position:** Your Position")
-    st.sidebar.write("**Bio:** Brief bio or description.")
+    # Add a project icon next to the title
+    st.sidebar.image("https://example.com/project-icon.png", width=50)  # Replace with your project icon URL
 
-    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
-    response = requests.get(resume_url)
-    st.sidebar.download_button(
-        label="Download Resume",
-        data=response.content,
-        file_name="resume.pdf",
-        mime="application/pdf"
-    )
-
+    # Define pages
     pages = ["Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"]
-    selected_page = st.sidebar.radio("Select a page", pages)
-    return selected_page
 
+    # Create links for navigation
+    selected_page = None
+    for page in pages:
+        if st.sidebar.markdown(f'<a href="#{page.lower().replace(" ", "-")}" style="font-size:18px">{page}</a>', unsafe_allow_html=True):
+            selected_page = page
+            break
+
+    # If no page is selected, default to the first page
+    if not selected_page:
+        selected_page = pages[0]
+
+    return selected_page
 def main():
     selected_page = show_navbar()
 
