@@ -189,6 +189,55 @@ def customer_journey_mapping_page():
 
     # Customer Success Journey Roadmap
     st.subheader("Customer Success Journey Roadmap")
+    
+    st.write("""
+        **Introduction:**
+        The Customer Success Journey Roadmap is a strategic framework designed to help organizations visualize and optimize the entire lifecycle of their customers. By understanding the key stages of this journey, businesses can develop targeted strategies to enhance customer satisfaction, increase retention rates, and foster long-term loyalty. Each stage represents a critical touchpoint where specific actions and interventions can significantly impact the overall customer experience.
+        
+        **Stages of the Customer Journey:**
+        
+        1. **Awareness**
+           - **Description**: This is the initial stage where potential customers first become aware of your product or service. It is crucial for capturing their attention and creating a strong first impression.
+           - **Objectives**: Increase brand visibility, attract potential customers, and generate interest.
+           - **Key Actions**:
+             - Utilize digital marketing campaigns (e.g., SEO, PPC).
+             - Engage in social media outreach and influencer collaborations.
+             - Attend industry events and webinars.
+
+        2. **Consideration**
+           - **Description**: At this stage, customers are actively considering your product or service as a potential solution to their needs. They compare it with other options available in the market.
+           - **Objectives**: Educate potential customers, highlight unique value propositions, and build trust.
+           - **Key Actions**:
+             - Provide detailed product information and case studies.
+             - Offer free trials or demos.
+             - Engage with potential customers through personalized emails and follow-ups.
+
+        3. **Purchase**
+           - **Description**: This is the stage where the customer makes the decision to buy your product or service. Effective strategies are needed to convert prospects into paying customers.
+           - **Objectives**: Facilitate a smooth purchasing process and ensure a positive buying experience.
+           - **Key Actions**:
+             - Simplify the checkout process and offer multiple payment options.
+             - Provide excellent customer support during the purchase.
+             - Implement promotions or discounts to encourage conversion.
+
+        4. **Retention**
+           - **Description**: After the purchase, the focus shifts to retaining customers by ensuring they have a positive experience with the product or service. Retention efforts help build customer loyalty.
+           - **Objectives**: Enhance customer satisfaction, encourage repeat purchases, and reduce churn.
+           - **Key Actions**:
+             - Offer post-purchase support and resources.
+             - Implement loyalty programs or rewards.
+             - Regularly solicit feedback and address any issues promptly.
+
+        5. **Advocacy**
+           - **Description**: In this final stage, satisfied customers become advocates for your brand. They recommend your product or service to others, leading to new customer acquisitions.
+           - **Objectives**: Leverage satisfied customers to generate referrals and positive word-of-mouth.
+           - **Key Actions**:
+             - Encourage customers to leave reviews and testimonials.
+             - Create referral programs and incentives.
+             - Engage with customers on social media and highlight their success stories.
+    """)
+
+    # Roadmap Visualization
     roadmap_fig = go.Figure(data=go.Scatter(
         x=["Awareness", "Consideration", "Purchase", "Retention", "Advocacy"],
         y=[1, 2, 3, 4, 5],
@@ -201,11 +250,6 @@ def customer_journey_mapping_page():
                               yaxis_title="Sequence",
                               yaxis=dict(showticklabels=False))
     st.plotly_chart(roadmap_fig)
-    st.write("""
-        The roadmap chart outlines the sequence of stages in the customer success journey. 
-        It serves as a high-level overview, helping to align strategies and actions at each stage. 
-        Understanding this sequence is crucial for developing targeted interventions and optimizing the customer experience at every stage.
-    """)
     
 def show_navbar():
     st.sidebar.title("Navigation")
