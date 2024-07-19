@@ -205,6 +205,13 @@ def suggest_email_template(churn_risk, nps_score, retention_rate):
     predicted_template = label_encoder.inverse_transform([predicted_index])[0]
     return predicted_template
 
+
+# Function to predict customer needs
+def predict_needs(model, churn_risk, nps_score, retention_rate):
+    features = np.array([[churn_risk, nps_score, retention_rate]])
+    predicted_need = model.predict(features)[0]
+    return predicted_need
+
 # Function to simulate customer data
 def simulate_customer_data(num_customers):
     np.random.seed(42)
