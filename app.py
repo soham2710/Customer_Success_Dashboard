@@ -254,28 +254,12 @@ def customer_journey_mapping_page():
     st.plotly_chart(roadmap_fig)
 
 ######Predictive Analytics Page
-
 import streamlit as st
-import requests
-import pickle
 import numpy as np
-from io import BytesIO
+from model import train_model
 
-def load_model_from_url(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        model_file = BytesIO(response.content)
-        # Try to load the model with a safe mode
-        model = pickle.load(model_file)
-        return model
-    except Exception as e:
-        st.error(f"Error loading the model: {e}")
-        return None
-
-# Replace with the correct model URL
-model_url = 'https://github.com/soham2710/Customer_Success_Dashboard/raw/main/predictive_model.pkl'
-model = load_model_from_url(model_url)
+# Load the model directly
+model = train_model()
 
 def generate_predictions(features):
     if model:
@@ -289,18 +273,6 @@ def generate_predictions(features):
         st.error("Model not loaded.")
         return [0] * 12
 
-def provide_recommendations(predictions):
-    recommendations = []
-
-    if predictions[0] < 50:  # Net Promoter Score
-        recommendations.append("Consider improving customer engagement and follow-up strategies.")
-    if predictions[4] < 50:  # Customer Satisfaction Score
-        recommendations.append("Enhance customer support and address feedback promptly.")
-    if predictions[3] > 0.5:  # Churn Rate
-        recommendations.append("Offer retention incentives and analyze customer pain points.")
-
-    return recommendations
-
 def predictive_analytics_page():
     st.title("Customer Predictive Analytics")
 
@@ -308,41 +280,70 @@ def predictive_analytics_page():
     age = st.sidebar.slider("Age", min_value=18, max_value=100, value=30)
     annual_income = st.sidebar.slider("Annual Income", min_value=0, max_value=200000, value=50000)
     credit_score = st.sidebar.slider("Credit Score", min_value=300, max_value=850, value=650)
-    churn_risk = st.sidebar.slider("Churn Risk", min_value=0.0, max_value=1.0, value=0.5)
+    churn_risk = st.sidebar.slider("Churn Risk", min_value=0.0, max_value=100.0, value=50.0)
 
     features = np.array([[age, annual_income, credit_score, churn_risk]])
     predictions = generate_predictions(features)
 
-    if len(predictions) != 12:
-        st.error("The predictions array does not have the expected number of elements.")
-        return
-
     st.subheader("Predicted Metrics")
     metrics = {
-        "Net Promoter Score": predictions[0],
-        "Customer Lifetime Value": predictions[1],
-        "Customer Acquisition Cost": predictions[2],
-        "Churn Rate": predictions[3],
-        "Customer Satisfaction Score": predictions[4],
-        "Customer Retention Rate": predictions[5],
-        "Monthly Recurring Revenue": predictions[6],
-        "Average Time on Platform": predictions[7],
-        "First Contact Resolution Rate": predictions[8],
-        "Free Trial Conversion Rate": predictions[9],
-        "Repeat Purchase Rate": predictions[10],
-        "Customer Effort Score": predictions[11],
+        "Net Promoter Score": predictions[0][0],
+        "Customer Lifetime Value": predictions[0][1],
+        "Customer Acquisition Cost": predictions[0][2],
+        "Churn Rate": predictions[0][3],
+        "Customer Satisfaction Score": predictions[0][4],
+        "Customer Retention Rate": predictions[0][5],
+        "Monthly Recurring Revenue": predictions[0][6],
+        "Average Time on Platform": predictions[0][7],
+        "First Contact Resolution Rate": predictions[0][8],
+        "Free Trial Conversion Rate": predictions[0][9],
+        "Repeat Purchase Rate": predictions[0][10],
+        "Customer Effort Score": predictions[0][11],
     }
 
     for metric, value in metrics.items():
         st.write(f"{metric}: {value:.2f}")
 
-    st.subheader("Recommendations")
-    recommendations = provide_recommendations(predictions)
-    if recommendations:
-        for rec in recommendations:
-            st.write(f"- {rec}")
-    else:
-        st.write("All metrics are in a good range. No immediate actions needed.")
+    st.subheader("Suggestions")
+    suggestions = {
+        "Net Promoter Score": "Focus on personalized follow-ups and customer feedback.",
+        "Customer Lifetime Value": "Improve customer engagement and upsell opportunities.",
+        "Customer Acquisition Cost": "Optimize marketing strategies and reduce costs.",
+        "Churn Rate": "Enhance customer support and provide value-added services.",
+        "Customer Satisfaction Score": "Solicit feedback and improve service quality.",
+        "Customer Retention Rate": "Strengthen loyalty programs and customer engagement.",
+        "Monthly Recurring Revenue": "Increase subscription offerings and upsell opportunities.",
+        "Average Time on Platform": "Enhance user experience and platform features.",
+        "First Contact Resolution Rate": "Improve support efficiency and training.",
+        "Free Trial Conversion Rate": "Optimize trial experience and onboarding.",
+        "Repeat Purchase Rate": "Encourage repeat purchases through targeted offers.",
+        "Customer Effort Score": "Streamline processes and simplify interactions."
+    }
+
+    for metric, suggestion in suggestions.items():
+        st.write(f"For improving {metric}: {suggestion}")
+
+def show_navbar():
+    st.sidebar.title("Navigation")
+
+    profile_image_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/BH6A0835.jpg"
+    st.sidebar.image(profile_image_url, use_column_width=True)
+    st.sidebar.write("**Name:** Your Name")
+    st.sidebar.write("**Position:** Your Position")
+    st.sidebar.write("**Bio:** Brief bio or description.")
+
+    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
+    response = requests.get(resume_url)
+    st.sidebar.download_button(
+        label="Download Resume",
+        data=response.content,
+        file_name="resume.pdf",
+        mime="application/pdf"
+    )
+
+    pages = ["Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"]
+    selected_page = st.sidebar.radio("Select a page", pages)
+    return selected_page
 
 
 ######NAVBAR
