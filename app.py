@@ -65,12 +65,11 @@ def show_navbar():
     st.sidebar.title("Navigation")
     
     # Display profile summary and picture
-    profile_image_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/BH6A0835.jpg"
-    st.sidebar.image(profile_image_url, use_column_width=True)
+    test_image_url = "https://via.placeholder.com/150"
+    st.sidebar.image(test_image_url, use_column_width=True)
     st.sidebar.write("**Name:** Your Name")
     st.sidebar.write("**Position:** Your Position")
     st.sidebar.write("**Bio:** Brief bio or description.")
-    
     # Fetch resume from URL
     resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
     response = requests.get(resume_url)
