@@ -59,45 +59,78 @@ def articles_page():
     # Render HTML in Streamlit
     st.markdown(html, unsafe_allow_html=True)
 
+def customer_journey_mapping_page():
+    st.title("Customer Journey Mapping")
+    st.write("Visualize and analyze the customer journey with the following graphs:")
 
-# Define the navigation bar
+    # Generate dummy data
+    data = {
+        'Stage': ['Awareness', 'Consideration', 'Purchase', 'Retention', 'Advocacy'],
+        'Count': [1000, 800, 600, 400, 200],
+        'Conversion Rate': [0.8, 0.75, 0.67, 0.5]
+    }
+    df = pd.DataFrame(data)
+
+    # Funnel Chart
+    st.subheader("Customer Journey Funnel")
+    fig, ax = plt.subplots()
+    sns.barplot(x='Stage', y='Count', data=df, ax=ax)
+    plt.xlabel("Customer Journey Stage")
+    plt.ylabel("Number of Customers")
+    plt.title("Customer Journey Funnel")
+    st.pyplot(fig)
+
+    # Conversion Rates Line Plot
+    st.subheader("Conversion Rates Over Stages")
+    fig, ax = plt.subplots()
+    sns.lineplot(x='Stage', y='Conversion Rate', data=df, marker='o', ax=ax)
+    plt.xlabel("Customer Journey Stage")
+    plt.ylabel("Conversion Rate")
+    plt.title("Conversion Rates Over Customer Journey Stages")
+    st.pyplot(fig)
+
+    # Heatmap of Stage vs. Count
+    st.subheader("Heatmap of Customer Journey Stages")
+    pivot_table = df.pivot("Stage", "Count", "Conversion Rate")
+    fig, ax = plt.subplots()
+    sns.heatmap(pivot_table, annot=True, cmap="YlGnBu", ax=ax)
+    plt.title("Heatmap of Customer Journey Stages")
+    st.pyplot(fig)
+    
 def show_navbar():
     st.sidebar.title("Navigation")
-    
-    # Display profile summary and picture
-    test_image_url = "https://via.placeholder.com/150"
-    st.sidebar.image(test_image_url, use_column_width=True)
+
+    profile_image_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/BH6A0835.jpg"
+    st.sidebar.image(profile_image_url, use_column_width=True)
     st.sidebar.write("**Name:** Your Name")
     st.sidebar.write("**Position:** Your Position")
     st.sidebar.write("**Bio:** Brief bio or description.")
-    # Fetch resume from URL
+
     resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
     response = requests.get(resume_url)
-    
     st.sidebar.download_button(
         label="Download Resume",
         data=response.content,
         file_name="resume.pdf",
         mime="application/pdf"
     )
-    
-    # Static text links
-    page = st.sidebar.radio("Select a page", ["Introduction", "Contact", "Articles"])
-    
-    return page
 
-# Main function
+    pages = ["Introduction", "Contact", "Articles", "Customer Journey Mapping"]
+    selected_page = st.sidebar.radio("Select a page", pages)
+    return selected_page
+
 def main():
     st.set_page_config(page_title="My Web App", page_icon=":guardsman:", layout="wide")
-    
     selected_page = show_navbar()
-    
+
     if selected_page == "Introduction":
         introduction_page()
     elif selected_page == "Contact":
         contact_page()
     elif selected_page == "Articles":
         articles_page()
+    elif selected_page == "Customer Journey Mapping":
+        customer_journey_mapping_page()
 
 if __name__ == "__main__":
     main()
