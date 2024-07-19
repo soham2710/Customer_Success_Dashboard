@@ -4,7 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-
+import plotly.express as px
+import plotly.graph_objects as go
 
 # Define page content
 def introduction_page():
@@ -68,39 +69,43 @@ def customer_journey_mapping_page():
     st.title("Customer Journey Mapping")
     st.write("Visualize and analyze the customer journey with the following graphs:")
 
-    # Generate dummy data
+    # User input for the number of data points
+    num_data_points = st.sidebar.slider("Select number of data points", min_value=10, max_value=500, value=100)
+
+    # Generate enhanced dummy data
+    np.random.seed(42)  # For reproducibility
+    stages = ['Awareness', 'Consideration', 'Purchase', 'Retention', 'Advocacy']
     data = {
-        'Stage': ['Awareness', 'Consideration', 'Purchase', 'Retention', 'Advocacy'],
-        'Count': [1000, 800, 600, 400, 200],
-        'Conversion Rate': [0.8, 0.75, 0.67, 0.5, 0.33]
+        'Stage': np.random.choice(stages, num_data_points),
+        'Count': np.random.randint(50, 1000, num_data_points),
+        'Conversion Rate': np.random.rand(num_data_points)
     }
     df = pd.DataFrame(data)
 
-    # Funnel Chart
+    # Group by stage to summarize the data
+    summary_df = df.groupby('Stage').agg({'Count': 'sum', 'Conversion Rate': 'mean'}).reset_index()
+
+    # Funnel Chart using Plotly
     st.subheader("Customer Journey Funnel")
-    fig, ax = plt.subplots()
-    sns.barplot(x='Stage', y='Count', data=df, ax=ax)
-    plt.xlabel("Customer Journey Stage")
-    plt.ylabel("Number of Customers")
-    plt.title("Customer Journey Funnel")
-    st.pyplot(fig)
+    funnel_fig = go.Figure(go.Funnel(
+        y=summary_df['Stage'],
+        x=summary_df['Count'],
+        textinfo="value+percent initial"
+    ))
+    funnel_fig.update_layout(title="Customer Journey Funnel")
+    st.plotly_chart(funnel_fig)
 
-    # Conversion Rates Line Plot
+    # Conversion Rates Line Plot using Plotly
     st.subheader("Conversion Rates Over Stages")
-    fig, ax = plt.subplots()
-    sns.lineplot(x='Stage', y='Conversion Rate', data=df, marker='o', ax=ax)
-    plt.xlabel("Customer Journey Stage")
-    plt.ylabel("Conversion Rate")
-    plt.title("Conversion Rates Over Customer Journey Stages")
-    st.pyplot(fig)
+    line_fig = px.line(summary_df, x='Stage', y='Conversion Rate', markers=True, title="Conversion Rates Over Customer Journey Stages")
+    st.plotly_chart(line_fig)
 
-    # Heatmap of Stage vs. Count
+    # Heatmap of Stage vs. Count using Plotly
     st.subheader("Heatmap of Customer Journey Stages")
-    pivot_table = df.pivot("Stage", "Count", "Conversion Rate")
-    fig, ax = plt.subplots()
-    sns.heatmap(pivot_table, annot=True, cmap="YlGnBu", ax=ax)
-    plt.title("Heatmap of Customer Journey Stages")
-    st.pyplot(fig)
+    heatmap_data = summary_df.pivot("Stage", "Count", "Conversion Rate")
+    heatmap_fig = px.imshow(heatmap_data, labels=dict(x="Count", y="Stage", color="Conversion Rate"),
+                            x=summary_df['Count'], y=summary_df['Stage'], title="Heatmap of Customer Journey Stages")
+    st.plotly_chart(heatmap_fig)
     
 def show_navbar():
     st.sidebar.title("Navigation")
