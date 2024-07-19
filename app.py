@@ -17,7 +17,7 @@ def introduction_page():
         st.markdown(
             """
             <div style="display: flex; align-items: center; height: 150px;">
-                <img src="https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg" style="height: 100%; width: 30%;"/>
+                <img src="https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg" style="height: 100%; width: 100%;"/>
             </div>
             """,
             unsafe_allow_html=True
