@@ -10,16 +10,33 @@ import pickle
 from io import BytesIO
 
 def introduction_page():
-    st.title("Introduction")
-
-    # Display your image from the URL
-    image_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg"  # Replace with your image URL
-    st.image(image_url, caption="Soham Sharma", use_column_width=True)
-
-    # Introduction and profile summary
-    st.header("Welcome to CSM Dashboard")
-    st.write("Welcome to CSM web app! Here you will find information about this project articles.")
+    # Create a layout with two rows
+    row1_col1, row1_col2 = st.columns([1, 2])  # Adjust the ratio as needed
     
+    with row1_col1:
+        # Display the image
+        st.image("https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg", width=150)  # Adjust width as needed
+
+    with row1_col2:
+        # Contact details and download resume
+        st.header("Connect with Me")
+        st.write("""
+        You can get in touch with me through the following channels:
+         - **Email:** sohamnsharma@gmail.com
+         - **Phone:** +91-9730084626
+         - **Address:** Indore, MP, India
+         """)
+
+        
+        # Resume download button
+        resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/main/Customer Success Resume.pdf"  # Replace with your actual resume URL
+        st.download_button(
+            label="Download Resume",
+            data=resume_url,
+            file_name="Customer Success Resume.pdf",
+            help="Click to download my resume"
+        )  # Update URL and file name as needed
+
     st.header("About Me")
     st.write("Hello! I am Soham Sharma, and I am excited to share this project with you. Below is a brief summary of my professional background and the purpose of this project.")
     st.write("""
@@ -36,23 +53,8 @@ def introduction_page():
     - **Integration with Other Tools:** Incorporating features to integrate with various CRM tools for a seamless experience.
     """)
 
-    # Contact section
-    st.header("Connect with Me")
-    st.write("""
-    You can get in touch with me through the following channels:
-    - **Email:** sohamnsharma@gmail.com
-    - **Phone:** +91-9730084626
-    - **Address:** Indore, MP, India
-    """)
 
-    # Resume download button
-    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/main/Customer Success Resume.pdf"  # Replace with your actual resume URL
-    st.download_button(
-        label="Download Resume",
-        data=resume_url,
-        file_name="Customer Success Resume.pdf",
-        help="Click to download my resume"
-    )
+
 
 # Articles PAGE
 def articles_page():
