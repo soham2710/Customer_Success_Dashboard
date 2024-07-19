@@ -40,7 +40,7 @@ def introduction_page():
     - **Phone:** +91-9730084626
     - **Address:** Indore, MP, India
     """)
-https://github.com/soham2710/Customer_Success_Dashboard/edit/main/app.py
+
     # Resume download button
     resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/main/Customer Success Resume.pdf"  # Replace with your actual resume URL
     st.download_button(
