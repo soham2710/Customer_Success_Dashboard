@@ -321,7 +321,7 @@ def predictive_analytics_page():
     metrics_df['Threshold'] = metrics_df['Metric'].map(thresholds)
     metrics_df['Needs Improvement'] = metrics_df.apply(lambda row: "Yes" if row['Score'] < row['Threshold'] else "No", axis=1)
 
-    st.write(metrics_df.style.set_properties(**{'height': '800px'}))
+    st.write(metrics_df.style.set_properties(**{'height': '900px'}))
 
     st.subheader("Improvement Suggestions")
 
