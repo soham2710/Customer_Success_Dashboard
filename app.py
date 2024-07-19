@@ -20,13 +20,14 @@ def articles_page():
     st.write("- **Article 2**: Tips and tricks for customer success.")
     st.write("- **Article 3**: How to leverage predictive analytics in your business.")
 
-# Define the navigation bar
+
+#Nav Bar
 def show_navbar():
     st.sidebar.title("Navigation")
-    selected_page = st.sidebar.radio("Go to", ["Introduction", "Contact", "Articles"])
     
     # Display profile summary and picture
-    st.sidebar.image("https://github.com/soham2710/Customer_Success_Dashboard/blob/main/BH6A0835.jpg", use_column_width=True)
+    profile_image_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/BH6A0835.jpg"
+    st.sidebar.image(profile_image_url, use_column_width=True)
     st.sidebar.write("**Name:** Your Name")
     st.sidebar.write("**Position:** Your Position")
     st.sidebar.write("**Bio:** Brief bio or description.")
