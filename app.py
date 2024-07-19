@@ -82,10 +82,14 @@ def customer_journey_mapping_page():
     }
     df = pd.DataFrame(data)
 
+    # Summary of the data
+    st.subheader("Summary of Customer Journey Data")
+    st.write("Here we have simulated data representing different stages of the customer journey, the count of customers at each stage, and the conversion rates.")
+
     # Group by stage to summarize the data
     summary_df = df.groupby('Stage').agg({'Count': 'sum', 'Conversion Rate': 'mean'}).reset_index()
 
-    # Funnel Chart using Plotly
+    # 1. Funnel Chart using Plotly
     st.subheader("Customer Journey Funnel")
     funnel_fig = go.Figure(go.Funnel(
         y=summary_df['Stage'],
@@ -94,18 +98,57 @@ def customer_journey_mapping_page():
     ))
     funnel_fig.update_layout(title="Customer Journey Funnel")
     st.plotly_chart(funnel_fig)
+    st.write("The funnel chart illustrates the number of customers at each stage of the customer journey. It helps identify at which stage the most significant drop-off occurs.")
 
-    # Conversion Rates Line Plot using Plotly
+    # 2. Conversion Rates Line Plot using Plotly
     st.subheader("Conversion Rates Over Stages")
     line_fig = px.line(summary_df, x='Stage', y='Conversion Rate', markers=True, title="Conversion Rates Over Customer Journey Stages")
     st.plotly_chart(line_fig)
+    st.write("The line plot shows the conversion rates across different stages of the customer journey. It highlights which stages have higher or lower conversion rates, aiding in identifying areas for improvement.")
 
-    # Heatmap of Stage vs. Count using Plotly
+    # 3. Heatmap of Stage vs. Count using Plotly
     st.subheader("Heatmap of Customer Journey Stages")
-    heatmap_data = summary_df.pivot("Stage", "Count", "Conversion Rate")
+    heatmap_data = df.pivot_table(index='Stage', columns='Count', values='Conversion Rate', aggfunc='mean')
     heatmap_fig = px.imshow(heatmap_data, labels=dict(x="Count", y="Stage", color="Conversion Rate"),
-                            x=summary_df['Count'], y=summary_df['Stage'], title="Heatmap of Customer Journey Stages")
+                            title="Heatmap of Customer Journey Stages")
     st.plotly_chart(heatmap_fig)
+    st.write("The heatmap provides a visual representation of the conversion rates at various stages and customer counts. It helps identify patterns and correlations in the data.")
+
+    # 4. Bar Chart of Counts per Stage
+    st.subheader("Counts per Stage")
+    bar_fig = px.bar(summary_df, x='Stage', y='Count', title="Counts per Stage", text_auto=True)
+    st.plotly_chart(bar_fig)
+    st.write("The bar chart displays the total number of customers at each stage. It helps understand the distribution of customers across the different stages of the journey.")
+
+    # 5. Pie Chart of Stage Distribution
+    st.subheader("Stage Distribution")
+    pie_fig = px.pie(summary_df, names='Stage', values='Count', title="Stage Distribution")
+    st.plotly_chart(pie_fig)
+    st.write("The pie chart shows the distribution of customers across different stages as a percentage of the total. This visualization helps to quickly grasp the proportion of customers at each stage.")
+
+    # 6. Scatter Plot of Conversion Rates vs. Counts
+    st.subheader("Conversion Rates vs. Counts")
+    scatter_fig = px.scatter(df, x='Count', y='Conversion Rate', color='Stage', title="Conversion Rates vs. Counts", 
+                             labels={"Count": "Customer Count", "Conversion Rate": "Conversion Rate"})
+    st.plotly_chart(scatter_fig)
+    st.write("The scatter plot illustrates the relationship between customer count and conversion rates across different stages. It helps identify trends and outliers.")
+
+    # Customer Success Journey Roadmap
+    st.subheader("Customer Success Journey Roadmap")
+    roadmap_fig = go.Figure(data=go.Scatter(
+        x=["Awareness", "Consideration", "Purchase", "Retention", "Advocacy"],
+        y=[1, 2, 3, 4, 5],
+        mode="lines+markers+text",
+        text=["Awareness", "Consideration", "Purchase", "Retention", "Advocacy"],
+        textposition="top center"
+    ))
+    roadmap_fig.update_layout(title="Customer Success Journey Roadmap",
+                              xaxis_title="Stage",
+                              yaxis_title="Sequence",
+                              yaxis=dict(showticklabels=False))
+    st.plotly_chart(roadmap_fig)
+    st.write("The roadmap chart outlines the sequence of stages in the customer success journey. It serves as a high-level overview, helping to align strategies and actions at each stage.")
+
     
 def show_navbar():
     st.sidebar.title("Navigation")
