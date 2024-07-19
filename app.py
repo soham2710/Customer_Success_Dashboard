@@ -15,7 +15,7 @@ def introduction_page():
     
     with row1_col1:
         # Display the image
-        st.image("https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg", width=150, height = 100)  # Adjust width as needed
+        st.image("https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg", width=150)  # Adjust width as needed
 
     with row1_col2:
         # Contact details and download resume
