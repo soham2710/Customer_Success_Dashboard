@@ -12,6 +12,10 @@ from io import BytesIO
 def introduction_page():
     st.title("Introduction")
 
+    # Display your image from the URL
+    image_url = "https://your-image-url.com/your-image.jpg"  # Replace with your image URL
+    st.image(image_url, caption="Your Name", use_column_width=True)
+
     # Introduction and profile summary
     st.header("Welcome to CSM Dashboard")
     st.write("Welcome to CSM web app! Here you will find information about this project articles.")
