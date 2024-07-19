@@ -57,6 +57,29 @@ def introduction_page():
     - **Project Purpose:** This project aims to enhance customer success management by leveraging predictive analytics and providing actionable insights through various features in the dashboard.
     """)
 
+    st.header('Project Overview")
+    st.write("""
+    The **Customer Success Dashboard** is designed to help manage customer engagement and success through predictive analytics and effective communication strategies. Here’s a brief overview of the pages and their functionalities:
+
+    ### Pages:
+    - **Introduction**: Provides an overview of the dashboard and how to navigate through it.
+    - **Articles**: A collection of articles related to customer success and engagement.
+    - **Customer Journey Mapping**: Visualizes the customer's journey through various stages and touchpoints.
+    - **Predictive Analytics**: Offers insights into customer behavior and metrics to improve engagement and retention.
+
+    ### How to Use:
+    - **Customer Predictive Analytics**:
+      - **Metrics**: Analyze various metrics such as Net Promoter Score (NPS), Customer Lifetime Value (CLV), Churn Rate, and more.
+      - **Email Suggestions**: Use the provided options to receive email templates aimed at improving specific metrics.
+      - **Predictions**: View predicted percentages for each metric to understand potential improvements.
+    
+    - **Customer Journey Mapping**:
+      - **Visualization**: Explore the customer journey through graphical representations.
+      - **Touchpoints**: Review different stages and touchpoints to optimize customer interactions.
+
+    Use the navigation bar on the left to switch between pages and explore the different functionalities of the dashboard.
+    """)
+
     # Future improvement options
     st.header("Future Improvement Options")
     st.write("""
