@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import sys
 import requests
 import pickle
 from io import BytesIO
@@ -84,19 +83,25 @@ def predictive_analytics_page():
 
     # Model Training Section
     if st.button("Train Model"):
-        model_data = simulate_predictive_analytics_data(num_customers)
-        trained_model = train_model(model_data)
-        st.success("Model trained successfully!")
+        try:
+            model_data = simulate_predictive_analytics_data(num_customers)
+            trained_model = train_model(model_data)
+            st.success("Model trained successfully!")
+        except Exception as e:
+            st.error(f"Error training model: {e}")
 
     if st.button("Train Email Template Model"):
-        email_template_data = pd.DataFrame({
-            'Churn Risk': np.random.choice([0, 1], num_customers),
-            'NPS Score': np.random.randint(-100, 101, num_customers),
-            'Retention Rate (%)': np.random.uniform(50, 100, num_customers),
-            'Email Template': np.random.choice(email_templates.keys(), num_customers)
-        })
-        trained_email_model = train_email_template_model(email_template_data)
-        st.success("Email Template Model trained successfully!")
+        try:
+            email_template_data = pd.DataFrame({
+                'Churn Risk': np.random.choice([0, 1], num_customers),
+                'NPS Score': np.random.randint(-100, 101, num_customers),
+                'Retention Rate (%)': np.random.uniform(50, 100, num_customers),
+                'Email Template': np.random.choice(email_templates.keys(), num_customers)
+            })
+            trained_email_model = train_email_template_model(email_template_data)
+            st.success("Email Template Model trained successfully!")
+        except Exception as e:
+            st.error(f"Error training email template model: {e}")
 
 def email_template_suggestion_page():
     st.title("Email Template Suggestion")
@@ -105,9 +110,12 @@ def email_template_suggestion_page():
     retention_rate = st.slider("Retention Rate (%)", 0, 100)
 
     if st.button("Suggest Relevant Email Template"):
-        suggested_template = suggest_email_template(churn_risk, nps_score, retention_rate)
-        st.write(f"**Suggested Email Template:** {suggested_template}")
-        st.write(email_templates[suggested_template])
+        try:
+            suggested_template = suggest_email_template(churn_risk, nps_score, retention_rate)
+            st.write(f"**Suggested Email Template:** {suggested_template}")
+            st.write(email_templates[suggested_template])
+        except Exception as e:
+            st.error(f"Error suggesting email template: {e}")
 
 def introduction_page():
     st.title("Introduction")
@@ -202,6 +210,10 @@ def main():
     # Display profile picture
     profile_picture_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/profile_picture.jpg"
     st.sidebar.image(profile_picture_url, use_column_width=True, caption="Profile Picture")
+
+    # Download resume button
+    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/resume.pdf"
+    st.sidebar.markdown(f"[Download Resume]({resume_url})", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
