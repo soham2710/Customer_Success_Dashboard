@@ -9,6 +9,13 @@ import plotly.graph_objects as go
 import pickle
 from io import BytesIO
 
+st.set_page_config(
+    page_title="Customer Success Dashboard",
+    page_icon="📚",  # Using an emoji for the icon
+    layout="wide"
+)
+
+########Introduction Page
 def introduction_page():
     # Create a layout with two rows
     row1_col1, row1_col2 = st.columns([1, 2])  # Adjust the ratio as needed
