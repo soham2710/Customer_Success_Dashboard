@@ -253,7 +253,7 @@ def customer_journey_mapping_page():
 
 
 # Load the trained model (ensure you have the pickle file in the same directory or provide the correct path)
-model_file = 'path_to_your_model.pkl'
+model_file = 'https://github.com/soham2710/Customer_Success_Dashboard/blob/main/predictive_model.pkl'
 
 # Load the model
 with open(model_file, 'rb') as file:
