@@ -306,6 +306,25 @@ def predictive_analytics_page():
 
     st.table(metrics_df)
 
+    st.subheader("Suggestions for Improvement")
+    suggestions = {
+        "Net Promoter Score": "Focus on personalized follow-ups and customer feedback.",
+        "Customer Lifetime Value": "Improve customer engagement and upsell opportunities.",
+        "Customer Acquisition Cost": "Optimize marketing strategies and reduce costs.",
+        "Churn Rate": "Enhance customer support and provide value-added services.",
+        "Customer Satisfaction Score": "Solicit feedback and improve service quality.",
+        "Customer Retention Rate": "Strengthen loyalty programs and customer engagement.",
+        "Monthly Recurring Revenue": "Increase subscription offerings and upsell opportunities.",
+        "Average Time on Platform": "Enhance user experience and platform features.",
+        "First Contact Resolution Rate": "Improve support efficiency and training.",
+        "Free Trial Conversion Rate": "Optimize trial experience and onboarding.",
+        "Repeat Purchase Rate": "Encourage repeat purchases through targeted offers.",
+        "Customer Effort Score": "Streamline processes and simplify interactions."
+    }
+
+    for metric, suggestion in suggestions.items():
+        st.write(f"For improving **{metric}**: {suggestion}")
+
     st.subheader("Improvement Suggestions")
     st.write("""
     **Net Promoter Score (NPS)**: 
@@ -356,9 +375,6 @@ def predictive_analytics_page():
     *Formula*: Average Score from Customer Effort Surveys
     *Improvement*: Simplify processes and interactions to reduce customer effort and enhance satisfaction.
     """)
-
-    for metric, suggestion in suggestions.items():
-        st.write(f"For improving **{metric}**: {suggestion}")
 
 ######NAVBAR
 
