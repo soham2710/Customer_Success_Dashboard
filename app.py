@@ -15,15 +15,33 @@ from model import (
     generate_email_templates,
     select_email_template)
 
+# Add the directory containing model.py to Python path if necessary
+sys.path.insert(0, './')  # Adjust the path as needed
+
 # Page configuration
 st.set_page_config(page_title="Customer Success App", layout="wide")
 
-# Load pickle files
+# Define URLs for the pickle files
 email_template_model_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/email_template_model.pkl"
 label_encoder_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/label_encoder.pkl"
 
-email_template_model = pickle.load(requests.get(email_template_model_url, stream=True).raw)
-label_encoder = pickle.load(requests.get(label_encoder_url, stream=True).raw)
+def load_pickle_from_url(url):
+    response = requests.get(url)
+    response.raise_for_status()  # Ensure we notice bad responses
+    return pickle.load(BytesIO(response.content))
+
+# Load the models
+try:
+    email_template_model = load_pickle_from_url(email_template_model_url)
+    label_encoder = load_pickle_from_url(label_encoder_url)
+    st.success("Models loaded successfully!")
+except Exception as e:
+    st.error(f"Error loading models: {e}")
+
+
+
+# Page configuration
+st.set_page_config(page_title="Customer Success App", layout="wide")
 
 # Define email templates
 email_templates = {
