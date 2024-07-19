@@ -254,8 +254,6 @@ def customer_journey_mapping_page():
     st.plotly_chart(roadmap_fig)
 
 ######Predictive Analytics Page
-import streamlit as st
-import numpy as np
 from model import train_model
 
 # Load the model directly
@@ -268,10 +266,10 @@ def generate_predictions(features):
             return predictions
         except Exception as e:
             st.error(f"Error generating predictions: {e}")
-            return [0] * 12
+            return np.zeros((1, 12))
     else:
         st.error("Model not loaded.")
-        return [0] * 12
+        return np.zeros((1, 12))
 
 def predictive_analytics_page():
     st.title("Customer Predictive Analytics")
@@ -283,28 +281,32 @@ def predictive_analytics_page():
     churn_risk = st.sidebar.slider("Churn Risk", min_value=0.0, max_value=100.0, value=50.0)
 
     features = np.array([[age, annual_income, credit_score, churn_risk]])
-    predictions = generate_predictions(features)
+    predictions = generate_predictions(features)[0]
 
     st.subheader("Predicted Metrics")
-    metrics = {
-        "Net Promoter Score": predictions[0][0],
-        "Customer Lifetime Value": predictions[0][1],
-        "Customer Acquisition Cost": predictions[0][2],
-        "Churn Rate": predictions[0][3],
-        "Customer Satisfaction Score": predictions[0][4],
-        "Customer Retention Rate": predictions[0][5],
-        "Monthly Recurring Revenue": predictions[0][6],
-        "Average Time on Platform": predictions[0][7],
-        "First Contact Resolution Rate": predictions[0][8],
-        "Free Trial Conversion Rate": predictions[0][9],
-        "Repeat Purchase Rate": predictions[0][10],
-        "Customer Effort Score": predictions[0][11],
-    }
 
-    for metric, value in metrics.items():
-        st.write(f"{metric}: {value:.2f}")
+    # Display metrics in a tabular format
+    metrics_df = pd.DataFrame({
+        "Metric": [
+            "Net Promoter Score",
+            "Customer Lifetime Value",
+            "Customer Acquisition Cost",
+            "Churn Rate",
+            "Customer Satisfaction Score",
+            "Customer Retention Rate",
+            "Monthly Recurring Revenue",
+            "Average Time on Platform",
+            "First Contact Resolution Rate",
+            "Free Trial Conversion Rate",
+            "Repeat Purchase Rate",
+            "Customer Effort Score"
+        ],
+        "Value": [f"{value:.2f}" for value in predictions]
+    })
 
-    st.subheader("Suggestions")
+    st.table(metrics_df)
+
+    st.subheader("Suggestions for Improvement")
     suggestions = {
         "Net Promoter Score": "Focus on personalized follow-ups and customer feedback.",
         "Customer Lifetime Value": "Improve customer engagement and upsell opportunities.",
@@ -321,30 +323,7 @@ def predictive_analytics_page():
     }
 
     for metric, suggestion in suggestions.items():
-        st.write(f"For improving {metric}: {suggestion}")
-
-def show_navbar():
-    st.sidebar.title("Navigation")
-
-    profile_image_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/BH6A0835.jpg"
-    st.sidebar.image(profile_image_url, use_column_width=True)
-    st.sidebar.write("**Name:** Your Name")
-    st.sidebar.write("**Position:** Your Position")
-    st.sidebar.write("**Bio:** Brief bio or description.")
-
-    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/Customer%20Success%20Resume.pdf"
-    response = requests.get(resume_url)
-    st.sidebar.download_button(
-        label="Download Resume",
-        data=response.content,
-        file_name="resume.pdf",
-        mime="application/pdf"
-    )
-
-    pages = ["Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"]
-    selected_page = st.sidebar.radio("Select a page", pages)
-    return selected_page
-
+        st.write(f"For improving **{metric}**: {suggestion}")
 
 ######NAVBAR
 
