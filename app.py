@@ -482,9 +482,6 @@ if __name__ == "__main__":
     if page == "Introduction":
         # Call the function to display the Introduction page
         introduction_page()
-    elif page == "Contact":
-        # Call the function to display the Contact page
-        contact_page()
     elif page == "Articles":
         # Call the function to display the Articles page
         articles_page()
