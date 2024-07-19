@@ -394,40 +394,34 @@ def predictive_analytics_page():
             st.write(f"- {detail}")
 ######NAVBAR
 
-def show_navbar():
-    st.sidebar.title("Navigation")
+import streamlit as st
 
-    # Add a project icon next to the title
-    st.sidebar.image("https://example.com/project-icon.png", width=50)  # Replace with your project icon URL
+def shownavbar():
+    st.sidebar.title("CSM Dashboard")
+    page = st.sidebar.radio("Select a Page", ("Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"))
 
-    # Define pages
-    pages = ["Introduction", "Contact", "Articles", "Customer Journey Mapping", "Predictive Analytics"]
+    return page
 
-    # Create links for navigation
-    selected_page = None
-    for page in pages:
-        if st.sidebar.markdown(f'<a href="#{page.lower().replace(" ", "-")}" style="font-size:18px">{page}</a>', unsafe_allow_html=True):
-            selected_page = page
-            break
+# Example usage in your app
+if __name__ == "__main__":
+    page = shownavbar()
 
-    # If no page is selected, default to the first page
-    if not selected_page:
-        selected_page = pages[0]
-
-    return selected_page
-def main():
-    selected_page = show_navbar()
-
-    if selected_page == "Predictive Analytics":
-        predictive_analytics_page()
-    elif selected_page == "Introduction":
+    if page == "Introduction":
+        # Call the function to display the Introduction page
         introduction_page()
-    elif selected_page == "Contact":
+    elif page == "Contact":
+        # Call the function to display the Contact page
         contact_page()
-    elif selected_page == "Articles":
+    elif page == "Articles":
+        # Call the function to display the Articles page
         articles_page()
-    elif selected_page == "Customer Journey Mapping":
+    elif page == "Customer Journey Mapping":
+        # Call the function to display the Customer Journey Mapping page
         customer_journey_mapping_page()
+    elif page == "Predictive Analytics":
+        # Call the function to display the Predictive Analytics page
+        predictive_analytics_page()
+
 
 if __name__ == "__main__":
     main()
