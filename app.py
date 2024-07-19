@@ -57,7 +57,7 @@ def introduction_page():
     - **Project Purpose:** This project aims to enhance customer success management by leveraging predictive analytics and providing actionable insights through various features in the dashboard.
     """)
 
-    st.header('Project Overview")
+    st.header("Project Overview")
     st.write("""
     The **Customer Success Dashboard** is designed to help manage customer engagement and success through predictive analytics and effective communication strategies. Here’s a brief overview of the pages and their functionalities:
 
