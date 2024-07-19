@@ -421,7 +421,3 @@ if __name__ == "__main__":
     elif page == "Predictive Analytics":
         # Call the function to display the Predictive Analytics page
         predictive_analytics_page()
-
-
-if __name__ == "__main__":
-    main()
