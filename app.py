@@ -255,11 +255,10 @@ def customer_journey_mapping_page():
 
 ######Predictive Analytics Page
 
-# Function to load the model from a URL
 def load_model_from_url(url):
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Check if the request was successful
+        response.raise_for_status()
         model_file = BytesIO(response.content)
         model = pickle.load(model_file)
         return model
@@ -267,37 +266,45 @@ def load_model_from_url(url):
         st.error(f"Error loading the model: {e}")
         return None
 
-# URL of the pickle file
+# Replace with your actual model URL
 model_url = 'https://github.com/soham2710/Customer_Success_Dashboard/raw/main/predictive_model.pkl'
-
-# Load the model
 model = load_model_from_url(model_url)
 
-# Function to generate predictions based on input features
 def generate_predictions(features):
     if model:
         try:
             predictions = model.predict(features)
+            st.write(f"Predictions raw output: {predictions}")
             return predictions
         except Exception as e:
             st.error(f"Error generating predictions: {e}")
-            return [0] * 12  # Return a default value in case of error
+            return [0] * 12
     else:
         st.error("Model not loaded.")
-        return [0] * 12  # Return a default value in case of error
+        return [0] * 12
 
-# Dummy implementation for email suggestions
 def suggest_email_template(predictions):
-    return [
-        "Template 1: Improve NPS with personalized follow-ups.",
-        "Template 2: Enhance Customer Satisfaction with targeted feedback requests.",
-        "Template 3: Reduce Churn Rate through special offers and engagement."
-    ]
+    # Example email templates based on predictions
+    templates = {
+        "NPS": "Template 1: Improve NPS with personalized follow-ups.",
+        "Customer Satisfaction Score": "Template 2: Enhance Customer Satisfaction with targeted feedback requests.",
+        "Churn Rate": "Template 3: Reduce Churn Rate through special offers and engagement."
+    }
+    
+    # Example logic to select email templates based on predictions
+    email_suggestions = []
+    if predictions[0] < 50:  # Assuming NPS is low
+        email_suggestions.append(templates["NPS"])
+    if predictions[4] < 50:  # Assuming Customer Satisfaction Score is low
+        email_suggestions.append(templates["Customer Satisfaction Score"])
+    if predictions[3] > 0.5:  # Assuming Churn Rate is high
+        email_suggestions.append(templates["Churn Rate"])
+
+    return email_suggestions
 
 def predictive_analytics_page():
     st.title("Customer Predictive Analytics")
 
-    # Sidebar for user inputs
     st.sidebar.header("Input Data")
     age = st.sidebar.slider("Age", min_value=18, max_value=100, value=30)
     annual_income = st.sidebar.slider("Annual Income", min_value=0, max_value=200000, value=50000)
@@ -306,6 +313,11 @@ def predictive_analytics_page():
 
     features = np.array([[age, annual_income, credit_score, churn_risk]])
     predictions = generate_predictions(features)
+
+    # Ensure predictions length is as expected
+    if len(predictions) != 12:
+        st.error("The predictions array does not have the expected number of elements.")
+        return
 
     st.subheader("Predicted Metrics")
     metrics = {
@@ -333,6 +345,7 @@ def predictive_analytics_page():
         for email in email_suggestions:
             st.write(f"- {email}")
 
+
 def show_navbar():
     st.sidebar.title("Navigation")
 
@@ -356,10 +369,11 @@ def show_navbar():
     return selected_page
 
 def main():
-    st.set_page_config(page_title="Customer Success Dashboard", page_icon=":guardsman:", layout="wide")
     selected_page = show_navbar()
 
-    if selected_page == "Introduction":
+    if selected_page == "Predictive Analytics":
+        predictive_analytics_page()
+    elif selected_page == "Introduction":
         introduction_page()
     elif selected_page == "Contact":
         contact_page()
@@ -367,8 +381,6 @@ def main():
         articles_page()
     elif selected_page == "Customer Journey Mapping":
         customer_journey_mapping_page()
-    elif selected_page == "Predictive Analytics":
-        predictive_analytics_page()
 
 if __name__ == "__main__":
     main()
