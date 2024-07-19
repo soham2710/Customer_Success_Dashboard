@@ -8,6 +8,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pickle
 from io import BytesIO
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+
 
 st.set_page_config(
     page_title="Customer Success Dashboard",
@@ -463,6 +466,92 @@ def predictive_analytics_page():
             st.write(f"- {detail}")
 
 
+####### Customer profiling and segmentation
+# Dummy data for customer profiling and segmentation
+def get_dummy_data():
+    data = {
+        'Age': [25, 45, 35, 50, 23, 40, 60, 34, 30, 55],
+        'Annual Income': [50000, 80000, 60000, 90000, 45000, 70000, 100000, 65000, 60000, 85000],
+        'Credit Score': [700, 800, 750, 780, 690, 760, 810, 740, 720, 790],
+        'Churn Risk': [0.1, 0.2, 0.15, 0.3, 0.05, 0.25, 0.35, 0.1, 0.2, 0.3]
+    }
+    df = pd.DataFrame(data)
+    return df
+
+# Segmentation using KMeans
+def apply_kmeans_segmentation(df):
+    scaler = StandardScaler()
+    scaled_data = scaler.fit_transform(df[['Age', 'Annual Income', 'Credit Score', 'Churn Risk']])
+    
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(scaled_data)
+    df['Segment'] = kmeans.labels_
+    return df, kmeans
+
+# Customer Profiling and Segmentation Page
+def customer_profiling_and_segmentation_page():
+    st.title("Customer Profiling and Segmentation")
+    
+    st.header("Introduction to Customer Profiling and Segmentation")
+    st.write("This page demonstrates how to profile and segment customers using dummy data from Customer Predictive Analytics.")
+
+    # Load and Display Dummy Data
+    st.header("Customer Data")
+    df = get_dummy_data()
+    st.write(df)
+    
+    # Apply KMeans Segmentation
+    st.header("Segmentation Results")
+    segmented_df, kmeans_model = apply_kmeans_segmentation(df)
+    
+    st.write("Customer Segments:")
+    st.write(segmented_df)
+    
+    # Plotly Graphs
+    st.header("Segmentation Visualizations")
+
+    # 1. Age vs Annual Income
+    fig1 = px.scatter(segmented_df, x='Age', y='Annual Income', color='Segment', title='Age vs Annual Income')
+    st.plotly_chart(fig1)
+
+    # 2. Age vs Credit Score
+    fig2 = px.scatter(segmented_df, x='Age', y='Credit Score', color='Segment', title='Age vs Credit Score')
+    st.plotly_chart(fig2)
+
+    # 3. Age vs Churn Risk
+    fig3 = px.scatter(segmented_df, x='Age', y='Churn Risk', color='Segment', title='Age vs Churn Risk')
+    st.plotly_chart(fig3)
+
+    # 4. Annual Income vs Credit Score
+    fig4 = px.scatter(segmented_df, x='Annual Income', y='Credit Score', color='Segment', title='Annual Income vs Credit Score')
+    st.plotly_chart(fig4)
+
+    # 5. Annual Income vs Churn Risk
+    fig5 = px.scatter(segmented_df, x='Annual Income', y='Churn Risk', color='Segment', title='Annual Income vs Churn Risk')
+    st.plotly_chart(fig5)
+
+    # 6. Credit Score vs Churn Risk
+    fig6 = px.scatter(segmented_df, x='Credit Score', y='Churn Risk', color='Segment', title='Credit Score vs Churn Risk')
+    st.plotly_chart(fig6)
+
+    # 7. Histogram of Age by Segment
+    fig7 = px.histogram(segmented_df, x='Age', color='Segment', title='Histogram of Age by Segment')
+    st.plotly_chart(fig7)
+
+    # 8. Histogram of Annual Income by Segment
+    fig8 = px.histogram(segmented_df, x='Annual Income', color='Segment', title='Histogram of Annual Income by Segment')
+    st.plotly_chart(fig8)
+
+    # 9. Histogram of Credit Score by Segment
+    fig9 = px.histogram(segmented_df, x='Credit Score', color='Segment', title='Histogram of Credit Score by Segment')
+    st.plotly_chart(fig9)
+
+    # 10. Histogram of Churn Risk by Segment
+    fig10 = px.histogram(segmented_df, x='Churn Risk', color='Segment', title='Histogram of Churn Risk by Segment')
+    st.plotly_chart(fig10)
+
+    st.write("These visualizations help in understanding the characteristics and distribution of different customer segments.")
+
+
 ######NAVBAR
 
 def shownavbar():
@@ -471,7 +560,7 @@ def shownavbar():
         "<h2 style='font-size:19px;'>Select a Page</h2>",
         unsafe_allow_html=True
     )
-    page = st.sidebar.radio("", ("Introduction", "Articles", "Customer Journey Mapping", "Predictive Analytics"))
+    page = st.sidebar.radio("", ("Introduction", "Articles", "Customer Journey Mapping", "Predictive Analytics", "Customer Profiling and Segmentation"))
 
     return page
 
@@ -491,3 +580,5 @@ if __name__ == "__main__":
     elif page == "Predictive Analytics":
         # Call the function to display the Predictive Analytics page
         predictive_analytics_page()
+    elif page == "Customer Profiling and Segmentation":
+        customer_profiling_and_segmentation_page()
