@@ -3,7 +3,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
-import pickle
 
 # Generate dummy data
 def generate_dummy_data(num_samples=1000):
@@ -29,8 +28,8 @@ def generate_dummy_data(num_samples=1000):
     df = pd.DataFrame(data)
     return df
 
-# Train and save the predictive model
-def train_and_save_model():
+# Train the predictive model
+def train_model():
     df = generate_dummy_data()
     
     # Features and target variable
@@ -54,9 +53,8 @@ def train_and_save_model():
     mse = mean_squared_error(y_test, y_pred)
     print(f"Mean Squared Error: {mse}")
     
-    # Save model
-    with open('predictive_model.pkl', 'wb') as file:
-        pickle.dump(model, file)
+    return model
 
+# Call the function to train the model
 if __name__ == "__main__":
-    train_and_save_model()
+    model = train_model()
