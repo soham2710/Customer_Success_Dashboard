@@ -9,19 +9,46 @@ import plotly.graph_objects as go
 import pickle
 from io import BytesIO
 
-# Introduction Page content
 def introduction_page():
     st.title("Introduction")
-    st.write("Welcome to our web app! Here you will find information about our services, articles, and more.")
-    st.write("Feel free to explore the pages using the navigation bar.")
 
-# CONTACT PAGE
-def contact_page():
-    st.title("Contact Us")
-    st.write("Get in touch with us through the following channels:")
-    st.write("- Email: example@example.com")
-    st.write("- Phone: +1234567890")
-    st.write("- Address: 123 Main Street, Anytown, USA")
+    # Introduction and profile summary
+    st.header("Welcome to CSM Dashboard")
+    st.write("Welcome to CSM web app! Here you will find information about this project articles.")
+    
+    st.header("About Me")
+    st.write("Hello! I am Soham Sharma, and I am excited to share this project with you. Below is a brief summary of my professional background and the purpose of this project.")
+    st.write("""
+    - **Professional Summary:** Customer Success Manager with 8+ years of experience in the IT industry, specializing in customer success, relationship management, and customer engagement. Proven track record in managing customer lifecycles, driving customer retention, and delivering user-centric solutions to enhance customer satisfaction. Successfully executed multiple projects at Ziplyne, improving customer experience and operational efficiency. Strong proficiency in CRM tools, customer success metrics, and compliance with SOC 2, ISO, and GDPR standards. Passionate about leveraging innovative technologies to drive business growth and maximize customer satisfaction.
+    - **Project Purpose:** This project aims to enhance customer success management by leveraging predictive analytics and providing actionable insights through various features in the dashboard.
+    """)
+
+    # Future improvement options
+    st.header("Future Improvement Options")
+    st.write("""
+    We have several plans for future enhancements of this dashboard, including:
+    - **Enhanced Data Visualization:** Adding more interactive graphs and charts to visualize customer data effectively.
+    - **Advanced Predictive Analytics:** Implementing more sophisticated models for better accuracy in customer engagement predictions.
+    - **Integration with Other Tools:** Incorporating features to integrate with various CRM tools for a seamless experience.
+    """)
+
+    # Contact section
+    st.header("Connect with Me")
+    st.write("""
+    You can get in touch with me through the following channels:
+    - **Email:** sohamnsharma@gmail.com
+    - **Phone:** +91-9730084626
+    - **Address:** Indore, MP, India
+    """)
+https://github.com/soham2710/Customer_Success_Dashboard/edit/main/app.py
+    # Resume download button
+    resume_url = "https://github.com/soham2710/Customer_Success_Dashboard/main/Customer Success Resume.pdf"  # Replace with your actual resume URL
+    st.download_button(
+        label="Download Resume",
+        data=resume_url,
+        file_name="Customer Success Resume.pdf",
+        help="Click to download my resume"
+    )
 
 # Articles PAGE
 def articles_page():
