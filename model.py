@@ -197,3 +197,34 @@ def suggest_email_template(churn_risk, nps_score, retention_rate):
     predicted_template = label_encoder.inverse_transform([predicted_index])[0]
     
     return predicted_template
+
+# Function to suggest the email template using the model
+def suggest_email_template(churn_risk, nps_score, retention_rate):
+    features = np.array([[churn_risk, nps_score, retention_rate]])
+    predicted_index = model.predict(features)[0]
+    predicted_template = label_encoder.inverse_transform([predicted_index])[0]
+    return predicted_template
+
+# Function to simulate customer data
+def simulate_customer_data(num_customers):
+    np.random.seed(42)
+    ages = np.random.randint(18, 70, size=num_customers)
+    incomes = np.random.randint(20000, 120000, size=num_customers)
+    credit_scores = np.random.randint(300, 850, size=num_customers)
+    purchases = np.random.randint(1, 20, size=num_customers)
+    churn_risks = np.random.randint(0, 2, size=num_customers)
+    nps_scores = np.random.randint(0, 100, size=num_customers)
+    retention_rates = np.random.uniform(50, 100, size=num_customers)
+
+    data = pd.DataFrame({
+        'CustomerID': range(1, num_customers + 1),
+        'Age': ages,
+        'Annual Income (USD)': incomes,
+        'Credit Score': credit_scores,
+        'Previous Purchases': purchases,
+        'Churn Risk': churn_risks,
+        'NPS Score': nps_scores,
+        'Retention Rate (%)': retention_rates
+    })
+
+    return data
