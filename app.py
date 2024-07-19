@@ -2,8 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import sys
 import requests
+import pickle
+from sklearn.preprocessing import LabelEncoder
 from model import (
     simulate_predictive_analytics_data,
     train_model,
@@ -14,20 +15,22 @@ from model import (
     generate_email_templates,
     select_email_template)
 
-# Your Streamlit app code
-
-# Add the directory containing model.py to Python path if necessary
-sys.path.insert(0, './')  # Adjust the path as needed
-
 # Page configuration
 st.set_page_config(page_title="Customer Success App", layout="wide")
 
-from model import (
-    simulate_predictive_analytics_data,
-    train_model,
-    train_email_template_model,
-    suggest_email_template
-)
+# Load pickle files
+email_template_model_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/email_template_model.pkl"
+label_encoder_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/label_encoder.pkl"
+
+email_template_model = pickle.load(requests.get(email_template_model_url, stream=True).raw)
+label_encoder = pickle.load(requests.get(label_encoder_url, stream=True).raw)
+
+# Define email templates
+email_templates = {
+    'Template 1': 'Dear Customer, we noticed you may be at risk of churn. Here’s how we can help...',
+    'Template 2': 'We appreciate your feedback! Here are some resources to enhance your experience...',
+    'Template 3': 'Thank you for being a valued customer. We have special offers just for you...',
+}
 
 def predictive_analytics_page():
     st.title("Predictive Analytics")
@@ -99,7 +102,7 @@ def email_template_suggestion_page():
     retention_rate = st.slider("Retention Rate (%)", 0, 100)
 
     if st.button("Suggest Relevant Email Template"):
-        suggested_template = suggest_email_template(churn_risk, nps_score, retention_rate)
+        suggested_template = suggest_email_template(churn_risk, nps_score, retention_rate, email_template_model, label_encoder)
         st.write(f"**Suggested Email Template:** {suggested_template}")
         st.write(email_templates[suggested_template])
 
@@ -440,33 +443,25 @@ def profile_summary():
         st.sidebar.markdown(f"{icons[platform]} [ {platform} ]({url})", unsafe_allow_html=True)
 
 def main():
-    add_custom_css()  # Apply custom CSS
     st.sidebar.title("Navigation")
-    
-    profile_summary()  # Add profile summary, image, resume, and social media links
+    options = ["Introduction", "Predictive Analytics", "Email Template Suggestion", "Articles", "Contact"]
+    choice = st.sidebar.radio("Go to", options)
 
-    # Define the page selection
-    page = st.sidebar.selectbox("Choose a Page", [
-        "Introduction",
-        "Predictive Analytics",
-        "Articles",
-        "Showcase Cards",
-        "Customer Journey Mapping and Optimization"
-    ])
-
-    # Page selection logic
-    if page == "Introduction":
+    # Display the selected page
+    if choice == "Introduction":
         introduction_page()
-    elif page == "Predictive Analytics":
+    elif choice == "Predictive Analytics":
         predictive_analytics_page()
-    elif page == "Articles":
+    elif choice == "Email Template Suggestion":
+        email_template_suggestion_page()
+    elif choice == "Articles":
         articles_page()
-    elif page == "Showcase Cards":
-        showcase_cards_page()
-    elif page == "Customer Journey Mapping and Optimization":
-        customer_journey_page()
+    elif choice == "Contact":
+        contact_page()
 
-if __name__ == "__main__":
-    main()
+    # Display profile picture
+    profile_picture_url = "https://github.com/soham2710/Customer_Success_Dashboard/raw/main/profile_picture.jpg"
+    st.sidebar.image(profile_picture_url, use_column_width=True, caption="Profile Picture")
+
 
 
