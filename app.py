@@ -1,6 +1,11 @@
 import streamlit as st
 import requests
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+
 # Define page content
 def introduction_page():
     st.title("Introduction")
@@ -67,7 +72,7 @@ def customer_journey_mapping_page():
     data = {
         'Stage': ['Awareness', 'Consideration', 'Purchase', 'Retention', 'Advocacy'],
         'Count': [1000, 800, 600, 400, 200],
-        'Conversion Rate': [0.8, 0.75, 0.67, 0.5]
+        'Conversion Rate': [0.8, 0.75, 0.67, 0.5, 0.33]
     }
     df = pd.DataFrame(data)
 
