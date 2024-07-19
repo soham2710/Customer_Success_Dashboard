@@ -13,8 +13,8 @@ def introduction_page():
     st.title("Introduction")
 
     # Display your image from the URL
-    image_url = "https://your-image-url.com/your-image.jpg"  # Replace with your image URL
-    st.image(image_url, caption="Your Name", use_column_width=True)
+    image_url = "https://github.com/soham2710/Customer_Success_Dashboard/blob/main/1646298303913.jpg"  # Replace with your image URL
+    st.image(image_url, caption="Soham Sharma", use_column_width=True)
 
     # Introduction and profile summary
     st.header("Welcome to CSM Dashboard")
