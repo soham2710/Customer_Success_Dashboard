@@ -609,7 +609,7 @@ def shownavbar():
         "<h2 style='font-size:19px;'>Select a Page</h2>",
         unsafe_allow_html=True
     )
-    page = st.sidebar.radio("", ("Introduction", "Articles", "Customer Journey Mapping", "Predictive Analytics", "Customer Profiling and Segmentation"))
+    page = st.sidebar.radio("", ("Introduction", "Customer Journey Mapping", "Predictive Analytics", "Customer Profiling and Segmentation"))
 
     return page
 
@@ -620,9 +620,6 @@ if __name__ == "__main__":
     if page == "Introduction":
         # Call the function to display the Introduction page
         introduction_page()
-    elif page == "Articles":
-        # Call the function to display the Articles page
-        articles_page()
     elif page == "Customer Journey Mapping":
         # Call the function to display the Customer Journey Mapping page
         customer_journey_mapping_page()
