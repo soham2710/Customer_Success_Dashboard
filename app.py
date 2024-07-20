@@ -26,13 +26,12 @@ def introduction_page():
     with row1_col1:
         st.markdown(
             """
-            <div style="display: flex; align-items: center; height: 200px;">
-                <img src="https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg" style="height: 200%; width: 100%;"/>
+            <div style="display: flex; align-items: center; justify-content: center; height: 300px;">
+                <img src="https://github.com/soham2710/Customer_Success_Dashboard/raw/main/1646298303913.jpg" style="max-height: 100%; max-width: 100%;"/>
             </div>
             """,
             unsafe_allow_html=True
         )
-
     with row1_col2:
         # Contact details and download resume
         st.header("Connect with Me")
