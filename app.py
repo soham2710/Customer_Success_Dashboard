@@ -415,7 +415,7 @@ def predictive_analytics_page():
 
     # Display metrics DataFrame with custom height and width
     st.write('<div class="dataframe-container">', unsafe_allow_html=True)
-    st.write(metrics_df.to_html(classes='dataframe-table'), unsafe_allow_html=True)
+    st.write(metrics_df.to_html(classes='dataframe-table', index=False), unsafe_allow_html=True)
     st.write('</div>', unsafe_allow_html=True)
     st.subheader("Improvement Suggestions")
 
