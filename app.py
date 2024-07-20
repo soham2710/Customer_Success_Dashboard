@@ -372,7 +372,6 @@ def predictive_analytics_page():
         "Customer Effort Score": predictions[0][11],
     }
 
-    # Add thresholds for each metric
     thresholds = {
         "Net Promoter Score": 50,
         "Customer Lifetime Value": 5000,
@@ -388,8 +387,11 @@ def predictive_analytics_page():
         "Customer Effort Score": 20,
     }
 
-    # Create a DataFrame for metrics and thresholds
-    # Custom CSS to increase the height and adjust the width of the DataFrame
+    metrics_df = pd.DataFrame(list(metrics.items()), columns=["Metric", "Score"])
+    metrics_df['Threshold'] = metrics_df['Metric'].map(thresholds)
+    metrics_df['Needs Improvement'] = metrics_df.apply(lambda row: "Yes" if row['Score'] < row['Threshold'] else "No", axis=1)
+
+    # Custom CSS to style the DataFrame
     st.markdown(
         """
         <style>
@@ -413,7 +415,7 @@ def predictive_analytics_page():
 
     # Display metrics DataFrame with custom height and width
     st.write('<div class="dataframe-container">', unsafe_allow_html=True)
-    st.write(metrics_df.style.set_table_attributes('class="dataframe-table"').render(), unsafe_allow_html=True)
+    st.write(metrics_df.to_html(classes='dataframe-table'), unsafe_allow_html=True)
     st.write('</div>', unsafe_allow_html=True)
     st.subheader("Improvement Suggestions")
 
