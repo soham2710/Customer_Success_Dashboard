@@ -396,7 +396,7 @@ def predictive_analytics_page():
         """
         <style>
         .dataframe-container {
-            height: 500px;  /* Adjust this value as needed */
+            height: 200px;  /* Adjust this value as needed */
             overflow-y: scroll;
             width: 100%;  /* Full width of the page */
         }
