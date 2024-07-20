@@ -519,40 +519,66 @@ def customer_profiling_and_segmentation_page():
     st.write("Customer Segments:")
     st.write(segmented_df)
     
+    # Segment Explanations
+    st.write("**Segment Explanations:**")
+    st.write("**Segment 0:** Customers with lower credit scores and moderate churn risk.")
+    st.write("**Segment 1:** Customers with higher annual incomes and high savings.")
+    st.write("**Segment 2:** Younger customers with high spending scores and moderate annual incomes.")
+    st.write("**Segment 3:** Older customers with higher credit scores and lower churn risk.")
+    
     # Plotly Graphs with Explanations
+
     st.header("Segmentation Visualizations and Explanations")
 
     # 1. Age vs Annual Income
     fig1 = px.scatter(segmented_df, x='Age', y='Annual Income', color='Segment', title='Age vs Annual Income')
     st.plotly_chart(fig1)
-    st.write("**Age vs Annual Income:** This scatter plot displays the relationship between the age and annual income of customers, colored by their respective segments. Each point represents a customer, and the color indicates which segment they belong to. This graph helps in identifying how different segments are distributed based on age and annual income, aiding in targeted marketing strategies.")
+    st.write("**Age vs Annual Income:** This scatter plot displays the relationship between the age and annual income of customers, colored by their respective segments. It helps in identifying the distribution of customers based on age and income.")
 
     # 2. Age vs Spending Score
     fig2 = px.scatter(segmented_df, x='Age', y='Spending Score', color='Segment', title='Age vs Spending Score')
     st.plotly_chart(fig2)
-    st.write("**Age vs Spending Score:** This scatter plot shows the relationship between the age and spending score of customers, with different segments represented by colors. The spending score indicates how much a customer spends relative to their income. This graph highlights how spending behavior varies with age across different segments, providing insights into customer spending habits.")
+    st.write("**Age vs Spending Score:** This scatter plot shows how spending score varies with age across different segments, revealing spending habits of different age groups.")
 
     # 3. Credit Score vs Churn Risk
     fig3 = px.scatter(segmented_df, x='Credit Score', y='Churn Risk', color='Segment', title='Credit Score vs Churn Risk')
     st.plotly_chart(fig3)
-    st.write("**Credit Score vs Churn Risk:** This scatter plot illustrates the relationship between the credit score and churn risk of customers, with each segment shown in different colors. This graph is useful for understanding how creditworthiness affects the likelihood of customer churn across segments.")
+    st.write("**Credit Score vs Churn Risk:** This plot helps in understanding the relationship between credit scores and the risk of churn for different customer segments.")
 
     # 4. Annual Income vs Savings
     fig4 = px.scatter(segmented_df, x='Annual Income', y='Savings', color='Segment', title='Annual Income vs Savings')
     st.plotly_chart(fig4)
-    st.write("**Annual Income vs Savings:** This scatter plot displays the relationship between annual income and savings of customers, colored by their segments. This visualization helps in understanding the saving patterns of customers relative to their income across different segments.")
+    st.write("**Annual Income vs Savings:** This scatter plot displays the relationship between annual income and savings, helping to identify saving patterns across income levels.")
 
     # 5. Histogram of Age by Segment
     fig5 = px.histogram(segmented_df, x='Age', color='Segment', title='Histogram of Age by Segment')
     st.plotly_chart(fig5)
-    st.write("**Histogram of Age by Segment:** This histogram shows the age distribution of customers within each segment. It provides a clear view of the age demographics of each segment, helping to identify which age groups are predominant in each segment.")
+    st.write("**Histogram of Age by Segment:** This histogram shows the age distribution within each segment, helping to identify the predominant age groups in each segment.")
 
     # 6. 3D Cluster Visualization
-    fig6 = px.scatter_3d(segmented_df, x='Age', y='Annual Income', z='Credit Score', color='Segment', title='3D Cluster Visualization (Age, Annual Income, Credit Score)')
+    fig6 = px.scatter_3d(segmented_df, x='Age', y='Annual Income', z='Credit Score', color='Segment', title='3D Cluster Visualization (Age, Annual Income, Credit Score)', height=800)
     st.plotly_chart(fig6)
-    st.write("**3D Cluster Visualization:** This 3D scatter plot visualizes the customer segments based on Age, Annual Income, and Credit Score. It provides a comprehensive view of how customers are clustered in a three-dimensional space, making it easier to see the separation between different segments.")
+    st.write("**3D Cluster Visualization:** This plot visualizes customers based on Age, Annual Income, and Credit Score, making it easy to see how different segments are distributed in 3D space.")
 
-    st.write("These visualizations help in understanding the characteristics and distribution of different customer segments, providing valuable insights for targeted marketing and customer relationship management.")
+    # Additional Charts
+    st.header("Additional Visualizations")
+
+    # 7. Box Plot: Spending Score by Segment
+    fig7 = px.box(segmented_df, x='Segment', y='Spending Score', title='Spending Score Distribution by Segment')
+    st.plotly_chart(fig7)
+    st.write("**Spending Score Distribution by Segment:** This box plot shows the distribution of spending scores within each segment, highlighting differences in spending behavior across segments.")
+
+    # 8. Heatmap: Correlation Matrix
+    corr_matrix = segmented_df[['Age', 'Annual Income', 'Credit Score', 'Churn Risk', 'Spending Score', 'Savings']].corr()
+    fig8 = px.imshow(corr_matrix, text_auto=True, title='Correlation Matrix Heatmap')
+    st.plotly_chart(fig8)
+    st.write("**Correlation Matrix Heatmap:** This heatmap displays the correlations between different numerical features, helping to identify relationships and potential multicollinearity.")
+
+    # 9. Bar Chart: Customer Count by Region
+    region_counts = segmented_df['Region'].value_counts()
+    fig9 = px.bar(region_counts, x=region_counts.index, y=region_counts.values, title='Customer Count by Region')
+    st.plotly_chart(fig9)
+    st.write("**Customer Count by Region:** This bar chart shows the number of customers in each region, helping to understand the geographic distribution of customers.")
 
 ######NAVBAR
 
