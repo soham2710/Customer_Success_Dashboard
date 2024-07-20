@@ -468,12 +468,25 @@ def predictive_analytics_page():
 
 ####### Customer profiling and segmentation
 # Dummy data for customer profiling and segmentation
+import streamlit as st
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+import plotly.express as px
+
+# Generate dummy data with 1000 data points
 def get_dummy_data():
+    np.random.seed(42)  # For reproducibility
     data = {
-        'Age': [25, 45, 35, 50, 23, 40, 60, 34, 30, 55],
-        'Annual Income': [50000, 80000, 60000, 90000, 45000, 70000, 100000, 65000, 60000, 85000],
-        'Credit Score': [700, 800, 750, 780, 690, 760, 810, 740, 720, 790],
-        'Churn Risk': [0.1, 0.2, 0.15, 0.3, 0.05, 0.25, 0.35, 0.1, 0.2, 0.3]
+        'Age': np.random.randint(18, 70, 1000),
+        'Annual Income': np.random.randint(20000, 120000, 1000),
+        'Credit Score': np.random.randint(300, 850, 1000),
+        'Churn Risk': np.random.rand(1000),
+        'Spending Score': np.random.randint(1, 100, 1000),
+        'Savings': np.random.randint(1000, 50000, 1000),
+        'Region': np.random.choice(['North', 'South', 'East', 'West'], 1000),
+        'Gender': np.random.choice(['Male', 'Female'], 1000)
     }
     df = pd.DataFrame(data)
     return df
@@ -481,9 +494,9 @@ def get_dummy_data():
 # Segmentation using KMeans
 def apply_kmeans_segmentation(df):
     scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(df[['Age', 'Annual Income', 'Credit Score', 'Churn Risk']])
+    scaled_data = scaler.fit_transform(df[['Age', 'Annual Income', 'Credit Score', 'Churn Risk', 'Spending Score', 'Savings']])
     
-    kmeans = KMeans(n_clusters=3, random_state=0).fit(scaled_data)
+    kmeans = KMeans(n_clusters=4, random_state=0).fit(scaled_data)
     df['Segment'] = kmeans.labels_
     return df, kmeans
 
@@ -506,51 +519,40 @@ def customer_profiling_and_segmentation_page():
     st.write("Customer Segments:")
     st.write(segmented_df)
     
-    # Plotly Graphs
-    st.header("Segmentation Visualizations")
+    # Plotly Graphs with Explanations
+    st.header("Segmentation Visualizations and Explanations")
 
     # 1. Age vs Annual Income
     fig1 = px.scatter(segmented_df, x='Age', y='Annual Income', color='Segment', title='Age vs Annual Income')
     st.plotly_chart(fig1)
+    st.write("**Age vs Annual Income:** This scatter plot displays the relationship between the age and annual income of customers, colored by their respective segments. Each point represents a customer, and the color indicates which segment they belong to. This graph helps in identifying how different segments are distributed based on age and annual income, aiding in targeted marketing strategies.")
 
-    # 2. Age vs Credit Score
-    fig2 = px.scatter(segmented_df, x='Age', y='Credit Score', color='Segment', title='Age vs Credit Score')
+    # 2. Age vs Spending Score
+    fig2 = px.scatter(segmented_df, x='Age', y='Spending Score', color='Segment', title='Age vs Spending Score')
     st.plotly_chart(fig2)
+    st.write("**Age vs Spending Score:** This scatter plot shows the relationship between the age and spending score of customers, with different segments represented by colors. The spending score indicates how much a customer spends relative to their income. This graph highlights how spending behavior varies with age across different segments, providing insights into customer spending habits.")
 
-    # 3. Age vs Churn Risk
-    fig3 = px.scatter(segmented_df, x='Age', y='Churn Risk', color='Segment', title='Age vs Churn Risk')
+    # 3. Credit Score vs Churn Risk
+    fig3 = px.scatter(segmented_df, x='Credit Score', y='Churn Risk', color='Segment', title='Credit Score vs Churn Risk')
     st.plotly_chart(fig3)
+    st.write("**Credit Score vs Churn Risk:** This scatter plot illustrates the relationship between the credit score and churn risk of customers, with each segment shown in different colors. This graph is useful for understanding how creditworthiness affects the likelihood of customer churn across segments.")
 
-    # 4. Annual Income vs Credit Score
-    fig4 = px.scatter(segmented_df, x='Annual Income', y='Credit Score', color='Segment', title='Annual Income vs Credit Score')
+    # 4. Annual Income vs Savings
+    fig4 = px.scatter(segmented_df, x='Annual Income', y='Savings', color='Segment', title='Annual Income vs Savings')
     st.plotly_chart(fig4)
+    st.write("**Annual Income vs Savings:** This scatter plot displays the relationship between annual income and savings of customers, colored by their segments. This visualization helps in understanding the saving patterns of customers relative to their income across different segments.")
 
-    # 5. Annual Income vs Churn Risk
-    fig5 = px.scatter(segmented_df, x='Annual Income', y='Churn Risk', color='Segment', title='Annual Income vs Churn Risk')
+    # 5. Histogram of Age by Segment
+    fig5 = px.histogram(segmented_df, x='Age', color='Segment', title='Histogram of Age by Segment')
     st.plotly_chart(fig5)
+    st.write("**Histogram of Age by Segment:** This histogram shows the age distribution of customers within each segment. It provides a clear view of the age demographics of each segment, helping to identify which age groups are predominant in each segment.")
 
-    # 6. Credit Score vs Churn Risk
-    fig6 = px.scatter(segmented_df, x='Credit Score', y='Churn Risk', color='Segment', title='Credit Score vs Churn Risk')
+    # 6. 3D Cluster Visualization
+    fig6 = px.scatter_3d(segmented_df, x='Age', y='Annual Income', z='Credit Score', color='Segment', title='3D Cluster Visualization (Age, Annual Income, Credit Score)')
     st.plotly_chart(fig6)
+    st.write("**3D Cluster Visualization:** This 3D scatter plot visualizes the customer segments based on Age, Annual Income, and Credit Score. It provides a comprehensive view of how customers are clustered in a three-dimensional space, making it easier to see the separation between different segments.")
 
-    # 7. Histogram of Age by Segment
-    fig7 = px.histogram(segmented_df, x='Age', color='Segment', title='Histogram of Age by Segment')
-    st.plotly_chart(fig7)
-
-    # 8. Histogram of Annual Income by Segment
-    fig8 = px.histogram(segmented_df, x='Annual Income', color='Segment', title='Histogram of Annual Income by Segment')
-    st.plotly_chart(fig8)
-
-    # 9. Histogram of Credit Score by Segment
-    fig9 = px.histogram(segmented_df, x='Credit Score', color='Segment', title='Histogram of Credit Score by Segment')
-    st.plotly_chart(fig9)
-
-    # 10. Histogram of Churn Risk by Segment
-    fig10 = px.histogram(segmented_df, x='Churn Risk', color='Segment', title='Histogram of Churn Risk by Segment')
-    st.plotly_chart(fig10)
-
-    st.write("These visualizations help in understanding the characteristics and distribution of different customer segments.")
-
+    st.write("These visualizations help in understanding the characteristics and distribution of different customer segments, providing valuable insights for targeted marketing and customer relationship management.")
 
 ######NAVBAR
 
