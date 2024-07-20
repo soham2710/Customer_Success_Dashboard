@@ -396,7 +396,7 @@ def predictive_analytics_page():
         """
         <style>
         .dataframe-container {
-            height: 200px;  /* Adjust this value as needed */
+            height: 50px;  /* Adjust this value as needed */
             overflow-y: scroll;
             width: 100%;  /* Full width of the page */
         }
@@ -420,65 +420,65 @@ def predictive_analytics_page():
     st.subheader("Improvement Suggestions")
 
     suggestions = {
-        "Net Promoter Score": [
-            "1. **Explanation**: Measures customer loyalty and the likelihood of recommending your product/service.",
-            "2. **Formula**: (Percentage of Promoters - Percentage of Detractors) × 100",
-            "3. **Improvement**: Increase customer satisfaction by addressing key pain points and delivering exceptional customer service."
+        "1. Net Promoter Score": [
+            "**Explanation**: Measures customer loyalty and the likelihood of recommending your product/service.",
+            "**Formula**: (Percentage of Promoters - Percentage of Detractors) × 100",
+            "**Improvement**: Increase customer satisfaction by addressing key pain points and delivering exceptional customer service."
         ],
-        "Customer Lifetime Value": [
-            "1. **Explanation**: The total revenue a business can expect from a customer over their lifetime.",
-            "2. **Formula**: Average Purchase Value × Number of Purchases per Year × Customer Lifespan",
-            "3. **Improvement**: Increase customer retention through loyalty programs and personalized offers."
+        "2. Customer Lifetime Value": [
+            "**Explanation**: The total revenue a business can expect from a customer over their lifetime.",
+            "**Formula**: Average Purchase Value × Number of Purchases per Year × Customer Lifespan",
+            "**Improvement**: Increase customer retention through loyalty programs and personalized offers."
         ],
-        "Customer Acquisition Cost": [
-            "1. **Explanation**: The cost associated with acquiring a new customer.",
-            "2. **Formula**: Total Cost of Acquiring New Customers / Number of New Customers Acquired",
-            "3. **Improvement**: Optimize marketing strategies to reduce costs and improve conversion rates."
+        "3. Customer Acquisition Cost": [
+            "**Explanation**: The cost associated with acquiring a new customer.",
+            "**Formula**: Total Cost of Acquiring New Customers / Number of New Customers Acquired",
+            "**Improvement**: Optimize marketing strategies to reduce costs and improve conversion rates."
         ],
-        "Churn Rate": [
-            "1. **Explanation**: The percentage of customers who stop using your product/service during a given period.",
-            "2. **Formula**: (Number of Customers Lost During Period / Total Number of Customers at Start of Period) × 100",
-            "3. **Improvement**: Implement retention strategies such as regular check-ins and addressing customer feedback promptly."
+        "4. Churn Rate": [
+            "**Explanation**: The percentage of customers who stop using your product/service during a given period.",
+            "**Formula**: (Number of Customers Lost During Period / Total Number of Customers at Start of Period) × 100",
+            "**Improvement**: Implement retention strategies such as regular check-ins and addressing customer feedback promptly."
         ],
-        "Customer Satisfaction Score": [
+        "5. Customer Satisfaction Score": [
             "1. **Explanation**: Measures how satisfied customers are with your product/service.",
             "2. **Formula**: (Number of Satisfied Customers / Number of Survey Responses) × 100",
             "3. **Improvement**: Enhance product/service quality and provide excellent customer support."
         ],
-        "Customer Retention Rate": [
+        "6. Customer Retention Rate": [
             "1. **Explanation**: The percentage of customers who continue to use your product/service over a given period.",
             "2. **Formula**: ((Number of Customers at End of Period - Number of New Customers) / Number of Customers at Start of Period) × 100",
             "3. **Improvement**: Foster strong relationships with existing customers and offer value-added services."
         ],
-        "Monthly Recurring Revenue": [
-            "1. **Explanation**: The total revenue generated from subscriptions on a monthly basis.",
-            "2. **Formula**: Total Revenue from Subscriptions / Number of Months",
-            "3. **Improvement**: Increase subscription rates and offer upsells to boost recurring revenue."
+        "7. Monthly Recurring Revenue": [
+            "**Explanation**: The total revenue generated from subscriptions on a monthly basis.",
+            "**Formula**: Total Revenue from Subscriptions / Number of Months",
+            "**Improvement**: Increase subscription rates and offer upsells to boost recurring revenue."
         ],
-        "Average Time on Platform": [
-            "1. **Explanation**: Measures the average time users spend on your platform.",
-            "2. **Formula**: Total Time Spent by All Users / Number of Users",
-            "3. **Improvement**: Enhance user experience to encourage longer engagement with the platform."
+        "8. Average Time on Platform": [
+            "**Explanation**: Measures the average time users spend on your platform.",
+            "**Formula**: Total Time Spent by All Users / Number of Users",
+            "**Improvement**: Enhance user experience to encourage longer engagement with the platform."
         ],
-        "First Contact Resolution Rate": [
-            "1. **Explanation**: The percentage of customer issues resolved on the first contact.",
-            "2. **Formula**: (Number of Issues Resolved on First Contact / Total Number of Issues) × 100",
-            "3. **Improvement**: Improve training for customer service representatives to resolve issues more effectively on the first contact."
+        "9. First Contact Resolution Rate": [
+            "**Explanation**: The percentage of customer issues resolved on the first contact.",
+            "**Formula**: (Number of Issues Resolved on First Contact / Total Number of Issues) × 100",
+            "**Improvement**: Improve training for customer service representatives to resolve issues more effectively on the first contact."
         ],
-        "Free Trial Conversion Rate": [
-            "1. **Explanation**: The percentage of free trial users who convert to paying customers.",
-            "2. **Formula**: (Number of Free Trial Users Who Become Paying Customers / Total Number of Free Trial Users) × 100",
-            "3. **Improvement**: Optimize the free trial experience to highlight key benefits and increase conversions."
+        "10. Free Trial Conversion Rate": [
+            "**Explanation**: The percentage of free trial users who convert to paying customers.",
+            "**Formula**: (Number of Free Trial Users Who Become Paying Customers / Total Number of Free Trial Users) × 100",
+            "**Improvement**: Optimize the free trial experience to highlight key benefits and increase conversions."
         ],
-        "Repeat Purchase Rate": [
-            "1. **Explanation**: The percentage of purchases made by repeat customers.",
-            "2. **Formula**: (Number of Repeat Purchases / Total Number of Purchases) × 100",
-            "3. **Improvement**: Encourage repeat purchases through targeted marketing and loyalty programs."
+        "11. Repeat Purchase Rate": [
+            "**Explanation**: The percentage of purchases made by repeat customers.",
+            "**Formula**: (Number of Repeat Purchases / Total Number of Purchases) × 100",
+            "**Improvement**: Encourage repeat purchases through targeted marketing and loyalty programs."
         ],
-        "Customer Effort Score": [
-            "1. **Explanation**: Measures the ease of customer interaction and resolution.",
-            "2. **Formula**: Average Score from Customer Effort Surveys",
-            "3. **Improvement**: Simplify processes and interactions to reduce customer effort and enhance satisfaction."
+        "12. Customer Effort Score": [
+            "**Explanation**: Measures the ease of customer interaction and resolution.",
+            "**Formula**: Average Score from Customer Effort Surveys",
+            "**Improvement**: Simplify processes and interactions to reduce customer effort and enhance satisfaction."
         ],
     }
 
