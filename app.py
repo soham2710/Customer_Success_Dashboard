@@ -389,12 +389,32 @@ def predictive_analytics_page():
     }
 
     # Create a DataFrame for metrics and thresholds
-    metrics_df = pd.DataFrame(list(metrics.items()), columns=["Metric", "Score"])
-    metrics_df['Threshold'] = metrics_df['Metric'].map(thresholds)
-    metrics_df['Needs Improvement'] = metrics_df.apply(lambda row: "Yes" if row['Score'] < row['Threshold'] else "No", axis=1)
+    # Custom CSS to increase the height and adjust the width of the DataFrame
+    st.markdown(
+        """
+        <style>
+        .dataframe-container {
+            height: 700px;  /* Adjust this value as needed */
+            overflow-y: scroll;
+            width: 100%;  /* Full width of the page */
+        }
+        .dataframe-table {
+            width: 100% !important;
+            border-collapse: collapse;
+        }
+        .dataframe-table th, .dataframe-table td {
+            padding: 10px;
+            text-align: left;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
-    st.write(metrics_df.style.set_properties(**{'height': '900px'}))
-
+    # Display metrics DataFrame with custom height and width
+    st.write('<div class="dataframe-container">', unsafe_allow_html=True)
+    st.write(metrics_df.style.set_table_attributes('class="dataframe-table"').render(), unsafe_allow_html=True)
+    st.write('</div>', unsafe_allow_html=True)
     st.subheader("Improvement Suggestions")
 
     suggestions = {
