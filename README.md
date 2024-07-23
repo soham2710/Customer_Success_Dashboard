@@ -1,110 +1,41 @@
-## Customer Success Projects
+# Customer Success Dashboard
 
-This repository contains two advanced Customer Success use cases implemented using Streamlit and TensorFlow:
-1. Customer Journey Mapping and Optimization
-2. Customer Success Playbooks Using Predictive Analytics
+Welcome to the Customer Success Dashboard project! This dashboard leverages predictive analytics and AI to enhance customer engagement, retention, and overall success metrics. It provides a comprehensive solution for Customer Success Managers (CSMs) to effectively manage customer lifecycles, predict engagement, and personalize communication strategies.
 
-## Project 1: Customer Journey Mapping and Optimization
+## Features
 
-### Objective:
-Develop detailed customer journey maps and use data analytics to optimize each touchpoint for better customer experiences.
+### Predictive Analytics
+- **Engagement Prediction**: Utilizes AI to predict customer engagement levels, allowing CSMs to proactively address potential issues.
+- **Retention Prediction**: Forecasts customer retention rates to help identify at-risk customers and implement retention strategies.
 
-### Features:
-- Visual journey maps of the customer lifecycle.
-- Data analytics to identify bottlenecks and opportunities for improvement.
-- Machine learning model to predict customer satisfaction.
+### Customer Journey Mapping
+- **Journey Visualization**: Displays the customer journey through various stages, helping CSMs understand and enhance customer experience.
 
-### Implementation:
-- Uses Streamlit for the UI.
-- TensorFlow for building predictive models.
-- Pandas and Seaborn for data manipulation and visualization.
+### Customer Predictive Analytics
+- **Metric Predictions**: Predicts 12 key metrics, including Net Promoter Score (NPS), Customer Lifetime Value (CLV), and Customer Satisfaction Score (CSAT).
+- **Improvement Suggestions**: Provides actionable insights and email templates to improve each metric.
 
-## Project 2: Customer Success Playbooks Using Predictive Analytics
+### Customer Profiling and Segmentation
+- **Demographic Segmentation**: Allows CSMs to segment customers based on demographics and other variables.
+- **Product Categorization**: Helps identify which products belong to specific customer segments.
 
-### Objective:
-Develop dynamic playbooks that use predictive analytics to guide customer success teams in delivering tailored support and proactive engagement.
+### User Interface
+- **Interactive Visualization**: Presents data in an easy-to-understand, visually appealing format.
+- **Tabular Data Display**: Shows predictive scores and metrics in a tabular format, with explanations and improvement methods.
 
-### Features:
-- Predictive modeling using historical data.
-- Dynamic playbooks that adapt based on predictive insights.
-- Personalized engagement strategies.
-- Performance metrics tracking.
+## Technologies Used
+- **Streamlit**: For creating the web application.
+- **Python**: Backend scripting and predictive modeling.
+- **Machine Learning**: For predictive analytics and AI-based suggestions.
 
-### Implementation:
-- Uses Streamlit for the UI.
-- TensorFlow for building predictive models.
-- Scikit-learn for data preprocessing and model evaluation.
+## How to Use
 
-## Setup Instructions
+1. **Access the Dashboard**: Visit the [Customer Success Dashboard](https://csmdashboard.streamlit.app/) to get started.
+2. **Navigate Through Pages**: Use the sidebar to switch between different pages, including Customer Journey Mapping, Predictive Analytics, and Customer Profiling.
+3. **Predict and Analyze**: Enter customer data to get predictive insights and suggestions.
 
-### Prerequisites:
+## Getting Started
+
+### Prerequisites
 - Python 3.7 or higher
-- pip (Python package installer)
-
-### Installation:
-
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/yourusername/customer-success-projects.git
-    cd customer-success-projects
-    ```
-
-2. Install the required packages:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-## Running the Projects
-
-### Project 1: Customer Journey Mapping and Optimization
-1. Navigate to the project directory:
-    ```bash
-    cd journey-mapping
-    ```
-
-2. Run the Streamlit app:
-    ```bash
-    streamlit run app.py
-    ```
-
-### Project 2: Customer Success Playbooks Using Predictive Analytics
-1. Navigate to the project directory:
-    ```bash
-    cd playbooks
-    ```
-
-2. Run the Streamlit app:
-    ```bash
-    streamlit run app.py
-    ```
-
-## Project Structure
-
-### journey-mapping
-- `app.py`: Streamlit application for Customer Journey Mapping and Optimization.
-
-### playbooks
-- `app.py`: Streamlit application for Customer Success Playbooks Using Predictive Analytics.
-
-## Usage
-
-### Customer Journey Mapping and Optimization:
-- The app provides a visual map of the customer journey, highlighting key touchpoints.
-- It includes satisfaction analysis charts and a simple predictive model for customer satisfaction.
-- Users can interact with the data and view predictive insights.
-
-### Customer Success Playbooks Using Predictive Analytics:
-- The app allows users to view customer data and predictive model performance.
-- It provides personalized playbook suggestions based on predictive insights.
-- Users can test the model with different feature values and get tailored action recommendations.
-
-## License
-
-This project is licensed under the MIT License.
-
-## Acknowledgements
-
-- Streamlit documentation and community for support and guidance.
-- TensorFlow and Scikit-learn for providing powerful machine learning tools.
-- Open source contributors for their valuable libraries and tools.
-
+- Streamlit
