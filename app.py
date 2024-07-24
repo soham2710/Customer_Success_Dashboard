@@ -11,7 +11,7 @@ from io import BytesIO
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 
-
+<script src="//code.tidio.co/oxt9rdewhljeyea1a3hxmhfusqcfsaux.js" async></script>
 st.set_page_config(
     page_title="Customer Success Dashboard",
     page_icon="📚",  # Using an emoji for the icon
